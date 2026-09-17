@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { StatusBadge } from "@/components/StatusBadge";
+import { DeleteProjectButton } from "@/components/DeleteProjectButton";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +25,15 @@ export default async function ProjectPage({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <Link
-        href="/"
-        className="mb-8 inline-block text-sm text-text-secondary hover:text-text-primary"
-      >
-        ← Todos los proyectos
-      </Link>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <Link
+          href="/"
+          className="inline-block text-sm text-text-secondary hover:text-text-primary"
+        >
+          ← Todos los proyectos
+        </Link>
+        <DeleteProjectButton projectId={project.id} projectName={project.name} />
+      </div>
 
       <div className="mb-2 flex items-center gap-3">
         <h1 className="text-xl font-medium text-text-primary">
