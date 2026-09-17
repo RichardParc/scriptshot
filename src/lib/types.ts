@@ -44,17 +44,3 @@ export interface Project {
 }
 
 export type NewProject = Pick<Project, "name" | "format" | "duration" | "idea">;
-
-// Minimal Supabase Database type — just enough for typed queries against
-// the `project` table. Extend this as story_block / scene / etc. land.
-export interface Database {
-  public: {
-    Tables: {
-      project: {
-        Row: Project;
-        Insert: Partial<Project> & Pick<Project, "name" | "format" | "duration">;
-        Update: Partial<Project>;
-      };
-    };
-  };
-}
