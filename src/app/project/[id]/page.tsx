@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { StatusBadge } from "@/components/StatusBadge";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
+import { ProjectEditor } from "@/components/editor/ProjectEditor";
+import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +24,14 @@ export default async function ProjectPage({
   if (error || !project) {
     notFound();
   }
+
+  const { data: blocks } = await supabase
+    .from("story_block")
+    .select("*, voice_over(*), scene(*)")
+    .eq("project_id", id)
+    .order("order", { ascending: true })
+    .order("order", { ascending: true, referencedTable: "voice_over" })
+    .order("order", { ascending: true, referencedTable: "scene" });
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
@@ -54,9 +64,10 @@ export default async function ProjectPage({
         </p>
       )}
 
-      <div className="rounded-md border border-dashed border-border p-8 text-center text-sm text-text-secondary">
-        Historia, voz en off y escenas llegan en la Fase 2.
-      </div>
+      <ProjectEditor
+        projectId={project.id}
+        initialBlocks={(blocks ?? []) as StoryBlock[]}
+      />
     </main>
   );
 }

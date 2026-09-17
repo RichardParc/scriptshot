@@ -44,3 +44,28 @@ export interface Project {
 }
 
 export type NewProject = Pick<Project, "name" | "format" | "duration" | "idea">;
+
+export interface VoiceOver {
+  id: string;
+  story_block_id: string;
+  text: string;
+  recorded: boolean;
+  order: number;
+}
+
+export interface Scene {
+  id: string;
+  story_block_id: string;
+  voice_over_id: string | null;
+  description: string;
+  order: number;
+}
+
+export interface StoryBlock {
+  id: string;
+  project_id: string;
+  title: string;
+  order: number;
+  voice_over: VoiceOver[];
+  scene: Scene[];
+}

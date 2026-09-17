@@ -1,26 +1,39 @@
-# Scriptshot — Phase 1
+# Scriptshot — Fase 1 + Fase 2
 
 De la idea al rodaje. Fase 1: crear y listar proyectos, con persistencia real
-en Supabase (no local storage) para que el dashboard sea el mismo desde
-cualquier dispositivo.
+en Supabase. Fase 2: editor de historia — bloques de historia, voz en off y
+escenas.
 
-## Qué incluye esta fase
+## Qué incluye
 
-- Dashboard con lista de proyectos
-- Crear proyecto (nombre, formato, duración, idea)
-- Página de proyecto (shell — historia/escenas llegan en Fase 2)
-- Sistema visual oscuro base (colores, tipografía, componentes)
+**Fase 1**
+- Dashboard con lista de proyectos, crear/eliminar proyecto
+- Sistema visual oscuro base
 
-Fuera de alcance a propósito: historia/escenas, RODAJE, locaciones, IA,
-autenticación, colaboración. Ver el prompt maestro del producto para el
-roadmap completo por fases.
+**Fase 2**
+- Bloques de historia: crear, renombrar, eliminar, reordenar (↑↓)
+- Voz en off por bloque: texto + estado GRABADA/PENDIENTE, reordenable
+- Escenas por bloque: descripción de qué grabar, reordenable
+- Todo persiste en Supabase en tiempo real (autosave al perder foco / al
+  cambiar estado)
+
+Fuera de alcance a propósito: metadata de producción por escena (cámara,
+ángulo, movimiento, locación...) — eso es Fase 3. RODAJE, locaciones, IA,
+autenticación, colaboración — fases posteriores. Ver el prompt maestro del
+producto para el roadmap completo.
+
+**Simplificación consciente sobre el prompt maestro:** el reordenamiento usa
+botones ↑↓ en vez de arrastrar y soltar (evita la dependencia de dnd-kit por
+ahora). Se puede migrar a drag & drop real más adelante si hace falta.
 
 ## Setup
 
 1. **Crear proyecto en Supabase**
    - Ve a [supabase.com](https://supabase.com) → New Project.
-   - En el SQL Editor, pega y ejecuta el contenido de `supabase/schema.sql`.
-   - En Project Settings → API, copia la `Project URL` y la `anon public key`.
+   - En el SQL Editor, corre `supabase/schema.sql` primero, y luego
+     `supabase/phase2.sql`.
+   - En Project Settings → Data API, copia el Project URL. En Project
+     Settings → API Keys, copia la anon/publishable key.
 
 2. **Variables de entorno**
    ```bash
