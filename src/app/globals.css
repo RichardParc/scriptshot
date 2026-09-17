@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background-color: #0a0a0b;
+  color: #ededed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background-color: #1e3a36;
+  color: #ededed;
+}
+
+input,
+textarea,
+select {
+  background-color: transparent;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
