@@ -18,12 +18,12 @@ import { supabase } from "@/lib/supabase";
 import type { FlatScene, SceneStatus } from "@/lib/types";
 
 export function RodajeMode({
-  projectId,
-  projectName,
+  backHref,
+  backLabel,
   initialScenes,
 }: {
-  projectId: string;
-  projectName: string;
+  backHref: string;
+  backLabel: string;
   initialScenes: FlatScene[];
 }) {
   const [scenes, setScenes] = useState<FlatScene[]>(initialScenes);
@@ -68,10 +68,10 @@ export function RodajeMode({
           No hay escenas todavía en este proyecto.
         </p>
         <Link
-          href={`/project/${projectId}`}
+          href={backHref}
           className="rounded-md border border-border px-4 py-2 text-sm text-text-primary hover:border-border-strong"
         >
-          Volver al proyecto
+          Volver
         </Link>
       </div>
     );
@@ -85,11 +85,11 @@ export function RodajeMode({
       <div className="border-b border-border px-4 py-3">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <Link
-            href={`/project/${projectId}`}
+            href={backHref}
             className="inline-flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary"
           >
             <ChevronLeft size={14} />
-            {projectName}
+            {backLabel}
           </Link>
           <span className="font-mono text-xs text-text-secondary">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
@@ -118,7 +118,9 @@ export function RodajeMode({
           ) : (
             <>
               <p className="mb-1 font-mono text-[11px] uppercase tracking-wide text-text-secondary">
-                {current.blockTitle}
+                {current.projectName
+                  ? `${current.projectName} · ${current.blockTitle}`
+                  : current.blockTitle}
               </p>
               <p className="mb-6 text-2xl leading-snug text-text-primary">
                 {current.description || "Sin descripción."}
@@ -135,7 +137,7 @@ export function RodajeMode({
                   <MetaTag icon={<Move size={13} />} label={current.movement} />
                 )}
                 {current.location && (
-                  <MetaTag icon={<MapPin size={13} />} label={current.location} />
+                  <MetaTag icon={<MapPin size={13} />} label={current.location.name} />
                 )}
               </div>
 

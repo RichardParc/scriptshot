@@ -56,8 +56,9 @@ export interface VoiceOver {
 export const SCENE_STATUSES = ["pendiente", "grabada", "repetir"] as const;
 export type SceneStatus = (typeof SCENE_STATUSES)[number];
 
-export interface FlatScene extends Scene {
-  blockTitle: string;
+export interface Location {
+  id: string;
+  name: string;
 }
 
 export interface Scene {
@@ -69,13 +70,23 @@ export interface Scene {
   camera: string | null;
   angle: string | null;
   movement: string | null;
-  location: string | null;
+  location_id: string | null;
+  // Present only when fetched with the `location(name)` embed — not a
+  // real column, never send this back on an update.
+  location?: { id: string; name: string } | null;
   requirements: string[] | null;
   reference: string | null;
   post_production: boolean;
   post_production_notes: string | null;
   notes: string | null;
   status: SceneStatus;
+}
+
+export interface FlatScene extends Scene {
+  blockTitle: string;
+  // Only set in location-based RODAJE (Phase 5), where scenes come from
+  // multiple projects.
+  projectName?: string;
 }
 
 export const CAMERA_TYPES = [

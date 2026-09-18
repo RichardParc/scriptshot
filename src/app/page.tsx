@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ProjectCard } from "@/components/ProjectCard";
 import { LinkButton } from "@/components/ui/Button";
@@ -15,10 +15,16 @@ export default async function DashboardPage() {
     <main className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-xl font-medium text-text-primary">Scriptshot</h1>
-        <LinkButton href="/new" variant="primary">
-          <Plus size={16} />
-          Nuevo proyecto
-        </LinkButton>
+        <div className="flex items-center gap-2">
+          <LinkButton href="/locaciones" variant="secondary">
+            <MapPin size={16} />
+            Locaciones
+          </LinkButton>
+          <LinkButton href="/new" variant="primary">
+            <Plus size={16} />
+            Nuevo proyecto
+          </LinkButton>
+        </div>
       </div>
 
       {error && (

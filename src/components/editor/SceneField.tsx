@@ -10,6 +10,7 @@ import {
 } from "@/lib/types";
 import { PresetSelect } from "./PresetSelect";
 import { ChipMultiSelect } from "./ChipMultiSelect";
+import { LocationPicker } from "./LocationPicker";
 
 export function SceneField({
   scene,
@@ -29,7 +30,7 @@ export function SceneField({
     scene.camera,
     scene.angle,
     scene.movement,
-    scene.location,
+    scene.location?.name,
     scene.reference,
     scene.post_production ? "pp" : null,
   ].filter(Boolean).length + (scene.requirements?.length ?? 0);
@@ -85,19 +86,10 @@ export function SceneField({
             />
           </div>
 
-          <div>
-            <label className="mb-1 block font-mono text-[10px] text-text-secondary">
-              LOCACIÓN
-            </label>
-            <input
-              defaultValue={scene.location ?? ""}
-              onBlur={(e) =>
-                onUpdate({ location: e.target.value.trim() || null })
-              }
-              placeholder="¿Dónde se graba?"
-              className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-xs text-text-primary placeholder:text-text-disabled focus:border-accent"
-            />
-          </div>
+          <LocationPicker
+            initialLocationName={scene.location?.name ?? null}
+            onChange={(locationId) => onUpdate({ location_id: locationId })}
+          />
 
           <ChipMultiSelect
             label="NECESIDADES"
