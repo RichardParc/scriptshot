@@ -1,8 +1,7 @@
-# Scriptshot — Fase 1 + Fase 2
+# Scriptshot — Fase 1 + Fase 2 + Fase 3
 
-De la idea al rodaje. Fase 1: crear y listar proyectos, con persistencia real
-en Supabase. Fase 2: editor de historia — bloques de historia, voz en off y
-escenas.
+De la idea al rodaje. Fase 1: proyectos. Fase 2: editor de historia. Fase 3:
+metadata de producción por escena.
 
 ## Qué incluye
 
@@ -14,13 +13,20 @@ escenas.
 - Bloques de historia: crear, renombrar, eliminar, reordenar (↑↓)
 - Voz en off por bloque: texto + estado GRABADA/PENDIENTE, reordenable
 - Escenas por bloque: descripción de qué grabar, reordenable
-- Todo persiste en Supabase en tiempo real (autosave al perder foco / al
-  cambiar estado)
 
-Fuera de alcance a propósito: metadata de producción por escena (cámara,
-ángulo, movimiento, locación...) — eso es Fase 3. RODAJE, locaciones, IA,
-autenticación, colaboración — fases posteriores. Ver el prompt maestro del
-producto para el roadmap completo.
+**Fase 3**
+- Cada escena es expandible (colapsada por defecto) y agrega: cámara,
+  ángulo, movimiento (listas predefinidas + opción "Otro" personalizada),
+  locación (texto libre — la tabla dedicada de locaciones llega en Fase 5),
+  necesidades de producción (multi-selección: drone, GoPro, actor, etc.),
+  referencia (URL), postproducción (sí/no + notas), y notas generales
+
+Todo persiste en Supabase en tiempo real (autosave al perder foco / al
+cambiar estado).
+
+Fuera de alcance a propósito: RODAJE, locaciones como entidad propia, IA,
+autenticación, colaboración, subida de archivos de referencia. Ver el
+prompt maestro del producto para el roadmap completo.
 
 **Simplificación consciente sobre el prompt maestro:** el reordenamiento usa
 botones ↑↓ en vez de arrastrar y soltar (evita la dependencia de dnd-kit por
@@ -30,8 +36,8 @@ ahora). Se puede migrar a drag & drop real más adelante si hace falta.
 
 1. **Crear proyecto en Supabase**
    - Ve a [supabase.com](https://supabase.com) → New Project.
-   - En el SQL Editor, corre `supabase/schema.sql` primero, y luego
-     `supabase/phase2.sql`.
+   - En el SQL Editor, corre en orden: `supabase/schema.sql`,
+     `supabase/phase2.sql`, `supabase/phase3.sql`.
    - En Project Settings → Data API, copia el Project URL. En Project
      Settings → API Keys, copia la anon/publishable key.
 

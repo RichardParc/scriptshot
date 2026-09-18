@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
 import { ReorderArrows } from "./ReorderArrows";
+import { SceneField } from "./SceneField";
 
 export function StoryBlockSection({
   block,
@@ -33,7 +34,7 @@ export function StoryBlockSection({
   onDeleteVoiceOver: (id: string) => void;
   onMoveVoiceOver: (id: string, dir: "up" | "down") => void;
   onAddScene: () => void;
-  onUpdateScene: (id: string, description: string) => void;
+  onUpdateScene: (id: string, updates: Partial<Scene>) => void;
   onDeleteScene: (id: string) => void;
   onMoveScene: (id: string, dir: "up" | "down") => void;
 }) {
@@ -128,9 +129,7 @@ export function StoryBlockSection({
               <SceneField
                 scene={scene}
                 index={i + 1}
-                onUpdate={(description) =>
-                  onUpdateScene(scene.id, description)
-                }
+                onUpdate={(updates) => onUpdateScene(scene.id, updates)}
                 onDelete={() => onDeleteScene(scene.id)}
               />
             </div>
@@ -178,44 +177,6 @@ function VoiceOverField({
         >
           {vo.recorded ? "✓ GRABADA" : "PENDIENTE DE GRABAR"}
         </button>
-        <button
-          onClick={onDelete}
-          className="text-xs text-text-secondary hover:text-status-missing"
-        >
-          Eliminar
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function SceneField({
-  scene,
-  index,
-  onUpdate,
-  onDelete,
-}: {
-  scene: Scene;
-  index: number;
-  onUpdate: (description: string) => void;
-  onDelete: () => void;
-}) {
-  const [description, setDescription] = useState(scene.description);
-
-  return (
-    <div className="flex-1 rounded-sm border border-border bg-surface-2 p-3">
-      <div className="mb-1 font-mono text-[11px] text-text-secondary">
-        ESCENA {String(index).padStart(2, "0")}
-      </div>
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        onBlur={() => onUpdate(description)}
-        placeholder="¿Qué necesitas mostrar/grabar?"
-        rows={2}
-        className="w-full resize-none bg-transparent text-sm text-text-primary placeholder:text-text-disabled focus:outline-none"
-      />
-      <div className="mt-2 flex justify-end">
         <button
           onClick={onDelete}
           className="text-xs text-text-secondary hover:text-status-missing"

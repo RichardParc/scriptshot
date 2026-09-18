@@ -198,7 +198,7 @@ export function ProjectEditor({
   async function updateScene(
     blockId: string,
     id: string,
-    description: string
+    updates: Partial<Scene>
   ) {
     setBlocks((prev) =>
       prev.map((b) =>
@@ -206,13 +206,13 @@ export function ProjectEditor({
           ? {
               ...b,
               scene: b.scene.map((s) =>
-                s.id === id ? { ...s, description } : s
+                s.id === id ? { ...s, ...updates } : s
               ),
             }
           : b
       )
     );
-    await supabase.from("scene").update({ description }).eq("id", id);
+    await supabase.from("scene").update(updates).eq("id", id);
   }
 
   async function deleteScene(blockId: string, id: string) {
@@ -276,9 +276,7 @@ export function ProjectEditor({
           onDeleteVoiceOver={(id) => deleteVoiceOver(block.id, id)}
           onMoveVoiceOver={(id, dir) => moveVoiceOver(block.id, id, dir)}
           onAddScene={() => addScene(block.id)}
-          onUpdateScene={(id, description) =>
-            updateScene(block.id, id, description)
-          }
+          onUpdateScene={(id, updates) => updateScene(block.id, id, updates)}
           onDeleteScene={(id) => deleteScene(block.id, id)}
           onMoveScene={(id, dir) => moveScene(block.id, id, dir)}
         />

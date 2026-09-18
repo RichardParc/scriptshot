@@ -59,7 +59,64 @@ export interface Scene {
   voice_over_id: string | null;
   description: string;
   order: number;
+  camera: string | null;
+  angle: string | null;
+  movement: string | null;
+  location: string | null;
+  requirements: string[] | null;
+  reference: string | null;
+  post_production: boolean;
+  post_production_notes: string | null;
+  notes: string | null;
 }
+
+export const CAMERA_TYPES = [
+  "General",
+  "Lejano",
+  "Medio",
+  "Cercano",
+  "Close-up",
+  "Detalle",
+  "POV",
+  "Selfie",
+  "Drone",
+  "Seguimiento",
+  "Movimiento",
+  "Plano fijo",
+] as const;
+
+export const CAMERA_ANGLES = [
+  "Frontal",
+  "Lateral",
+  "Trasero",
+  "Cenital",
+  "Contrapicado",
+  "Picado",
+  "Subjetivo",
+] as const;
+
+export const CAMERA_MOVEMENTS = [
+  "Fijo",
+  "Pan",
+  "Tilt",
+  "Travelling",
+  "Seguimiento",
+  "Handheld",
+  "Drone",
+] as const;
+
+export const SCENE_REQUIREMENTS = [
+  "Drone",
+  "Cámara submarina",
+  "GoPro",
+  "Trípode",
+  "Micrófono",
+  "Actor",
+  "Animal",
+  "Luz",
+  "Vehículo",
+  "Props",
+] as const;
 
 export interface StoryBlock {
   id: string;
