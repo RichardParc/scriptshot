@@ -48,7 +48,7 @@ export function RodajeMode({
       s.id === current.id ? { ...s, status } : s
     );
     setScenes(updated);
-    supabase.from("scene").update({ status }).eq("id", current.id);
+    await supabase.from("scene").update({ status }).eq("id", current.id);
 
     if (advance) {
       const nextPending = updated.findIndex(
