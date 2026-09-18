@@ -13,6 +13,7 @@ import {
   MapPin,
   Link as LinkIcon,
   Wand2,
+  AlertCircle,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { FlatScene, SceneStatus } from "@/lib/types";
@@ -41,14 +42,24 @@ export function RodajeMode({
     [scenes]
   );
   const current = scenes[index];
+  const [error, setError] = useState<string | null>(null);
 
   async function setStatus(status: SceneStatus, advance: boolean) {
     if (!current) return;
+    const { error } = await supabase
+      .from("scene")
+      .update({ status })
+      .eq("id", current.id);
+
+    if (error) {
+      setError("No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.");
+      return;
+    }
+
     const updated = scenes.map((s) =>
       s.id === current.id ? { ...s, status } : s
     );
     setScenes(updated);
-    await supabase.from("scene").update({ status }).eq("id", current.id);
 
     if (advance) {
       const nextPending = updated.findIndex(
@@ -103,6 +114,21 @@ export function RodajeMode({
           />
         </div>
       </div>
+
+      {error && (
+        <div className="flex items-center justify-between gap-3 border-b border-status-missing/40 bg-status-missing/10 px-4 py-2">
+          <div className="flex items-center gap-2 text-xs text-status-missing">
+            <AlertCircle size={14} />
+            {error}
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="text-xs text-status-missing hover:opacity-70"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Scene content */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
