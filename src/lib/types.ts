@@ -53,6 +53,13 @@ export interface VoiceOver {
   order: number;
 }
 
+export const SCENE_STATUSES = ["pendiente", "grabada", "repetir"] as const;
+export type SceneStatus = (typeof SCENE_STATUSES)[number];
+
+export interface FlatScene extends Scene {
+  blockTitle: string;
+}
+
 export interface Scene {
   id: string;
   story_block_id: string;
@@ -68,6 +75,7 @@ export interface Scene {
   post_production: boolean;
   post_production_notes: string | null;
   notes: string | null;
+  status: SceneStatus;
 }
 
 export const CAMERA_TYPES = [

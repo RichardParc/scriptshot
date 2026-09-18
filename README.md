@@ -1,43 +1,45 @@
-# Scriptshot — Fase 1 + Fase 2 + Fase 3
+# Scriptshot — Fase 1 a 4
 
 De la idea al rodaje. Fase 1: proyectos. Fase 2: editor de historia. Fase 3:
-metadata de producción por escena.
+metadata de producción por escena. Fase 4: RODAJE (modo de grabación).
 
 ## Qué incluye
 
 **Fase 1**
 - Dashboard con lista de proyectos, crear/eliminar proyecto
-- Sistema visual oscuro base
 
 **Fase 2**
-- Bloques de historia: crear, renombrar, eliminar, reordenar (↑↓)
-- Voz en off por bloque: texto + estado GRABADA/PENDIENTE, reordenable
-- Escenas por bloque: descripción de qué grabar, reordenable
+- Bloques de historia, voz en off, escenas — crear, editar, reordenar
 
 **Fase 3**
-- Cada escena es expandible (colapsada por defecto) y agrega: cámara,
-  ángulo, movimiento (listas predefinidas + opción "Otro" personalizada),
-  locación (texto libre — la tabla dedicada de locaciones llega en Fase 5),
-  necesidades de producción (multi-selección: drone, GoPro, actor, etc.),
-  referencia (URL), postproducción (sí/no + notas), y notas generales
+- Metadata de producción por escena (cámara, ángulo, movimiento, locación,
+  necesidades, referencia, postproducción, notas)
 
-Todo persiste en Supabase en tiempo real (autosave al perder foco / al
-cambiar estado).
+**Fase 4 — RODAJE**
+- Ruta `/project/[id]/rodaje`: modo pantalla completa, una escena a la vez
+- Contador de progreso (ej. 04/18) y barra de avance
+- Cada escena muestra su descripción y toda su metadata de producción
+- Botones grandes: ← Anterior / Siguiente →, GRABADA, REPETIR
+- Marcar GRABADA avanza automáticamente a la siguiente escena pendiente
+- Diseñado mobile-first: una escena por pantalla, texto y controles grandes
 
-Fuera de alcance a propósito: RODAJE, locaciones como entidad propia, IA,
-autenticación, colaboración, subida de archivos de referencia. Ver el
-prompt maestro del producto para el roadmap completo.
+Todo persiste en Supabase en tiempo real.
 
-**Simplificación consciente sobre el prompt maestro:** el reordenamiento usa
-botones ↑↓ en vez de arrastrar y soltar (evita la dependencia de dnd-kit por
-ahora). Se puede migrar a drag & drop real más adelante si hace falta.
+Fuera de alcance a propósito: RODAJE global por locación (Fase 5), tomas de
+oportunidad (Fase 7), cálculo automático de estado del proyecto (Fase 6),
+IA, autenticación, colaboración. Ver el prompt maestro del producto para el
+roadmap completo.
+
+**Simplificación consciente sobre el prompt maestro:** el reordenamiento
+del editor usa botones ↑↓ en vez de arrastrar y soltar (evita la
+dependencia de dnd-kit por ahora).
 
 ## Setup
 
 1. **Crear proyecto en Supabase**
    - Ve a [supabase.com](https://supabase.com) → New Project.
    - En el SQL Editor, corre en orden: `supabase/schema.sql`,
-     `supabase/phase2.sql`, `supabase/phase3.sql`.
+     `supabase/phase2.sql`, `supabase/phase3.sql`, `supabase/phase4.sql`.
    - En Project Settings → Data API, copia el Project URL. En Project
      Settings → API Keys, copia la anon/publishable key.
 

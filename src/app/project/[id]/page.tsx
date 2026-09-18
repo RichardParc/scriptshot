@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import { Clapperboard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { StatusBadge } from "@/components/StatusBadge";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
 import { ProjectEditor } from "@/components/editor/ProjectEditor";
 import { BackLink } from "@/components/ui/BackLink";
+import { LinkButton } from "@/components/ui/Button";
 import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -54,10 +56,19 @@ export default async function ProjectPage({
       </div>
 
       {project.idea && (
-        <p className="mb-10 max-w-xl text-sm leading-relaxed text-text-secondary">
+        <p className="mb-6 max-w-xl text-sm leading-relaxed text-text-secondary">
           {project.idea}
         </p>
       )}
+
+      <LinkButton
+        href={`/project/${project.id}/rodaje`}
+        variant="primary"
+        className="mb-10"
+      >
+        <Clapperboard size={16} />
+        Ir a RODAJE
+      </LinkButton>
 
       <ProjectEditor
         projectId={project.id}
