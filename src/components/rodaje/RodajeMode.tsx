@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { FlatScene, SceneStatus } from "@/lib/types";
+import { SceneStatusPill } from "@/components/SceneStatusPill";
 
 export function RodajeMode({
   backHref,
@@ -117,11 +118,14 @@ export function RodajeMode({
             </div>
           ) : (
             <>
-              <p className="mb-1 font-mono text-[11px] uppercase tracking-wide text-text-secondary">
-                {current.projectName
-                  ? `${current.projectName} · ${current.blockTitle}`
-                  : current.blockTitle}
-              </p>
+              <div className="mb-1 flex items-center justify-between gap-3">
+                <p className="font-mono text-[11px] uppercase tracking-wide text-text-secondary">
+                  {current.projectName
+                    ? `${current.projectName} · ${current.blockTitle}`
+                    : current.blockTitle}
+                </p>
+                <SceneStatusPill status={current.status} />
+              </div>
               <p className="mb-6 text-2xl leading-snug text-text-primary">
                 {current.description || "Sin descripción."}
               </p>
@@ -205,7 +209,11 @@ export function RodajeMode({
 
           <button
             onClick={() => setStatus("repetir", false)}
-            className="flex flex-1 items-center justify-center gap-2 rounded-md border border-status-shooting px-4 py-4 text-sm font-medium text-status-shooting hover:bg-status-shooting/10"
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-4 py-4 text-sm font-medium transition-colors ${
+              current.status === "repetir"
+                ? "border-status-shooting bg-status-shooting/20 text-status-shooting"
+                : "border-status-shooting text-status-shooting hover:bg-status-shooting/10"
+            }`}
           >
             <RotateCcw size={18} />
             REPETIR
@@ -213,7 +221,11 @@ export function RodajeMode({
 
           <button
             onClick={() => setStatus("grabada", true)}
-            className="flex flex-1 items-center justify-center gap-2 rounded-md border border-accent bg-accent-muted px-4 py-4 text-sm font-medium text-accent hover:bg-accent hover:text-base"
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-4 py-4 text-sm font-medium transition-colors ${
+              current.status === "grabada"
+                ? "border-accent bg-accent text-base"
+                : "border-accent bg-accent-muted text-accent hover:bg-accent hover:text-base"
+            }`}
           >
             <Check size={18} />
             GRABADA
@@ -228,6 +240,9 @@ export function RodajeMode({
             <ChevronRight size={22} />
           </button>
         </div>
+        <p className="mx-auto mt-2 max-w-2xl text-center text-[11px] text-text-disabled">
+          GRABADA: ya la tienes. REPETIR: quedó mal, hay que volver a grabarla.
+        </p>
       </div>
     </div>
   );

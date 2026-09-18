@@ -11,6 +11,7 @@ import {
 import { PresetSelect } from "./PresetSelect";
 import { ChipMultiSelect } from "./ChipMultiSelect";
 import { LocationPicker } from "./LocationPicker";
+import { SceneStatusPill } from "@/components/SceneStatusPill";
 
 export function SceneField({
   scene,
@@ -38,9 +39,12 @@ export function SceneField({
   return (
     <div className="flex-1 rounded-sm border border-border bg-surface-2 p-3">
       <div className="mb-1 flex items-center justify-between">
-        <span className="font-mono text-[11px] text-text-secondary">
-          ESCENA {String(index).padStart(2, "0")}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[11px] text-text-secondary">
+            ESCENA {String(index).padStart(2, "0")}
+          </span>
+          <SceneStatusPill status={scene.status} />
+        </div>
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
