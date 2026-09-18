@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import {
   PROJECT_DURATIONS,
@@ -10,6 +9,8 @@ import {
   type ProjectDuration,
   type ProjectFormat,
 } from "@/lib/types";
+import { BackLink } from "@/components/ui/BackLink";
+import { Button } from "@/components/ui/Button";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -55,14 +56,9 @@ export default function NewProjectPage() {
 
   return (
     <main className="mx-auto max-w-lg px-6 py-16">
-      <Link
-        href="/"
-        className="mb-8 inline-block text-sm text-text-secondary hover:text-text-primary"
-      >
-        ← Volver
-      </Link>
+      <BackLink href="/" label="Volver" />
 
-      <h1 className="mb-8 text-xl font-medium text-text-primary">
+      <h1 className="mb-8 mt-6 text-xl font-medium text-text-primary">
         Nuevo proyecto
       </h1>
 
@@ -131,13 +127,9 @@ export default function NewProjectPage() {
 
         {error && <p className="text-sm text-status-missing">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="self-start rounded-sm border border-accent bg-accent-muted px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-base disabled:opacity-50"
-        >
+        <Button type="submit" variant="primary" disabled={submitting} className="self-start">
           {submitting ? "Creando…" : "Crear proyecto"}
-        </button>
+        </Button>
       </form>
     </main>
   );

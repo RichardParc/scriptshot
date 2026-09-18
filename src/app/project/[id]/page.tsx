@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { StatusBadge } from "@/components/StatusBadge";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
 import { ProjectEditor } from "@/components/editor/ProjectEditor";
+import { BackLink } from "@/components/ui/BackLink";
 import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -36,12 +36,7 @@ export default async function ProjectPage({
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <div className="mb-8 flex items-start justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-block text-sm text-text-secondary hover:text-text-primary"
-        >
-          ← Todos los proyectos
-        </Link>
+        <BackLink href="/" label="Todos los proyectos" />
         <DeleteProjectButton projectId={project.id} projectName={project.name} />
       </div>
 

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/Button";
 
 export function DeleteProjectButton({
   projectId,
@@ -41,13 +43,10 @@ export function DeleteProjectButton({
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <button
-        onClick={handleDelete}
-        disabled={deleting}
-        className="rounded-sm border border-border px-3 py-1.5 text-xs text-status-missing transition-colors hover:border-status-missing disabled:opacity-50"
-      >
+      <Button variant="danger" onClick={handleDelete} disabled={deleting}>
+        <Trash2 size={15} />
         {deleting ? "Eliminando…" : "Eliminar proyecto"}
-      </button>
+      </Button>
       {error && <p className="text-xs text-status-missing">{error}</p>}
     </div>
   );
