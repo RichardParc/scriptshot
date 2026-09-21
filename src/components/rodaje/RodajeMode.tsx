@@ -135,14 +135,43 @@ export function RodajeMode({
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <div className="mx-auto max-w-2xl">
           {allDone ? (
-            <div className="flex flex-col items-center gap-2 py-20 text-center">
-              <p className="text-xl font-medium text-accent">
-                RODAJE COMPLETADO
-              </p>
-              <p className="text-base text-text-secondary">
-                Todas las escenas están grabadas.
-              </p>
-            </div>
+            <>
+              <div className="mb-6 flex flex-col items-center gap-1 py-6 text-center">
+                <p className="text-xl font-medium text-accent">
+                  RODAJE COMPLETADO
+                </p>
+                <p className="text-base text-text-secondary">
+                  Todas las escenas están grabadas. Repaso rápido abajo — toca
+                  una escena para volver a verla.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {scenes.map((s, i) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setIndex(i)}
+                    className={`rounded-md border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                      i === index
+                        ? "border-accent bg-accent-muted"
+                        : "border-border hover:border-border-strong"
+                    }`}
+                  >
+                    <div className="mb-1 flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-text-secondary">
+                        {String(i + 1).padStart(2, "0")}
+                        {s.projectName ? ` · ${s.projectName}` : ""} ·{" "}
+                        {s.blockTitle}
+                      </span>
+                      <SceneStatusPill status={s.status} />
+                    </div>
+                    <p className="line-clamp-2 text-sm text-text-primary">
+                      {s.description || "Sin descripción."}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </>
           ) : (
             <>
               <div className="mb-1 flex items-center justify-between gap-3">

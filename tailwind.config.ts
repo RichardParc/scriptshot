@@ -8,8 +8,8 @@ const config: Config = {
         base: "#0A0A0B",
         surface: "#141416",
         "surface-2": "#1B1B1E",
-        border: "#45454C",
-        "border-strong": "#626268",
+        border: "#28282C",
+        "border-strong": "#4A4A52",
         text: {
           primary: "#EDEDED",
           secondary: "#9A9A9E",
