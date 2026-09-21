@@ -21,7 +21,7 @@ const TEXT: Record<SceneStatus, string> = {
 export function SceneStatusPill({ status }: { status: SceneStatus }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wide ${TEXT[status]}`}
+      className={`inline-flex items-center gap-1.5 font-mono text-xs tracking-wide ${TEXT[status]}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${COLOR[status]}`} />
       {LABEL[status]}

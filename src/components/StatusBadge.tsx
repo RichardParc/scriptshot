@@ -9,7 +9,7 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   listo_para_editar: "LISTO PARA EDITAR",
 };
 
-const STATUS_COLOR: Record<ProjectStatus, string> = {
+export const STATUS_COLOR: Record<ProjectStatus, string> = {
   idea: "bg-status-idea",
   en_planificacion: "bg-status-planning",
   listo_para_rodaje: "bg-status-ready",
@@ -20,7 +20,7 @@ const STATUS_COLOR: Record<ProjectStatus, string> = {
 
 export function StatusBadge({ status }: { status: ProjectStatus }) {
   return (
-    <span className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-text-secondary">
+    <span className="inline-flex items-center gap-1.5 font-mono text-xs tracking-wide text-text-secondary">
       <span className={`h-1.5 w-1.5 rounded-full ${STATUS_COLOR[status]}`} />
       {STATUS_LABEL[status]}
     </span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Location } from "@/lib/types";
 
@@ -13,6 +13,8 @@ export function LocationPicker({
 }) {
   const [query, setQuery] = useState(initialLocationName ?? "");
   const [options, setOptions] = useState<Location[]>([]);
+  const inputId = useId();
+  const listId = `${inputId}-options`;
 
   useEffect(() => {
     supabase
@@ -54,18 +56,19 @@ export function LocationPicker({
 
   return (
     <div>
-      <label className="mb-1 block font-mono text-[10px] text-text-secondary">
+      <label htmlFor={inputId} className="mb-1 block font-mono text-xs text-text-secondary">
         LOCACIÓN
       </label>
       <input
-        list="location-options"
+        id={inputId}
+        list={listId}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onBlur={commit}
         placeholder="¿Dónde se graba?"
-        className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-xs text-text-primary placeholder:text-text-disabled focus:border-accent"
+        className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       />
-      <datalist id="location-options">
+      <datalist id={listId}>
         {options.map((o) => (
           <option key={o.id} value={o.name} />
         ))}

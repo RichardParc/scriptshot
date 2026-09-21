@@ -1,14 +1,29 @@
 import { notFound } from "next/navigation";
 import { Clapperboard } from "lucide-react";
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
-import { StatusBadge } from "@/components/StatusBadge";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
 import { ProjectEditor } from "@/components/editor/ProjectEditor";
+import { ProjectHeader } from "@/components/ProjectHeader";
 import { BackLink } from "@/components/ui/BackLink";
 import { LinkButton } from "@/components/ui/Button";
 import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const { data } = await supabase
+    .from("project")
+    .select("name")
+    .eq("id", id)
+    .single();
+  return { title: data ? `${data.name} — Scriptshot` : "Scriptshot" };
+}
 
 export default async function ProjectPage({
   params,
@@ -42,24 +57,7 @@ export default async function ProjectPage({
         <DeleteProjectButton projectId={project.id} projectName={project.name} />
       </div>
 
-      <div className="mb-2 flex items-center gap-3">
-        <h1 className="text-xl font-medium text-text-primary">
-          {project.name}
-        </h1>
-        <StatusBadge status={project.status} />
-      </div>
-
-      <div className="mb-8 flex items-center gap-2 font-mono text-xs text-text-secondary">
-        <span>{project.format}</span>
-        <span className="text-border-strong">·</span>
-        <span>{project.duration}</span>
-      </div>
-
-      {project.idea && (
-        <p className="mb-6 max-w-xl text-sm leading-relaxed text-text-secondary">
-          {project.idea}
-        </p>
-      )}
+      <ProjectHeader initialProject={project} />
 
       <LinkButton
         href={`/project/${project.id}/rodaje`}

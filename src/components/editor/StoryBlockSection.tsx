@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Trash2 } from "lucide-react";
 import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
 import { ReorderArrows } from "./ReorderArrows";
 import { SceneField } from "./SceneField";
+import { Button } from "@/components/ui/Button";
 
 export function StoryBlockSection({
   block,
@@ -44,7 +46,7 @@ export function StoryBlockSection({
   const sortedScenes = [...block.scene].sort((a, b) => a.order - b.order);
 
   return (
-    <section className="rounded-md border border-border bg-surface p-5">
+    <section className="rounded-md border border-border bg-surface p-6">
       <div className="mb-4 flex items-start gap-3">
         <ReorderArrows
           onUp={() => onMove("up")}
@@ -56,25 +58,24 @@ export function StoryBlockSection({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && onRename(title.trim())}
-          className="flex-1 bg-transparent text-base font-medium text-text-primary focus:outline-none"
+          aria-label="Título del bloque"
+          className="flex-1 rounded-sm bg-transparent text-lg font-medium text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         />
-        <button
-          onClick={onDelete}
-          className="text-xs text-text-secondary hover:text-status-missing"
-        >
+        <Button variant="danger" size="sm" onClick={onDelete}>
+          <Trash2 size={13} />
           Eliminar bloque
-        </button>
+        </Button>
       </div>
 
       {/* Voice-over */}
       <div className="mb-4 pl-6">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-[11px] text-text-secondary">
+          <span className="font-mono text-xs text-text-secondary">
             VOZ EN OFF
           </span>
           <button
             onClick={onAddVoiceOver}
-            className="text-xs text-accent hover:text-accent-hover"
+            className="rounded-sm text-sm text-accent hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             + Voz en off
           </button>
@@ -97,7 +98,7 @@ export function StoryBlockSection({
             </div>
           ))}
           {sortedVO.length === 0 && (
-            <p className="text-xs text-text-disabled">
+            <p className="text-sm text-text-disabled">
               Sin voz en off en este bloque.
             </p>
           )}
@@ -107,12 +108,12 @@ export function StoryBlockSection({
       {/* Scenes */}
       <div className="pl-6">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-[11px] text-text-secondary">
+          <span className="font-mono text-xs text-text-secondary">
             ESCENAS
           </span>
           <button
             onClick={onAddScene}
-            className="text-xs text-accent hover:text-accent-hover"
+            className="rounded-sm text-sm text-accent hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             + Escena
           </button>
@@ -135,7 +136,7 @@ export function StoryBlockSection({
             </div>
           ))}
           {sortedScenes.length === 0 && (
-            <p className="text-xs text-text-disabled">
+            <p className="text-sm text-text-disabled">
               Sin escenas en este bloque.
             </p>
           )}
@@ -165,24 +166,24 @@ function VoiceOverField({
         onChange={(e) => setText(e.target.value)}
         onBlur={() => onUpdate(text)}
         placeholder="¿Qué necesitas decir?"
+        aria-label="Texto de voz en off"
         rows={2}
-        className="w-full resize-none bg-transparent text-sm text-text-primary placeholder:text-text-disabled focus:outline-none"
+        className="w-full resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       />
       <div className="mt-2 flex items-center justify-between">
         <button
           onClick={onToggleRecorded}
-          className={`font-mono text-[11px] ${
+          aria-pressed={vo.recorded}
+          className={`rounded-sm font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
             vo.recorded ? "text-accent" : "text-text-secondary"
           }`}
         >
           {vo.recorded ? "✓ GRABADA" : "PENDIENTE DE GRABAR"}
         </button>
-        <button
-          onClick={onDelete}
-          className="text-xs text-text-secondary hover:text-status-missing"
-        >
+        <Button variant="ghost" size="sm" onClick={onDelete} className="px-2 py-1">
+          <Trash2 size={13} />
           Eliminar
-        </button>
+        </Button>
       </div>
     </div>
   );

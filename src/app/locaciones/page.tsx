@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { MapPin, Clapperboard } from "lucide-react";
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import { BackLink } from "@/components/ui/BackLink";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Locaciones — Scriptshot" };
 
 interface PendingSceneRow {
   status: string;
@@ -46,18 +48,18 @@ export default async function LocationsPage() {
     <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
       <BackLink href="/" label="Todos los proyectos" />
 
-      <h1 className="mb-8 mt-6 text-xl font-medium text-text-primary">
+      <h1 className="mb-8 mt-6 text-2xl font-medium text-text-primary">
         Locaciones
       </h1>
 
       {error && (
-        <p className="rounded-md border border-status-missing/40 bg-surface p-4 text-sm text-status-missing">
+        <p className="rounded-md border border-status-missing/40 bg-surface p-4 text-base text-status-missing">
           No se pudieron cargar las locaciones: {error.message}
         </p>
       )}
 
       {!error && locations.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border py-16 text-center text-sm text-text-secondary">
+        <div className="rounded-lg border border-dashed border-border py-16 text-center text-base text-text-secondary">
           No hay tomas pendientes con locación asignada todavía.
         </div>
       )}
@@ -67,16 +69,16 @@ export default async function LocationsPage() {
           <Link
             key={loc.id}
             href={`/locaciones/${loc.id}`}
-            className="flex items-center justify-between rounded-md border border-border bg-surface p-5 transition-colors hover:border-border-strong"
+            className="flex items-center justify-between rounded-md border border-border bg-surface p-6 transition-colors hover:border-border-strong"
           >
             <div>
               <div className="mb-1 flex items-center gap-2">
                 <MapPin size={15} className="text-accent" />
-                <span className="text-base font-medium text-text-primary">
+                <span className="text-lg font-medium text-text-primary">
                   {loc.name}
                 </span>
               </div>
-              <p className="font-mono text-[11px] text-text-secondary">
+              <p className="font-mono text-xs text-text-secondary">
                 {loc.projectIds.size}{" "}
                 {loc.projectIds.size === 1 ? "proyecto" : "proyectos"} ·{" "}
                 {loc.pending} {loc.pending === 1 ? "toma pendiente" : "tomas pendientes"}

@@ -1,9 +1,26 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import { RodajeMode } from "@/components/rodaje/RodajeMode";
 import type { FlatScene, Scene, StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const { data } = await supabase
+    .from("project")
+    .select("name")
+    .eq("id", id)
+    .single();
+  return {
+    title: data ? `RODAJE · ${data.name} — Scriptshot` : "Scriptshot",
+  };
+}
 
 export default async function RodajePage({
   params,

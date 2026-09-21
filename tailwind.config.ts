@@ -8,17 +8,22 @@ const config: Config = {
         base: "#0A0A0B",
         surface: "#141416",
         "surface-2": "#1B1B1E",
-        border: "#232326",
-        "border-strong": "#2E2E32",
+        border: "#45454C",
+        "border-strong": "#626268",
         text: {
           primary: "#EDEDED",
           secondary: "#9A9A9E",
-          disabled: "#5C5C60",
+          disabled: "#828288",
         },
         accent: {
           DEFAULT: "#3DB8A6",
           hover: "#4FCBB8",
           muted: "#1E3A36",
+          // Text color for content placed ON a filled accent background
+          // (buttons, active states). Deliberately not named the same as
+          // the `base` background color, to avoid colliding with
+          // Tailwind's `text-base` font-size utility.
+          ink: "#0A0A0B",
         },
         status: {
           idea: "#9A9A9E",
