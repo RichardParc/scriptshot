@@ -16,14 +16,16 @@ const config: Config = {
           disabled: "#828288",
         },
         accent: {
-          DEFAULT: "#3DB8A6",
-          hover: "#4FCBB8",
-          muted: "#1E3A36",
+          DEFAULT: "#4052D6",
+          hover: "#6675DE",
+          muted: "#181C3E",
           // Text color for content placed ON a filled accent background
           // (buttons, active states). Deliberately not named the same as
           // the `base` background color, to avoid colliding with
           // Tailwind's `text-base` font-size utility.
-          ink: "#0A0A0B",
+          // Light here (not dark) because this accent is a saturated,
+          // fairly dark blue — needs light text on top for contrast.
+          ink: "#F5F5F7",
         },
         status: {
           idea: "#9A9A9E",
