@@ -6,6 +6,7 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   listo_para_rodaje: "LISTO PARA RODAJE",
   en_rodaje: "EN RODAJE",
   faltan_tomas: "FALTAN TOMAS",
+  falta_voz_en_off: "FALTA VOZ EN OFF",
   listo_para_editar: "LISTO PARA EDITAR",
 };
 
@@ -15,6 +16,7 @@ export const STATUS_COLOR: Record<ProjectStatus, string> = {
   listo_para_rodaje: "bg-status-ready",
   en_rodaje: "bg-status-shooting",
   faltan_tomas: "bg-status-missing",
+  falta_voz_en_off: "bg-status-voiceover",
   listo_para_editar: "bg-status-edit",
 };
 

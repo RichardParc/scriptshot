@@ -10,14 +10,21 @@ import {
   type ProjectDuration,
   type ProjectFormat,
 } from "@/lib/types";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge, STATUS_COLOR } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import type { ProjectSummary } from "@/lib/status";
 
 const FORMAT_OPTIONS = PROJECT_FORMATS.map((f) => ({ value: f, label: f }));
 const DURATION_OPTIONS = PROJECT_DURATIONS.map((d) => ({ value: d, label: d }));
 
-export function ProjectHeader({ initialProject }: { initialProject: Project }) {
+export function ProjectHeader({
+  initialProject,
+  summary,
+}: {
+  initialProject: Project;
+  summary: ProjectSummary;
+}) {
   const [project, setProject] = useState(initialProject);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -73,7 +80,7 @@ export function ProjectHeader({ initialProject }: { initialProject: Project }) {
           <h1 className="text-2xl font-medium text-text-primary">
             {project.name}
           </h1>
-          <StatusBadge status={project.status} />
+          <StatusBadge status={summary.status} />
           <button
             onClick={startEdit}
             className="ml-auto flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-sm"
@@ -90,9 +97,33 @@ export function ProjectHeader({ initialProject }: { initialProject: Project }) {
         </div>
 
         {project.idea && (
-          <p className="max-w-xl text-base leading-relaxed text-text-secondary">
+          <p className="mb-4 max-w-xl text-base leading-relaxed text-text-secondary">
             {project.idea}
           </p>
+        )}
+
+        {summary.totalScenes > 0 && (
+          <div className="max-w-xs">
+            <div className="mb-1 flex items-center justify-between font-mono text-xs text-text-secondary">
+              <span>
+                {summary.recordedScenes}/{summary.totalScenes} tomas
+              </span>
+              <span>
+                {Math.round(
+                  (summary.recordedScenes / summary.totalScenes) * 100
+                )}
+                %
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
+              <div
+                className={`h-full ${STATUS_COLOR[summary.status]}`}
+                style={{
+                  width: `${(summary.recordedScenes / summary.totalScenes) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
     );

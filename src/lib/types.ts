@@ -20,14 +20,15 @@ export const PROJECT_DURATIONS = [
 
 export type ProjectDuration = (typeof PROJECT_DURATIONS)[number];
 
-// Manual for Phase 1. Becomes computed (per section 34/35 of the product
-// spec) once story/voice-over/scenes exist in Phase 2+.
+// Computed by lib/status.ts as of Phase 6 — never set by hand outside of
+// project creation's initial default. See computeProjectStatus.
 export const PROJECT_STATUSES = [
   "idea",
   "en_planificacion",
   "listo_para_rodaje",
   "en_rodaje",
   "faltan_tomas",
+  "falta_voz_en_off",
   "listo_para_editar",
 ] as const;
 

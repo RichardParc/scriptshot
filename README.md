@@ -1,10 +1,22 @@
-# Scriptshot — Fase 1 a 5
+# Scriptshot — Fase 1 a 6
 
 De la idea al rodaje. Fase 1: proyectos. Fase 2: editor de historia. Fase 3:
 metadata de producción por escena. Fase 4: RODAJE por proyecto. Fase 5:
-RODAJE global por locación.
+RODAJE global por locación. Fase 6: estado automático del proyecto.
 
 ## Qué incluye
+
+**Fase 6 — Estado automático**
+- El estado del proyecto (IDEA, EN PLANIFICACIÓN, LISTO PARA RODAJE, EN
+  RODAJE, FALTAN TOMAS, FALTA VOZ EN OFF, LISTO PARA EDITAR) ya no se guarda
+  manualmente — se calcula en `src/lib/status.ts` a partir de las escenas y
+  la voz en off reales, cada vez que se muestra
+- El progreso ("18/24 tomas", con barra) aparece en el dashboard y en la
+  página del proyecto
+- La columna `status` de la tabla `project` sigue existiendo (se usa como
+  valor inicial al crear un proyecto) pero ya no se lee en ningún otro
+  lado — toda la UI confía en el cálculo, no en ese campo
+
 
 **Fase 1** — Dashboard con lista de proyectos, crear/eliminar proyecto
 

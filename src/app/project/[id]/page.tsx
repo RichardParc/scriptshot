@@ -7,6 +7,7 @@ import { ProjectEditor } from "@/components/editor/ProjectEditor";
 import { ProjectHeader } from "@/components/ProjectHeader";
 import { BackLink } from "@/components/ui/BackLink";
 import { LinkButton } from "@/components/ui/Button";
+import { computeProjectSummary } from "@/lib/status";
 import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -57,7 +58,10 @@ export default async function ProjectPage({
         <DeleteProjectButton projectId={project.id} projectName={project.name} />
       </div>
 
-      <ProjectHeader initialProject={project} />
+      <ProjectHeader
+        initialProject={project}
+        summary={computeProjectSummary((blocks ?? []) as StoryBlock[])}
+      />
 
       <LinkButton
         href={`/project/${project.id}/rodaje`}

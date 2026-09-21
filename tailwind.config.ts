@@ -31,6 +31,7 @@ const config: Config = {
           ready: "#3DB8A6",
           shooting: "#E0B84D",
           missing: "#D96C5F",
+          voiceover: "#9B7FD4",
           edit: "#3DB8A6",
         },
       },
