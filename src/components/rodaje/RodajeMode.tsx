@@ -116,15 +116,24 @@ export function RodajeMode({
       </div>
 
       {error && (
+<<<<<<< HEAD
         <div role="alert" className="flex items-center justify-between gap-3 border-b border-status-missing/40 bg-status-missing/10 px-4 py-2">
           <div className="flex items-center gap-2 text-sm text-status-missing">
+=======
+        <div className="flex items-center justify-between gap-3 border-b border-status-missing/40 bg-status-missing/10 px-4 py-2">
+          <div className="flex items-center gap-2 text-xs text-status-missing">
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
             <AlertCircle size={14} />
             {error}
           </div>
           <button
             onClick={() => setError(null)}
+<<<<<<< HEAD
             aria-label="Cerrar aviso"
             className="rounded-sm text-sm text-status-missing hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+=======
+            className="text-xs text-status-missing hover:opacity-70"
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
           >
             ✕
           </button>

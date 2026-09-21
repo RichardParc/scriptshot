@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
+<<<<<<< HEAD
 import { AlertCircle, Loader2, X } from "lucide-react";
+=======
+import { AlertCircle, X } from "lucide-react";
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
 import { supabase } from "@/lib/supabase";
 import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
@@ -40,8 +44,11 @@ export function ProjectEditor({
     [...initialBlocks].sort((a, b) => a.order - b.order)
   );
   const [error, setError] = useState<string | null>(null);
+<<<<<<< HEAD
   const [saving, setSaving] = useState(false);
   const { confirm, ConfirmModal } = useConfirm();
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
 
   async function addBlock() {
     setSaving(true);
@@ -51,7 +58,10 @@ export function ProjectEditor({
       .insert({ project_id: projectId, title: "Nuevo bloque", order })
       .select("*")
       .single();
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -63,12 +73,18 @@ export function ProjectEditor({
   }
 
   async function renameBlock(id: string, title: string) {
+<<<<<<< HEAD
     setSaving(true);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     const { error } = await supabase
       .from("story_block")
       .update({ title })
       .eq("id", id);
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -84,9 +100,13 @@ export function ProjectEditor({
     });
     if (!confirmed) return;
 
+<<<<<<< HEAD
     setSaving(true);
     const { error } = await supabase.from("story_block").delete().eq("id", id);
     setSaving(false);
+=======
+    const { error } = await supabase.from("story_block").delete().eq("id", id);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -102,9 +122,13 @@ export function ProjectEditor({
 
     const a = sorted[idx];
     const b = sorted[swapIdx];
+<<<<<<< HEAD
     setSaving(true);
     const ok = await swapOrder("story_block", a, b);
     setSaving(false);
+=======
+    const ok = await swapOrder("story_block", a, b);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -130,7 +154,10 @@ export function ProjectEditor({
       .insert({ story_block_id: blockId, text: "", recorded: false, order })
       .select("*")
       .single();
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -145,12 +172,18 @@ export function ProjectEditor({
   }
 
   async function updateVoiceOver(blockId: string, id: string, text: string) {
+<<<<<<< HEAD
     setSaving(true);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     const { error } = await supabase
       .from("voice_over")
       .update({ text })
       .eq("id", id);
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -171,12 +204,18 @@ export function ProjectEditor({
 
   async function toggleVoiceOverRecorded(blockId: string, vo: VoiceOver) {
     const recorded = !vo.recorded;
+<<<<<<< HEAD
     setSaving(true);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     const { error } = await supabase
       .from("voice_over")
       .update({ recorded })
       .eq("id", vo.id);
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -196,9 +235,13 @@ export function ProjectEditor({
   }
 
   async function deleteVoiceOver(blockId: string, id: string) {
+<<<<<<< HEAD
     setSaving(true);
     const { error } = await supabase.from("voice_over").delete().eq("id", id);
     setSaving(false);
+=======
+    const { error } = await supabase.from("voice_over").delete().eq("id", id);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -226,9 +269,13 @@ export function ProjectEditor({
 
     const a = sorted[idx];
     const b = sorted[swapIdx];
+<<<<<<< HEAD
     setSaving(true);
     const ok = await swapOrder("voice_over", a, b);
     setSaving(false);
+=======
+    const ok = await swapOrder("voice_over", a, b);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -261,7 +308,10 @@ export function ProjectEditor({
       .insert({ story_block_id: blockId, description: "", order })
       .select("*")
       .single();
+<<<<<<< HEAD
     setSaving(false);
+=======
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -278,9 +328,13 @@ export function ProjectEditor({
     id: string,
     updates: Partial<Scene>
   ) {
+<<<<<<< HEAD
     setSaving(true);
     const { error } = await supabase.from("scene").update(updates).eq("id", id);
     setSaving(false);
+=======
+    const { error } = await supabase.from("scene").update(updates).eq("id", id);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -300,9 +354,13 @@ export function ProjectEditor({
   }
 
   async function deleteScene(blockId: string, id: string) {
+<<<<<<< HEAD
     setSaving(true);
     const { error } = await supabase.from("scene").delete().eq("id", id);
     setSaving(false);
+=======
+    const { error } = await supabase.from("scene").delete().eq("id", id);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -326,9 +384,13 @@ export function ProjectEditor({
 
     const a = sorted[idx];
     const b = sorted[swapIdx];
+<<<<<<< HEAD
     setSaving(true);
     const ok = await swapOrder("scene", a, b);
     setSaving(false);
+=======
+    const ok = await swapOrder("scene", a, b);
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -354,14 +416,22 @@ export function ProjectEditor({
   return (
     <div className="flex flex-col gap-4">
       {error && (
+<<<<<<< HEAD
         <div role="alert" className="flex items-center justify-between gap-3 rounded-md border border-status-missing/40 bg-status-missing/10 px-4 py-3">
+=======
+        <div className="flex items-center justify-between gap-3 rounded-md border border-status-missing/40 bg-status-missing/10 px-4 py-3">
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
           <div className="flex items-center gap-2 text-sm text-status-missing">
             <AlertCircle size={16} />
             {error}
           </div>
           <button
             onClick={() => setError(null)}
+<<<<<<< HEAD
             className="rounded-sm text-status-missing hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+=======
+            className="text-status-missing hover:opacity-70"
+>>>>>>> efb76c43b01d98888bdc5a74d3dfa57c264e6781
             aria-label="Cerrar aviso"
           >
             <X size={16} />
