@@ -98,12 +98,12 @@ export function RodajeMode({
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
+            className="inline-flex min-w-0 items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
           >
-            <ChevronLeft size={14} />
-            {backLabel}
+            <ChevronLeft size={14} className="shrink-0" />
+            <span className="truncate">{backLabel}</span>
           </Link>
-          <span className="font-mono text-sm text-text-secondary">
+          <span className="shrink-0 font-mono text-sm text-text-secondary">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
         </div>
@@ -158,12 +158,14 @@ export function RodajeMode({
                     }`}
                   >
                     <div className="mb-1 flex items-center justify-between gap-3">
-                      <span className="font-mono text-xs text-text-secondary">
+                      <span className="min-w-0 truncate font-mono text-xs text-text-secondary">
                         {String(i + 1).padStart(2, "0")}
                         {s.projectName ? ` · ${s.projectName}` : ""} ·{" "}
                         {s.blockTitle}
                       </span>
-                      <SceneStatusPill status={s.status} />
+                      <div className="shrink-0">
+                        <SceneStatusPill status={s.status} />
+                      </div>
                     </div>
                     <p className="line-clamp-2 text-sm text-text-primary">
                       {s.description || "Sin descripción."}
@@ -175,12 +177,14 @@ export function RodajeMode({
           ) : (
             <>
               <div className="mb-1 flex items-center justify-between gap-3">
-                <p className="font-mono text-xs uppercase tracking-wide text-text-secondary">
+                <p className="min-w-0 truncate font-mono text-xs uppercase tracking-wide text-text-secondary">
                   {current.projectName
                     ? `${current.projectName} · ${current.blockTitle}`
                     : current.blockTitle}
                 </p>
-                <SceneStatusPill status={current.status} />
+                <div className="shrink-0">
+                  <SceneStatusPill status={current.status} />
+                </div>
               </div>
               <p className="mb-6 text-3xl leading-snug text-text-primary">
                 {current.description || "Sin descripción."}
@@ -252,50 +256,50 @@ export function RodajeMode({
       </div>
 
       {/* Bottom nav — large touch targets */}
-      <div className="border-t border-border px-4 py-4">
-        <div className="mx-auto flex max-w-2xl items-center gap-2">
+      <div className="border-t border-border px-3 py-3 sm:px-4 sm:py-4">
+        <div className="mx-auto flex max-w-2xl items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="flex items-center justify-center rounded-md border border-border px-4 py-4 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="flex shrink-0 items-center justify-center rounded-md border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Anterior"
           >
-            <ChevronLeft size={22} />
+            <ChevronLeft size={20} />
           </button>
 
           <button
             onClick={() => setStatus("repetir", false)}
             aria-pressed={current.status === "repetir"}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-4 py-4 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "repetir"
                 ? "border-status-shooting bg-status-shooting/20 text-status-shooting"
                 : "border-status-shooting text-status-shooting hover:bg-status-shooting/10"
             }`}
           >
-            <RotateCcw size={18} />
-            REPETIR
+            <RotateCcw size={16} className="shrink-0" />
+            <span className="truncate">REPETIR</span>
           </button>
 
           <button
             onClick={() => setStatus("grabada", true)}
             aria-pressed={current.status === "grabada"}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-md border px-4 py-4 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
                 : "border-accent bg-accent-muted text-accent hover:bg-accent hover:text-accent-ink"
             }`}
           >
-            <Check size={18} />
-            GRABADA
+            <Check size={16} className="shrink-0" />
+            <span className="truncate">GRABADA</span>
           </button>
 
           <button
             onClick={() => setIndex((i) => Math.min(total - 1, i + 1))}
             disabled={index === total - 1}
-            className="flex items-center justify-center rounded-md border border-border px-4 py-4 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="flex shrink-0 items-center justify-center rounded-md border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Siguiente"
           >
-            <ChevronRight size={22} />
+            <ChevronRight size={20} />
           </button>
         </div>
         <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-text-disabled">

@@ -53,7 +53,7 @@ export default async function ProjectPage({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <BackLink href="/" label="Todos los proyectos" />
         <DeleteProjectButton projectId={project.id} projectName={project.name} />
       </div>

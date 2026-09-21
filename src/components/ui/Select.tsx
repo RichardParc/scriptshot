@@ -122,9 +122,13 @@ export function Select({
               aria-selected={opt.value === value}
               onMouseEnter={() => setHighlighted(i)}
               onClick={() => commit(i)}
-              className={`flex cursor-pointer items-center justify-between px-3 py-2 text-base ${
-                i === highlighted ? "bg-surface" : ""
-              } ${opt.value === value ? "text-accent" : "text-text-primary"}`}
+              className={`flex cursor-pointer items-center justify-between px-3 py-2 text-base transition-colors ${
+                opt.value === value
+                  ? "bg-accent-muted text-accent"
+                  : i === highlighted
+                    ? "bg-white/10 text-text-primary"
+                    : "text-text-primary"
+              }`}
             >
               {opt.label}
               {opt.value === value && <Check size={14} />}

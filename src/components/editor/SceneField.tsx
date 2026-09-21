@@ -41,8 +41,8 @@ export function SceneField({
   ].filter(Boolean).length + (scene.requirements?.length ?? 0);
 
   return (
-    <div className="flex-1 rounded-sm border border-border bg-surface-2 p-3">
-      <div className="mb-1 flex items-center justify-between">
+    <div className="min-w-0 flex-1 rounded-sm border border-border bg-surface-2 p-3">
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-y-1">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-text-secondary">
             ESCENA {String(index).padStart(2, "0")}
@@ -75,7 +75,7 @@ export function SceneField({
 
       {expanded && (
         <div className="mt-3 flex flex-col gap-3 border-t border-border pt-3">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <PresetSelect
               label="CÁMARA"
               options={CAMERA_TYPES}

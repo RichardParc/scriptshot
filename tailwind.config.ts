@@ -30,11 +30,11 @@ const config: Config = {
         status: {
           idea: "#9A9A9E",
           planning: "#6B8FCF",
-          ready: "#3DB8A6",
+          ready: "#4052D6",
           shooting: "#E0B84D",
           missing: "#D96C5F",
-          voiceover: "#9B7FD4",
-          edit: "#3DB8A6",
+          voiceover: "#00B4FF",
+          edit: "#4052D6",
         },
       },
       fontFamily: {

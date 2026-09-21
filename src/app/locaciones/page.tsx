@@ -71,20 +71,20 @@ export default async function LocationsPage() {
             href={`/locaciones/${loc.id}`}
             className="flex items-center justify-between rounded-md border border-border bg-surface p-6 transition-colors hover:border-border-strong"
           >
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
-                <MapPin size={15} className="text-accent" />
-                <span className="text-lg font-medium text-text-primary">
+                <MapPin size={15} className="shrink-0 text-accent" />
+                <span className="truncate text-lg font-medium text-text-primary">
                   {loc.name}
                 </span>
               </div>
-              <p className="font-mono text-xs text-text-secondary">
+              <p className="truncate font-mono text-xs text-text-secondary">
                 {loc.projectIds.size}{" "}
                 {loc.projectIds.size === 1 ? "proyecto" : "proyectos"} ·{" "}
                 {loc.pending} {loc.pending === 1 ? "toma pendiente" : "tomas pendientes"}
               </p>
             </div>
-            <Clapperboard size={18} className="text-text-secondary" />
+            <Clapperboard size={18} className="ml-3 shrink-0 text-text-secondary" />
           </Link>
         ))}
       </div>

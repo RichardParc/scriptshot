@@ -22,10 +22,12 @@ export function ProjectCard({
 
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-3 flex items-start justify-between gap-3">
-          <h3 className="line-clamp-1 text-lg font-medium text-text-primary">
+          <h3 className="min-w-0 line-clamp-1 text-lg font-medium text-text-primary">
             {project.name}
           </h3>
-          <StatusBadge status={status} />
+          <div className="shrink-0">
+            <StatusBadge status={status} />
+          </div>
         </div>
 
         {project.idea ? (

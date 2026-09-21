@@ -25,13 +25,13 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+      <div className="mb-10 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md border border-accent/30 bg-accent-muted text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-accent/30 bg-accent-muted text-accent">
             <Clapperboard size={20} />
           </div>
           <div>
-            <h1 className="text-3xl font-medium tracking-tight text-text-primary">
+            <h1 className="text-2xl font-medium tracking-tight text-text-primary sm:text-3xl">
               Scriptshot
             </h1>
             <p className="font-mono text-xs text-text-secondary">
@@ -42,11 +42,11 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <LinkButton href="/locaciones" variant="secondary">
+          <LinkButton href="/locaciones" variant="secondary" className="flex-1 justify-center sm:flex-none">
             <MapPin size={16} />
             Locaciones
           </LinkButton>
-          <LinkButton href="/new" variant="primary">
+          <LinkButton href="/new" variant="primary" className="flex-1 justify-center sm:flex-none">
             <Plus size={16} />
             Nuevo proyecto
           </LinkButton>

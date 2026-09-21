@@ -76,14 +76,14 @@ export function ProjectHeader({
   if (!editing) {
     return (
       <div className="mb-10">
-        <div className="mb-2 flex items-center gap-3">
-          <h1 className="text-2xl font-medium text-text-primary">
+        <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h1 className="min-w-0 flex-1 truncate text-2xl font-medium text-text-primary sm:flex-initial">
             {project.name}
           </h1>
           <StatusBadge status={summary.status} />
           <button
             onClick={startEdit}
-            className="ml-auto flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-sm"
+            className="ml-auto flex shrink-0 items-center gap-1 text-sm text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-sm"
           >
             <Pencil size={13} />
             Editar
@@ -103,7 +103,7 @@ export function ProjectHeader({
         )}
 
         {summary.totalScenes > 0 && (
-          <div className="max-w-xs">
+          <div>
             <div className="mb-1 flex items-center justify-between font-mono text-xs text-text-secondary">
               <span>
                 {summary.recordedScenes}/{summary.totalScenes} tomas
@@ -148,7 +148,7 @@ export function ProjectHeader({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Select
             label="FORMATO"
             value={format}

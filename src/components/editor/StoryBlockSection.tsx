@@ -47,7 +47,7 @@ export function StoryBlockSection({
 
   return (
     <section className="rounded-md border border-border bg-surface p-6">
-      <div className="mb-4 flex items-start gap-3">
+      <div className="mb-4 flex flex-wrap items-start gap-3">
         <ReorderArrows
           onUp={() => onMove("up")}
           onDown={() => onMove("down")}
@@ -59,9 +59,9 @@ export function StoryBlockSection({
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && onRename(title.trim())}
           aria-label="Título del bloque"
-          className="flex-1 rounded-sm bg-transparent text-lg font-medium text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          className="min-w-0 flex-1 rounded-sm bg-transparent text-lg font-medium text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         />
-        <Button variant="danger" size="sm" onClick={onDelete}>
+        <Button variant="danger" size="sm" onClick={onDelete} className="shrink-0">
           <Trash2 size={13} />
           Eliminar bloque
         </Button>
@@ -160,7 +160,7 @@ function VoiceOverField({
   const [text, setText] = useState(vo.text);
 
   return (
-    <div className="flex-1 rounded-sm border border-border bg-surface-2 p-3">
+    <div className="min-w-0 flex-1 rounded-sm border border-border bg-surface-2 p-3">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
