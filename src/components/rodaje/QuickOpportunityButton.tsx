@@ -1,26 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { OPPORTUNITY_TYPES } from "@/lib/types";
 import { PresetSelect } from "@/components/editor/PresetSelect";
 import { LocationPicker } from "@/components/editor/LocationPicker";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 
-export function QuickOpportunityButton() {
+const NO_PROJECT = "__none__";
+
+export function QuickOpportunityButton({
+  defaultProjectId,
+}: {
+  defaultProjectId?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [locationId, setLocationId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState(defaultProjectId ?? NO_PROJECT);
+  const [projects, setProjects] = useState<{ value: string; label: string }[]>(
+    []
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    supabase
+      .from("project")
+      .select("id, name")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) {
+          setProjects(data.map((p) => ({ value: p.id, label: p.name })));
+        }
+      });
+  }, [open]);
 
   function reset() {
     setDescription("");
     setType("");
     setLocationId(null);
+    setProjectId(defaultProjectId ?? NO_PROJECT);
     setError(null);
   }
 
@@ -34,6 +59,7 @@ export function QuickOpportunityButton() {
       description: description.trim(),
       type: type || null,
       location_id: locationId,
+      project_id: projectId === NO_PROJECT ? null : projectId,
     });
     setSaving(false);
     if (error) {
@@ -69,7 +95,7 @@ export function QuickOpportunityButton() {
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-t-lg border border-border bg-surface p-6 sm:rounded-lg"
+            className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-lg border border-border bg-surface p-6 sm:rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -108,6 +134,13 @@ export function QuickOpportunityButton() {
                 onChange={setType}
               />
               <LocationPicker initialLocationName={null} onChange={setLocationId} />
+
+              <Select
+                label="ASOCIAR A PROYECTO"
+                value={projectId}
+                options={[{ value: NO_PROJECT, label: "Sin asociar" }, ...projects]}
+                onChange={setProjectId}
+              />
 
               {error && <p className="text-sm text-status-missing">{error}</p>}
 

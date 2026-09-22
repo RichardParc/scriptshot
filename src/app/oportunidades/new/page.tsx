@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useId, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { OPPORTUNITY_TYPES } from "@/lib/types";
@@ -10,17 +10,28 @@ import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { PresetSelect } from "@/components/editor/PresetSelect";
 import { LocationPicker } from "@/components/editor/LocationPicker";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 
 const NO_PROJECT = "__none__";
 
 export default function NewOpportunityPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <NewOpportunityForm />
+    </Suspense>
+  );
+}
+
+function NewOpportunityForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedProject = searchParams.get("project");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [locationId, setLocationId] = useState<string | null>(null);
   const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
-  const [projectId, setProjectId] = useState(NO_PROJECT);
+  const [projectId, setProjectId] = useState(preselectedProject ?? NO_PROJECT);
   const [projects, setProjects] = useState<{ value: string; label: string }[]>(
     []
   );

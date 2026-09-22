@@ -24,10 +24,12 @@ export function RodajeMode({
   backHref,
   backLabel,
   initialScenes,
+  projectId,
 }: {
   backHref: string;
   backLabel: string;
   initialScenes: FlatScene[];
+  projectId?: string;
 }) {
   const [scenes, setScenes] = useState<FlatScene[]>(initialScenes);
   const [index, setIndex] = useState<number>(() => {
@@ -308,7 +310,7 @@ export function RodajeMode({
         </p>
       </div>
 
-      <QuickOpportunityButton />
+      <QuickOpportunityButton defaultProjectId={projectId} />
     </div>
   );
 }

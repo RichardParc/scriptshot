@@ -59,6 +59,7 @@ export default async function RodajePage({
       backHref={`/project/${project.id}`}
       backLabel={project.name}
       initialScenes={flatScenes}
+      projectId={project.id}
     />
   );
 }
