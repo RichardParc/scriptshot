@@ -1,4 +1,4 @@
-import { Plus, MapPin, Clapperboard } from "lucide-react";
+import { Plus, MapPin, Clapperboard, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ProjectCard } from "@/components/ProjectCard";
 import { LinkButton } from "@/components/ui/Button";
@@ -41,12 +41,16 @@ export default async function DashboardPage() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <LinkButton href="/locaciones" variant="secondary" className="flex-1 justify-center sm:flex-none">
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:items-center">
+          <LinkButton href="/oportunidades" variant="secondary" className="justify-center sm:justify-start">
+            <Sparkles size={16} />
+            Oportunidades
+          </LinkButton>
+          <LinkButton href="/locaciones" variant="secondary" className="justify-center sm:justify-start">
             <MapPin size={16} />
             Locaciones
           </LinkButton>
-          <LinkButton href="/new" variant="primary" className="flex-1 justify-center sm:flex-none">
+          <LinkButton href="/new" variant="primary" className="justify-center sm:justify-start">
             <Plus size={16} />
             Nuevo proyecto
           </LinkButton>

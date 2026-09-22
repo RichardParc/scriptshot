@@ -1,10 +1,20 @@
-# Scriptshot — Fase 1 a 6
+# Scriptshot — Fase 1 a 7
 
 De la idea al rodaje. Fase 1: proyectos. Fase 2: editor de historia. Fase 3:
 metadata de producción por escena. Fase 4: RODAJE por proyecto. Fase 5:
 RODAJE global por locación. Fase 6: estado automático del proyecto.
+Fase 7: tomas de oportunidad.
 
 ## Qué incluye
+
+**Fase 7 — Tomas de oportunidad**
+- `/oportunidades`: lista de capturas espontáneas, no ligadas a ningún
+  proyecto necesariamente (descripción, tipo, locación, referencia, notas,
+  y asociación opcional a un proyecto existente)
+- Botón flotante "+ Oportunidad" dentro de RODAJE — abre un formulario
+  corto sin salir de la pantalla de grabación, para capturar algo
+  espontáneo sin perder el hilo de lo que se está filmando
+
 
 **Fase 6 — Estado automático**
 - El estado del proyecto (IDEA, EN PLANIFICACIÓN, LISTO PARA RODAJE, EN
@@ -54,7 +64,7 @@ colaboración. Ver el prompt maestro del producto para el roadmap completo.
    - Ve a [supabase.com](https://supabase.com) → New Project.
    - En el SQL Editor, corre en orden: `supabase/schema.sql`,
      `supabase/phase2.sql`, `supabase/phase3.sql`, `supabase/phase4.sql`,
-     `supabase/phase5.sql`.
+     `supabase/phase5.sql`, `supabase/phase7.sql` (Fase 6 no agrega tablas).
    - En Project Settings → Data API, copia el Project URL. En Project
      Settings → API Keys, copia la anon/publishable key.
 

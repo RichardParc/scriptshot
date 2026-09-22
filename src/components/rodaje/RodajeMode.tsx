@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import type { FlatScene, SceneStatus } from "@/lib/types";
 import { SceneStatusPill } from "@/components/SceneStatusPill";
+import { QuickOpportunityButton } from "./QuickOpportunityButton";
 
 export function RodajeMode({
   backHref,
@@ -286,7 +287,7 @@ export function RodajeMode({
             className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
-                : "border-accent bg-accent-muted text-accent hover:bg-accent hover:text-accent-ink"
+                : "border-accent bg-accent-muted text-accent-hover hover:bg-accent hover:text-accent-ink"
             }`}
           >
             <Check size={16} className="shrink-0" />
@@ -306,6 +307,8 @@ export function RodajeMode({
           GRABADA: ya la tienes. REPETIR: quedó mal, hay que volver a grabarla.
         </p>
       </div>
+
+      <QuickOpportunityButton />
     </div>
   );
 }

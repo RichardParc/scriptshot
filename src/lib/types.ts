@@ -90,6 +90,31 @@ export interface FlatScene extends Scene {
   projectName?: string;
 }
 
+export const OPPORTUNITY_TYPES = [
+  "Animal",
+  "Paisaje",
+  "Clima",
+  "Persona",
+  "Aéreo",
+  "Textura",
+  "Calle",
+  "Momento espontáneo",
+  "Comportamiento animal",
+] as const;
+
+export interface OpportunityShot {
+  id: string;
+  description: string;
+  type: string | null;
+  location_id: string | null;
+  location?: { id: string; name: string } | null;
+  reference: string | null;
+  notes: string | null;
+  project_id: string | null;
+  project?: { id: string; name: string } | null;
+  created_at: string;
+}
+
 export const CAMERA_TYPES = [
   "General",
   "Lejano",
