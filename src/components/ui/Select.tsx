@@ -124,7 +124,7 @@ export function Select({
               onClick={() => commit(i)}
               className={`flex cursor-pointer items-center justify-between px-3 py-2 text-base transition-colors ${
                 opt.value === value
-                  ? "bg-accent-muted text-accent"
+                  ? "bg-accent-muted text-accent-hover"
                   : i === highlighted
                     ? "bg-white/10 text-text-primary"
                     : "text-text-primary"

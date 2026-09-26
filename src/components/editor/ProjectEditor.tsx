@@ -6,24 +6,26 @@ import { supabase } from "@/lib/supabase";
 import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
 import { useConfirm } from "@/components/ui/useConfirm";
+import { SortableList } from "./SortableList";
+import { SortableItem } from "./SortableItem";
 
 function nextOrder(items: { order: number }[]) {
   return items.length === 0 ? 0 : Math.max(...items.map((i) => i.order)) + 1;
 }
 
-// Swap `order` between two adjacent items and persist both.
-// Returns false if either write failed, so callers can avoid updating the
-// screen with a change that didn't actually save.
-async function swapOrder(
+// Persist a full reordering (every item's new `order`, not just a swap of
+// two). Returns false if any write failed, so callers can avoid updating
+// the screen with a change that didn't actually save.
+async function persistReorder(
   table: "story_block" | "voice_over" | "scene",
-  a: { id: string; order: number },
-  b: { id: string; order: number }
+  itemsWithNewOrder: { id: string; order: number }[]
 ): Promise<boolean> {
-  const [ra, rb] = await Promise.all([
-    supabase.from(table).update({ order: b.order }).eq("id", a.id),
-    supabase.from(table).update({ order: a.order }).eq("id", b.id),
-  ]);
-  return !ra.error && !rb.error;
+  const results = await Promise.all(
+    itemsWithNewOrder.map(({ id, order }) =>
+      supabase.from(table).update({ order }).eq("id", id)
+    )
+  );
+  return results.every((r) => !r.error);
 }
 
 const GENERIC_ERROR =
@@ -80,7 +82,7 @@ export function ProjectEditor({
     const confirmed = await confirm({
       title: "¿Eliminar este bloque?",
       description: "Se eliminan también su voz en off y sus escenas.",
-      confirmLabel: "Eliminar bloque",
+      confirmLabel: "Borrar",
     });
     if (!confirmed) return;
 
@@ -94,27 +96,18 @@ export function ProjectEditor({
     setBlocks((prev) => prev.filter((b) => b.id !== id));
   }
 
-  async function moveBlock(id: string, dir: "up" | "down") {
-    const sorted = [...blocks].sort((a, b) => a.order - b.order);
-    const idx = sorted.findIndex((b) => b.id === id);
-    const swapIdx = dir === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= sorted.length) return;
-
-    const a = sorted[idx];
-    const b = sorted[swapIdx];
+  async function reorderBlocks(newOrderIds: string[]) {
+    const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
     setSaving(true);
-    const ok = await swapOrder("story_block", a, b);
+    const ok = await persistReorder("story_block", itemsWithNewOrder);
     setSaving(false);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
     }
+    const orderMap = new Map(itemsWithNewOrder.map((i) => [i.id, i.order]));
     setBlocks((prev) =>
-      prev.map((blk) => {
-        if (blk.id === a.id) return { ...blk, order: b.order };
-        if (blk.id === b.id) return { ...blk, order: a.order };
-        return blk;
-      })
+      prev.map((b) => (orderMap.has(b.id) ? { ...b, order: orderMap.get(b.id)! } : b))
     );
   }
 
@@ -212,37 +205,24 @@ export function ProjectEditor({
     );
   }
 
-  async function moveVoiceOver(
-    blockId: string,
-    id: string,
-    dir: "up" | "down"
-  ) {
-    const block = blocks.find((b) => b.id === blockId);
-    if (!block) return;
-    const sorted = [...block.voice_over].sort((a, b) => a.order - b.order);
-    const idx = sorted.findIndex((v) => v.id === id);
-    const swapIdx = dir === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= sorted.length) return;
-
-    const a = sorted[idx];
-    const b = sorted[swapIdx];
+  async function reorderVoiceOvers(blockId: string, newOrderIds: string[]) {
+    const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
     setSaving(true);
-    const ok = await swapOrder("voice_over", a, b);
+    const ok = await persistReorder("voice_over", itemsWithNewOrder);
     setSaving(false);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
     }
+    const orderMap = new Map(itemsWithNewOrder.map((i) => [i.id, i.order]));
     setBlocks((prev) =>
       prev.map((blk) =>
         blk.id === blockId
           ? {
               ...blk,
-              voice_over: blk.voice_over.map((vo) => {
-                if (vo.id === a.id) return { ...vo, order: b.order };
-                if (vo.id === b.id) return { ...vo, order: a.order };
-                return vo;
-              }),
+              voice_over: blk.voice_over.map((vo) =>
+                orderMap.has(vo.id) ? { ...vo, order: orderMap.get(vo.id)! } : vo
+              ),
             }
           : blk
       )
@@ -316,33 +296,24 @@ export function ProjectEditor({
     );
   }
 
-  async function moveScene(blockId: string, id: string, dir: "up" | "down") {
-    const block = blocks.find((b) => b.id === blockId);
-    if (!block) return;
-    const sorted = [...block.scene].sort((a, b) => a.order - b.order);
-    const idx = sorted.findIndex((s) => s.id === id);
-    const swapIdx = dir === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= sorted.length) return;
-
-    const a = sorted[idx];
-    const b = sorted[swapIdx];
+  async function reorderScenes(blockId: string, newOrderIds: string[]) {
+    const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
     setSaving(true);
-    const ok = await swapOrder("scene", a, b);
+    const ok = await persistReorder("scene", itemsWithNewOrder);
     setSaving(false);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
     }
+    const orderMap = new Map(itemsWithNewOrder.map((i) => [i.id, i.order]));
     setBlocks((prev) =>
       prev.map((blk) =>
         blk.id === blockId
           ? {
               ...blk,
-              scene: blk.scene.map((s) => {
-                if (s.id === a.id) return { ...s, order: b.order };
-                if (s.id === b.id) return { ...s, order: a.order };
-                return s;
-              }),
+              scene: blk.scene.map((s) =>
+                orderMap.has(s.id) ? { ...s, order: orderMap.get(s.id)! } : s
+              ),
             }
           : blk
       )
@@ -350,6 +321,7 @@ export function ProjectEditor({
   }
 
   const sortedBlocks = [...blocks].sort((a, b) => a.order - b.order);
+  const blockIds = sortedBlocks.map((b) => b.id);
 
   return (
     <div className="flex flex-col gap-4">
@@ -369,30 +341,37 @@ export function ProjectEditor({
         </div>
       )}
 
-      {sortedBlocks.map((block, i) => (
-        <StoryBlockSection
-          key={block.id}
-          block={block}
-          isFirst={i === 0}
-          isLast={i === sortedBlocks.length - 1}
-          onRename={(title) => renameBlock(block.id, title)}
-          onDelete={() => deleteBlock(block.id)}
-          onMove={(dir) => moveBlock(block.id, dir)}
-          onAddVoiceOver={() => addVoiceOver(block.id)}
-          onUpdateVoiceOver={(id, text) =>
-            updateVoiceOver(block.id, id, text)
-          }
-          onToggleVoiceOverRecorded={(vo) =>
-            toggleVoiceOverRecorded(block.id, vo)
-          }
-          onDeleteVoiceOver={(id) => deleteVoiceOver(block.id, id)}
-          onMoveVoiceOver={(id, dir) => moveVoiceOver(block.id, id, dir)}
-          onAddScene={() => addScene(block.id)}
-          onUpdateScene={(id, updates) => updateScene(block.id, id, updates)}
-          onDeleteScene={(id) => deleteScene(block.id, id)}
-          onMoveScene={(id, dir) => moveScene(block.id, id, dir)}
-        />
-      ))}
+      <SortableList items={blockIds} onReorder={reorderBlocks}>
+        {sortedBlocks.map((block) => (
+          <SortableItem key={block.id} id={block.id}>
+            {({ dragHandleProps }) => (
+              <StoryBlockSection
+                block={block}
+                dragHandleProps={dragHandleProps}
+                onRename={(title) => renameBlock(block.id, title)}
+                onDelete={() => deleteBlock(block.id)}
+                onAddVoiceOver={() => addVoiceOver(block.id)}
+                onUpdateVoiceOver={(id, text) =>
+                  updateVoiceOver(block.id, id, text)
+                }
+                onToggleVoiceOverRecorded={(vo) =>
+                  toggleVoiceOverRecorded(block.id, vo)
+                }
+                onDeleteVoiceOver={(id) => deleteVoiceOver(block.id, id)}
+                onReorderVoiceOvers={(newOrderIds) =>
+                  reorderVoiceOvers(block.id, newOrderIds)
+                }
+                onAddScene={() => addScene(block.id)}
+                onUpdateScene={(id, updates) => updateScene(block.id, id, updates)}
+                onDeleteScene={(id) => deleteScene(block.id, id)}
+                onReorderScenes={(newOrderIds) =>
+                  reorderScenes(block.id, newOrderIds)
+                }
+              />
+            )}
+          </SortableItem>
+        ))}
+      </SortableList>
 
       {sortedBlocks.length === 0 && (
         <div className="rounded-md border border-dashed border-border p-8 text-center text-base text-text-secondary">
@@ -403,7 +382,7 @@ export function ProjectEditor({
 
       <button
         onClick={addBlock}
-        className="self-start rounded-sm border border-border px-4 py-2 text-base text-text-secondary transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="self-start rounded-sm border border-border px-4 py-2 text-base text-text-secondary transition-colors hover:border-accent hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         + Agregar bloque
       </button>

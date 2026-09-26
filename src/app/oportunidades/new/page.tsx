@@ -88,7 +88,7 @@ function NewOpportunityForm() {
       <BackLink href="/oportunidades" label="Oportunidades" />
 
       <h1 className="mb-8 mt-6 flex items-center gap-2 text-2xl font-medium text-text-primary">
-        <Sparkles size={20} className="text-accent" />
+        <Sparkles size={20} className="text-accent-hover" />
         Nueva toma de oportunidad
       </h1>
 

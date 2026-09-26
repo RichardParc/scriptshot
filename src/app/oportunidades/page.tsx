@@ -28,7 +28,7 @@ export default async function OpportunitiesPage() {
       </div>
 
       <h1 className="mb-8 flex items-center gap-2 text-2xl font-medium text-text-primary">
-        <Sparkles size={22} className="text-accent" />
+        <Sparkles size={22} className="text-accent-hover" />
         Oportunidades
       </h1>
 

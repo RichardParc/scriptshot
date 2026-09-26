@@ -140,7 +140,7 @@ export function RodajeMode({
           {allDone ? (
             <>
               <div className="mb-6 flex flex-col items-center gap-1 py-6 text-center">
-                <p className="text-xl font-medium text-accent">
+                <p className="text-xl font-medium text-accent-hover">
                   RODAJE COMPLETADO
                 </p>
                 <p className="text-base text-text-secondary">
@@ -231,7 +231,7 @@ export function RodajeMode({
                   href={current.reference}
                   target="_blank"
                   rel="noreferrer"
-                  className="mb-6 flex items-center gap-2 text-base text-accent hover:text-accent-hover"
+                  className="mb-6 flex items-center gap-2 text-base text-accent-hover transition-opacity hover:opacity-80"
                 >
                   <LinkIcon size={14} />
                   Ver referencia
@@ -289,7 +289,7 @@ export function RodajeMode({
             className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
-                : "border-accent bg-accent-muted text-accent-hover hover:bg-accent hover:text-accent-ink"
+                : "border-accent text-accent-hover hover:bg-accent/10"
             }`}
           >
             <Check size={16} className="shrink-0" />
@@ -317,8 +317,8 @@ export function RodajeMode({
 
 function MetaTag({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex items-center gap-1.5 rounded-sm border border-border px-2.5 py-1.5 text-sm text-text-secondary">
-      {icon}
+    <div className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary">
+      <span className="text-accent-hover">{icon}</span>
       {label}
     </div>
   );

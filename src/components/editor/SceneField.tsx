@@ -169,7 +169,7 @@ export function SceneField({
       <div className="mt-2 flex justify-end">
         <Button variant="ghost" size="sm" onClick={onDelete} className="px-2 py-1">
           <Trash2 size={13} />
-          Eliminar
+          Borrar
         </Button>
       </div>
     </div>

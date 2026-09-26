@@ -94,7 +94,7 @@ export function useConfirm() {
             {options.cancelLabel ?? "Cancelar"}
           </Button>
           <Button variant="danger" onClick={() => handle(true)}>
-            {options.confirmLabel ?? "Eliminar"}
+            {options.confirmLabel ?? "Borrar"}
           </Button>
         </div>
       </div>

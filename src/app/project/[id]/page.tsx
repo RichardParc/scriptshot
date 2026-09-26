@@ -87,7 +87,7 @@ export default async function ProjectPage({
       <div className="mt-10 border-t border-border pt-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-lg font-medium text-text-primary">
-            <Sparkles size={17} className="text-accent" />
+            <Sparkles size={17} className="text-accent-hover" />
             Tomas de oportunidad
           </h2>
           <LinkButton

@@ -73,7 +73,7 @@ export default async function LocationsPage() {
           >
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
-                <MapPin size={15} className="shrink-0 text-accent" />
+                <MapPin size={15} className="shrink-0 text-accent-hover" />
                 <span className="truncate text-lg font-medium text-text-primary">
                   {loc.name}
                 </span>

@@ -54,7 +54,9 @@ automático de estado del proyecto (Fase 6), IA, autenticación,
 colaboración. Ver el prompt maestro del producto para el roadmap completo.
 
 **Simplificaciones conscientes sobre el prompt maestro:**
-- El reordenamiento del editor usa botones ↑↓ en vez de arrastrar y soltar
+- El reordenamiento de bloques, voz en off y escenas usa arrastrar y soltar
+  (`@dnd-kit`), con soporte de teclado (Tab al ícono de arrastre, luego
+  flechas)
 - La búsqueda de locación usa un `<datalist>` nativo del navegador, sin
   componente de autocompletar custom
 
@@ -64,7 +66,8 @@ colaboración. Ver el prompt maestro del producto para el roadmap completo.
    - Ve a [supabase.com](https://supabase.com) → New Project.
    - En el SQL Editor, corre en orden: `supabase/schema.sql`,
      `supabase/phase2.sql`, `supabase/phase3.sql`, `supabase/phase4.sql`,
-     `supabase/phase5.sql`, `supabase/phase7.sql` (Fase 6 no agrega tablas).
+     `supabase/phase5.sql`, `supabase/phase7.sql`, `supabase/folders.sql`
+     (Fase 6 no agrega tablas).
    - En Project Settings → Data API, copia el Project URL. En Project
      Settings → API Keys, copia la anon/publishable key.
 

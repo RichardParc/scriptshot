@@ -42,6 +42,13 @@ export interface Project {
   idea: string | null;
   status: ProjectStatus;
   created_at: string;
+  folder_id: string | null;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  created_at: string;
 }
 
 export type NewProject = Pick<Project, "name" | "format" | "duration" | "idea">;

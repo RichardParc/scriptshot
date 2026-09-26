@@ -83,7 +83,7 @@ export function QuickOpportunityButton({
       </button>
 
       {savedFlash && (
-        <div className="fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full border border-accent bg-surface px-4 py-3 text-sm text-accent shadow-lg sm:bottom-28">
+        <div className="fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full border border-accent bg-surface px-4 py-3 text-sm text-accent-hover shadow-lg sm:bottom-28">
           <Check size={14} />
           Guardada
         </div>
@@ -100,7 +100,7 @@ export function QuickOpportunityButton({
           >
             <div className="mb-4 flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-lg font-medium text-text-primary">
-                <Sparkles size={18} className="text-accent" />
+                <Sparkles size={18} className="text-accent-hover" />
                 Toma de oportunidad
               </h2>
               <button

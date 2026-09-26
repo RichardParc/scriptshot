@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
-import { Pencil, X, Check, AlertCircle } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import { Pencil, X, Check, AlertCircle, Folder as FolderIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import {
   PROJECT_DURATIONS,
   PROJECT_FORMATS,
+  type Folder,
   type Project,
   type ProjectDuration,
   type ProjectFormat,
@@ -17,6 +18,7 @@ import type { ProjectSummary } from "@/lib/status";
 
 const FORMAT_OPTIONS = PROJECT_FORMATS.map((f) => ({ value: f, label: f }));
 const DURATION_OPTIONS = PROJECT_DURATIONS.map((d) => ({ value: d, label: d }));
+const NO_FOLDER = "__none__";
 
 export function ProjectHeader({
   initialProject,
@@ -29,20 +31,34 @@ export function ProjectHeader({
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [folders, setFolders] = useState<Folder[]>([]);
 
   const [name, setName] = useState(project.name);
   const [format, setFormat] = useState<ProjectFormat>(project.format);
   const [duration, setDuration] = useState<ProjectDuration>(project.duration);
   const [idea, setIdea] = useState(project.idea ?? "");
+  const [folderId, setFolderId] = useState(project.folder_id ?? NO_FOLDER);
 
   const nameId = useId();
   const ideaId = useId();
+
+  useEffect(() => {
+    supabase
+      .from("folder")
+      .select("*")
+      .then(({ data }) => {
+        if (data) setFolders(data as Folder[]);
+      });
+  }, []);
+
+  const currentFolderName = folders.find((f) => f.id === project.folder_id)?.name;
 
   function startEdit() {
     setName(project.name);
     setFormat(project.format);
     setDuration(project.duration);
     setIdea(project.idea ?? "");
+    setFolderId(project.folder_id ?? NO_FOLDER);
     setError(null);
     setEditing(true);
   }
@@ -58,6 +74,7 @@ export function ProjectHeader({
       format,
       duration,
       idea: idea.trim() || null,
+      folder_id: folderId === NO_FOLDER ? null : folderId,
     };
     const { error } = await supabase
       .from("project")
@@ -90,10 +107,19 @@ export function ProjectHeader({
           </button>
         </div>
 
-        <div className="mb-4 flex items-center gap-2 font-mono text-sm text-text-secondary">
+        <div className="mb-4 flex flex-wrap items-center gap-2 font-mono text-sm text-text-secondary">
           <span>{project.format}</span>
           <span className="text-border-strong">·</span>
           <span>{project.duration}</span>
+          {currentFolderName && (
+            <>
+              <span className="text-border-strong">·</span>
+              <span className="flex items-center gap-1">
+                <FolderIcon size={12} />
+                {currentFolderName}
+              </span>
+            </>
+          )}
         </div>
 
         {project.idea && (
@@ -162,6 +188,16 @@ export function ProjectHeader({
             onChange={(v) => setDuration(v as ProjectDuration)}
           />
         </div>
+
+        <Select
+          label="CARPETA"
+          value={folderId}
+          options={[
+            { value: NO_FOLDER, label: "Sin carpeta" },
+            ...folders.map((f) => ({ value: f.id, label: f.name })),
+          ]}
+          onChange={setFolderId}
+        />
 
         <div>
           <label

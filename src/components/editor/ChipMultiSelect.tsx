@@ -37,7 +37,7 @@ export function ChipMultiSelect({
               onClick={() => toggle(opt)}
               className={`rounded-sm border px-2 py-0.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                 active
-                  ? "border-accent bg-accent-muted text-accent"
+                  ? "border-accent bg-accent-muted text-accent-hover"
                   : "border-border text-text-secondary hover:border-border-strong"
               }`}
             >

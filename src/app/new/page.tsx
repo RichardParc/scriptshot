@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import {
   PROJECT_DURATIONS,
   PROJECT_FORMATS,
+  type Folder,
   type ProjectDuration,
   type ProjectFormat,
 } from "@/lib/types";
@@ -15,6 +16,7 @@ import { Select } from "@/components/ui/Select";
 
 const FORMAT_OPTIONS = PROJECT_FORMATS.map((f) => ({ value: f, label: f }));
 const DURATION_OPTIONS = PROJECT_DURATIONS.map((d) => ({ value: d, label: d }));
+const NO_FOLDER = "__none__";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -24,6 +26,8 @@ export default function NewProjectPage() {
     PROJECT_DURATIONS[0]
   );
   const [idea, setIdea] = useState("");
+  const [folderId, setFolderId] = useState(NO_FOLDER);
+  const [folders, setFolders] = useState<Folder[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,6 +36,12 @@ export default function NewProjectPage() {
 
   useEffect(() => {
     document.title = "Nuevo proyecto — Scriptshot";
+    supabase
+      .from("folder")
+      .select("*")
+      .then(({ data }) => {
+        if (data) setFolders(data as Folder[]);
+      });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -51,6 +61,7 @@ export default function NewProjectPage() {
         duration,
         idea: idea.trim() || null,
         status: "idea",
+        folder_id: folderId === NO_FOLDER ? null : folderId,
       })
       .select("id")
       .single();
@@ -105,6 +116,18 @@ export default function NewProjectPage() {
             onChange={(v) => setDuration(v as ProjectDuration)}
           />
         </div>
+
+        {folders.length > 0 && (
+          <Select
+            label="CARPETA (OPCIONAL)"
+            value={folderId}
+            options={[
+              { value: NO_FOLDER, label: "Sin carpeta" },
+              ...folders.map((f) => ({ value: f.id, label: f.name })),
+            ]}
+            onChange={setFolderId}
+          />
+        )}
 
         <div>
           <label

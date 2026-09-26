@@ -23,7 +23,7 @@ export function DeleteProjectButton({
     const confirmed = await confirm({
       title: `¿Eliminar "${projectName}"?`,
       description: "Esta acción no se puede deshacer.",
-      confirmLabel: "Eliminar proyecto",
+      confirmLabel: "Borrar",
     });
     if (!confirmed) return;
 
@@ -49,7 +49,7 @@ export function DeleteProjectButton({
     <div className="flex flex-col items-end gap-1">
       <Button variant="danger" onClick={handleDelete} disabled={deleting}>
         <Trash2 size={15} />
-        {deleting ? "Eliminando…" : "Eliminar proyecto"}
+        {deleting ? "Borrando…" : "Borrar"}
       </Button>
       {error && <p className="text-sm text-status-missing">{error}</p>}
       {ConfirmModal}

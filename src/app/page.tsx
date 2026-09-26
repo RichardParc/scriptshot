@@ -1,9 +1,9 @@
 import { Plus, MapPin, Clapperboard, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ProjectCard } from "@/components/ProjectCard";
+import { FoldersView } from "@/components/FoldersView";
 import { LinkButton } from "@/components/ui/Button";
 import { computeProjectSummary } from "@/lib/status";
-import type { Project, SceneStatus } from "@/lib/types";
+import type { Folder, Project, SceneStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -15,19 +15,23 @@ interface ProjectWithBlocks extends Project {
 }
 
 export default async function DashboardPage() {
-  const { data, error } = await supabase
-    .from("project")
-    .select("*, story_block(scene(status), voice_over(recorded))")
-    .order("created_at", { ascending: false });
+  const [{ data, error }, { data: foldersData }] = await Promise.all([
+    supabase
+      .from("project")
+      .select("*, story_block(scene(status), voice_over(recorded))")
+      .order("created_at", { ascending: false }),
+    supabase.from("folder").select("*"),
+  ]);
 
   const projects = (data ?? []) as unknown as ProjectWithBlocks[];
+  const folders = (foldersData ?? []) as Folder[];
   const count = projects.length;
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
       <div className="mb-10 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-accent/30 bg-accent-muted text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-accent/30 bg-accent-muted text-accent-hover">
             <Clapperboard size={20} />
           </div>
           <div>
@@ -77,15 +81,13 @@ export default async function DashboardPage() {
       )}
 
       {!error && count > 0 && (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              summary={computeProjectSummary(project.story_block ?? [])}
-            />
-          ))}
-        </div>
+        <FoldersView
+          folders={folders}
+          projects={projects.map((project) => ({
+            project,
+            summary: computeProjectSummary(project.story_block ?? []),
+          }))}
+        />
       )}
     </main>
   );
