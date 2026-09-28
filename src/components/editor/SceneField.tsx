@@ -2,13 +2,7 @@
 
 import { useId, useState } from "react";
 import { Trash2 } from "lucide-react";
-import type { Scene } from "@/lib/types";
-import {
-  CAMERA_ANGLES,
-  CAMERA_MOVEMENTS,
-  CAMERA_TYPES,
-  SCENE_REQUIREMENTS,
-} from "@/lib/types";
+import type { Scene, ScenePresets } from "@/lib/types";
 import { PresetSelect } from "./PresetSelect";
 import { ChipMultiSelect } from "./ChipMultiSelect";
 import { LocationPicker } from "./LocationPicker";
@@ -18,11 +12,13 @@ import { Button } from "@/components/ui/Button";
 export function SceneField({
   scene,
   index,
+  presets,
   onUpdate,
   onDelete,
 }: {
   scene: Scene;
   index: number;
+  presets: ScenePresets;
   onUpdate: (updates: Partial<Scene>) => void;
   onDelete: () => void;
 }) {
@@ -78,19 +74,19 @@ export function SceneField({
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <PresetSelect
               label="CÁMARA"
-              options={CAMERA_TYPES}
+              options={presets.cameraTypes}
               value={scene.camera ?? ""}
               onChange={(camera) => onUpdate({ camera: camera || null })}
             />
             <PresetSelect
               label="ÁNGULO"
-              options={CAMERA_ANGLES}
+              options={presets.cameraAngles}
               value={scene.angle ?? ""}
               onChange={(angle) => onUpdate({ angle: angle || null })}
             />
             <PresetSelect
               label="MOVIMIENTO"
-              options={CAMERA_MOVEMENTS}
+              options={presets.cameraMovements}
               value={scene.movement ?? ""}
               onChange={(movement) => onUpdate({ movement: movement || null })}
             />
@@ -103,7 +99,7 @@ export function SceneField({
 
           <ChipMultiSelect
             label="NECESIDADES"
-            options={SCENE_REQUIREMENTS}
+            options={presets.sceneRequirements}
             value={scene.requirements ?? []}
             onChange={(requirements) => onUpdate({ requirements })}
           />

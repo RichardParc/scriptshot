@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
+import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
 import { useConfirm } from "@/components/ui/useConfirm";
 import { SortableList } from "./SortableList";
@@ -34,9 +34,11 @@ const GENERIC_ERROR =
 export function ProjectEditor({
   projectId,
   initialBlocks,
+  presets,
 }: {
   projectId: string;
   initialBlocks: StoryBlock[];
+  presets: ScenePresets;
 }) {
   const [blocks, setBlocks] = useState<StoryBlock[]>(
     [...initialBlocks].sort((a, b) => a.order - b.order)
@@ -347,6 +349,7 @@ export function ProjectEditor({
             {({ dragHandleProps }) => (
               <StoryBlockSection
                 block={block}
+                presets={presets}
                 dragHandleProps={dragHandleProps}
                 onRename={(title) => renameBlock(block.id, title)}
                 onDelete={() => deleteBlock(block.id)}

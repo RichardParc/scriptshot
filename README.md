@@ -7,6 +7,12 @@ Fase 7: tomas de oportunidad.
 
 ## Qué incluye
 
+**Configuración** (`/configuracion`)
+- Las listas de opciones de los selectores (cámara, ángulo, movimiento,
+  necesidades de producción, tipos de toma de oportunidad) viven en la
+  tabla `preset_option` y se editan desde la UI: agregar, renombrar,
+  eliminar. Ya no están fijas en el código.
+
 **Fase 7 — Tomas de oportunidad**
 - `/oportunidades`: lista de capturas espontáneas, no ligadas a ningún
   proyecto necesariamente (descripción, tipo, locación, referencia, notas,
@@ -66,7 +72,8 @@ colaboración. Ver el prompt maestro del producto para el roadmap completo.
    - Ve a [supabase.com](https://supabase.com) → New Project.
    - En el SQL Editor, corre en orden: `supabase/schema.sql`,
      `supabase/phase2.sql`, `supabase/phase3.sql`, `supabase/phase4.sql`,
-     `supabase/phase5.sql`, `supabase/phase7.sql`, `supabase/folders.sql`
+     `supabase/phase5.sql`, `supabase/phase7.sql`, `supabase/folders.sql`,
+     `supabase/settings.sql`
      (Fase 6 no agrega tablas).
    - En Project Settings → Data API, copia el Project URL. En Project
      Settings → API Keys, copia la anon/publishable key.

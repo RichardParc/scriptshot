@@ -9,7 +9,7 @@ import { OpportunityShotCard } from "@/components/OpportunityShotCard";
 import { BackLink } from "@/components/ui/BackLink";
 import { LinkButton } from "@/components/ui/Button";
 import { computeProjectSummary } from "@/lib/status";
-import type { OpportunityShot, StoryBlock } from "@/lib/types";
+import type { OpportunityShot, PresetOption, ScenePresets, StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +52,29 @@ export default async function ProjectPage({
     .order("order", { ascending: true, referencedTable: "voice_over" })
     .order("order", { ascending: true, referencedTable: "scene" });
 
+  const { data: presetRows } = await supabase
+    .from("preset_option")
+    .select("category, label, order")
+    .in("category", [
+      "camera_type",
+      "camera_angle",
+      "camera_movement",
+      "scene_requirement",
+    ])
+    .order("order", { ascending: true });
+
+  const labelsFor = (category: string) =>
+    ((presetRows ?? []) as Pick<PresetOption, "category" | "label" | "order">[])
+      .filter((r) => r.category === category)
+      .map((r) => r.label);
+
+  const presets: ScenePresets = {
+    cameraTypes: labelsFor("camera_type"),
+    cameraAngles: labelsFor("camera_angle"),
+    cameraMovements: labelsFor("camera_movement"),
+    sceneRequirements: labelsFor("scene_requirement"),
+  };
+
   const { data: opportunityShots } = await supabase
     .from("opportunity_shot")
     .select("*, location(id, name)")
@@ -82,6 +105,7 @@ export default async function ProjectPage({
       <ProjectEditor
         projectId={project.id}
         initialBlocks={(blocks ?? []) as StoryBlock[]}
+        presets={presets}
       />
 
       <div className="mt-10 border-t border-border pt-8">

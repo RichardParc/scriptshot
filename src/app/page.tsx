@@ -1,4 +1,4 @@
-import { Plus, MapPin, Clapperboard, Sparkles } from "lucide-react";
+import { Plus, MapPin, Clapperboard, Sparkles, Settings } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { FoldersView } from "@/components/FoldersView";
 import { LinkButton } from "@/components/ui/Button";
@@ -53,6 +53,10 @@ export default async function DashboardPage() {
           <LinkButton href="/locaciones" variant="secondary" className="justify-center sm:justify-start">
             <MapPin size={16} />
             Locaciones
+          </LinkButton>
+          <LinkButton href="/configuracion" variant="secondary" className="justify-center sm:justify-start">
+            <Settings size={16} />
+            Configuración
           </LinkButton>
           <LinkButton href="/new" variant="primary" className="justify-center sm:justify-start">
             <Plus size={16} />

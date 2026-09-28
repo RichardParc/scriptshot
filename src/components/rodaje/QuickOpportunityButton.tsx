@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { OPPORTUNITY_TYPES } from "@/lib/types";
+import { fetchPresetLabels } from "@/lib/presets";
 import { PresetSelect } from "@/components/editor/PresetSelect";
 import { LocationPicker } from "@/components/editor/LocationPicker";
 import { Button } from "@/components/ui/Button";
@@ -24,12 +24,14 @@ export function QuickOpportunityButton({
   const [projects, setProjects] = useState<{ value: string; label: string }[]>(
     []
   );
+  const [typeOptions, setTypeOptions] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
 
   useEffect(() => {
     if (!open) return;
+    fetchPresetLabels("opportunity_type").then(setTypeOptions);
     supabase
       .from("project")
       .select("id, name")
@@ -129,7 +131,7 @@ export function QuickOpportunityButton({
 
               <PresetSelect
                 label="TIPO"
-                options={OPPORTUNITY_TYPES}
+                options={typeOptions}
                 value={type}
                 onChange={setType}
               />

@@ -273,10 +273,10 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("repetir", false)}
             aria-pressed={current.status === "repetir"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "repetir"
-                ? "border-status-shooting bg-status-shooting/20 text-status-shooting"
-                : "border-status-shooting text-status-shooting hover:bg-status-shooting/10"
+                ? "border-status-shooting bg-status-shooting/20"
+                : "border-status-shooting hover:bg-status-shooting/10"
             }`}
           >
             <RotateCcw size={16} className="shrink-0" />
@@ -289,7 +289,7 @@ export function RodajeMode({
             className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
-                : "border-accent text-accent-hover hover:bg-accent/10"
+                : "border-accent text-text-primary hover:bg-accent/10"
             }`}
           >
             <Check size={16} className="shrink-0" />

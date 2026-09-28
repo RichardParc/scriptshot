@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Folder as FolderIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -27,6 +27,18 @@ export function FolderSection({
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState(name);
   const [busy, setBusy] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
 
   async function saveRename() {
     if (!id || !newName.trim() || newName.trim() === name) {
@@ -63,35 +75,38 @@ export function FolderSection({
   return (
     <div className="mb-6">
       <div className="mb-3 flex items-center gap-2">
-        <button
-          onClick={() => setCollapsed((v) => !v)}
-          className="flex items-center gap-2 rounded-sm text-text-primary hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-        >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
-          <FolderIcon size={15} className="text-text-secondary" />
-          {renaming ? (
+        {renaming ? (
+          <div className="flex items-center gap-2">
+            <FolderIcon size={15} className="text-text-secondary" />
             <input
               autoFocus
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onBlur={saveRename}
               onKeyDown={(e) => e.key === "Enter" && saveRename()}
-              onClick={(e) => e.stopPropagation()}
               className="rounded-sm border border-accent bg-surface px-1 text-base font-medium text-text-primary focus:outline-none"
             />
-          ) : (
-            <span className="text-base font-medium">{name}</span>
-          )}
-          <span className="font-mono text-xs text-text-secondary">
-            {count}
-          </span>
-        </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setCollapsed((v) => !v)}
+            className="flex items-center gap-2 rounded-sm text-text-primary hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+            <FolderIcon size={15} className="text-text-secondary" />
+            <span className="text-base font-medium text-text-primary">{name}</span>
+            <span className="font-mono text-xs text-text-secondary">
+              {count}
+            </span>
+          </button>
+        )}
 
         {editable && !renaming && (
-          <div className="relative ml-auto">
+          <div className="relative ml-auto" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Opciones de la carpeta"
+              aria-expanded={menuOpen}
               disabled={busy}
               className="rounded-sm p-1 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
@@ -99,10 +114,11 @@ export function FolderSection({
             </button>
             {menuOpen && (
               <div
+                role="menu"
                 className="absolute right-0 z-20 mt-1 w-36 rounded-md border border-border bg-surface-2 py-1 shadow-xl shadow-black/40"
-                onMouseLeave={() => setMenuOpen(false)}
               >
                 <button
+                  role="menuitem"
                   onClick={() => {
                     setMenuOpen(false);
                     setRenaming(true);
@@ -113,6 +129,7 @@ export function FolderSection({
                   Renombrar
                 </button>
                 <button
+                  role="menuitem"
                   onClick={handleDelete}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-status-missing hover:bg-surface"
                 >

@@ -4,7 +4,7 @@ import { Suspense, useEffect, useId, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { OPPORTUNITY_TYPES } from "@/lib/types";
+import { fetchPresetLabels } from "@/lib/presets";
 import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
@@ -35,6 +35,7 @@ function NewOpportunityForm() {
   const [projects, setProjects] = useState<{ value: string; label: string }[]>(
     []
   );
+  const [typeOptions, setTypeOptions] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +45,7 @@ function NewOpportunityForm() {
 
   useEffect(() => {
     document.title = "Nueva oportunidad — Scriptshot";
+    fetchPresetLabels("opportunity_type").then(setTypeOptions);
     supabase
       .from("project")
       .select("id, name")
@@ -111,7 +113,7 @@ function NewOpportunityForm() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <PresetSelect
             label="TIPO"
-            options={OPPORTUNITY_TYPES}
+            options={typeOptions}
             value={type}
             onChange={setType}
           />

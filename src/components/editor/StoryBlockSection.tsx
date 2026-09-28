@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
-import type { Scene, StoryBlock, VoiceOver } from "@/lib/types";
+import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import { SceneField } from "./SceneField";
 import { Button } from "@/components/ui/Button";
 import { SortableList } from "./SortableList";
@@ -11,6 +11,7 @@ import { DragHandle } from "./DragHandle";
 
 export function StoryBlockSection({
   block,
+  presets,
   dragHandleProps,
   onRename,
   onDelete,
@@ -25,6 +26,7 @@ export function StoryBlockSection({
   onReorderScenes,
 }: {
   block: StoryBlock;
+  presets: ScenePresets;
   dragHandleProps: DragHandleProps;
   onRename: (title: string) => void;
   onDelete: () => void;
@@ -124,6 +126,7 @@ export function StoryBlockSection({
                     <SceneField
                       scene={scene}
                       index={i + 1}
+                      presets={presets}
                       onUpdate={(updates) => onUpdateScene(scene.id, updates)}
                       onDelete={() => onDeleteScene(scene.id)}
                     />

@@ -97,17 +97,31 @@ export interface FlatScene extends Scene {
   projectName?: string;
 }
 
-export const OPPORTUNITY_TYPES = [
-  "Animal",
-  "Paisaje",
-  "Clima",
-  "Persona",
-  "Aéreo",
-  "Textura",
-  "Calle",
-  "Momento espontáneo",
-  "Comportamiento animal",
+export const PRESET_CATEGORIES = [
+  "camera_type",
+  "camera_angle",
+  "camera_movement",
+  "scene_requirement",
+  "opportunity_type",
 ] as const;
+
+export type PresetCategory = (typeof PRESET_CATEGORIES)[number];
+
+export interface PresetOption {
+  id: string;
+  category: PresetCategory;
+  label: string;
+  order: number;
+}
+
+// The four preset lists a scene editor needs, grouped so they can be passed
+// down as one prop.
+export interface ScenePresets {
+  cameraTypes: string[];
+  cameraAngles: string[];
+  cameraMovements: string[];
+  sceneRequirements: string[];
+}
 
 export interface OpportunityShot {
   id: string;
@@ -121,54 +135,6 @@ export interface OpportunityShot {
   project?: { id: string; name: string } | null;
   created_at: string;
 }
-
-export const CAMERA_TYPES = [
-  "General",
-  "Lejano",
-  "Medio",
-  "Cercano",
-  "Close-up",
-  "Detalle",
-  "POV",
-  "Selfie",
-  "Drone",
-  "Seguimiento",
-  "Movimiento",
-  "Plano fijo",
-] as const;
-
-export const CAMERA_ANGLES = [
-  "Frontal",
-  "Lateral",
-  "Trasero",
-  "Cenital",
-  "Contrapicado",
-  "Picado",
-  "Subjetivo",
-] as const;
-
-export const CAMERA_MOVEMENTS = [
-  "Fijo",
-  "Pan",
-  "Tilt",
-  "Travelling",
-  "Seguimiento",
-  "Handheld",
-  "Drone",
-] as const;
-
-export const SCENE_REQUIREMENTS = [
-  "Drone",
-  "Cámara submarina",
-  "GoPro",
-  "Trípode",
-  "Micrófono",
-  "Actor",
-  "Animal",
-  "Luz",
-  "Vehículo",
-  "Props",
-] as const;
 
 export interface StoryBlock {
   id: string;
