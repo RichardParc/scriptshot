@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useEffect, useId, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Location } from "@/lib/types";
@@ -7,9 +8,11 @@ import type { Location } from "@/lib/types";
 export function LocationPicker({
   initialLocationName,
   onChange,
+  size = "md",
 }: {
   initialLocationName: string | null;
   onChange: (locationId: string | null) => void;
+  size?: "md" | "sm";
 }) {
   const [query, setQuery] = useState(initialLocationName ?? "");
   const [options, setOptions] = useState<Location[]>([]);
@@ -66,7 +69,7 @@ export function LocationPicker({
         onChange={(e) => setQuery(e.target.value)}
         onBlur={commit}
         placeholder="¿Dónde se graba?"
-        className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className={fieldClass(size)}
       />
       <datalist id={listId}>
         {options.map((o) => (

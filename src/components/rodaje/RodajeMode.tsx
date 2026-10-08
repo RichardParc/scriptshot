@@ -84,7 +84,7 @@ export function RodajeMode({
         </p>
         <Link
           href={backHref}
-          className="rounded-md border border-border px-4 py-2 text-base text-text-primary hover:border-border-strong"
+          className="rounded-full border border-border bg-surface-2 px-5 py-3 text-base text-text-primary hover:border-border-strong"
         >
           Volver
         </Link>
@@ -217,7 +217,7 @@ export function RodajeMode({
                     {current.requirements.map((r) => (
                       <span
                         key={r}
-                        className="rounded-sm border border-border px-2 py-1 text-sm text-text-secondary"
+                        className="rounded-full border border-border px-3 py-1 text-sm text-text-secondary"
                       >
                         {r}
                       </span>
@@ -239,7 +239,7 @@ export function RodajeMode({
               )}
 
               {current.post_production && (
-                <div className="mb-6 rounded-sm border border-border bg-surface p-3">
+                <div className="mb-6 rounded-xl border border-border bg-surface p-3">
                   <p className="mb-1 flex items-center gap-1.5 font-mono text-xs text-text-secondary">
                     <Wand2 size={12} />
                     POSTPRODUCCIÓN
@@ -264,7 +264,7 @@ export function RodajeMode({
           <button
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="flex shrink-0 items-center justify-center rounded-md border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex shrink-0 items-center justify-center rounded-full border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Anterior"
           >
             <ChevronLeft size={20} />
@@ -273,7 +273,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("repetir", false)}
             aria-pressed={current.status === "repetir"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border px-2 py-3 text-sm font-medium text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "repetir"
                 ? "border-status-shooting bg-status-shooting/20"
                 : "border-status-shooting hover:bg-status-shooting/10"
@@ -286,7 +286,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("grabada", true)}
             aria-pressed={current.status === "grabada"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
                 : "border-accent text-text-primary hover:bg-accent/10"
@@ -299,7 +299,7 @@ export function RodajeMode({
           <button
             onClick={() => setIndex((i) => Math.min(total - 1, i + 1))}
             disabled={index === total - 1}
-            className="flex shrink-0 items-center justify-center rounded-md border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex shrink-0 items-center justify-center rounded-full border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Siguiente"
           >
             <ChevronRight size={20} />

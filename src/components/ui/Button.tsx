@@ -3,21 +3,22 @@ import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-export type ButtonSize = "sm" | "md";
+export type ButtonSize = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center gap-2 rounded-md border font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+  "inline-flex items-center justify-center gap-2 rounded-full border font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "text-sm px-2.5 py-1.5",
-  md: "text-base px-3.5 py-2",
+  sm: "text-sm px-4 py-2",
+  md: "text-base px-5 py-3",
+  lg: "text-base px-6 py-4",
 };
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "border-accent bg-accent text-accent-ink hover:bg-accent-hover hover:border-accent-hover",
+    "border-accent bg-accent text-accent-ink hover:bg-accent-pressed hover:border-accent-pressed",
   secondary:
-    "border-border text-text-primary hover:border-border-strong hover:bg-surface-2",
+    "border-border bg-surface-2 text-text-primary hover:border-border-strong hover:bg-surface",
   ghost:
     "border-transparent text-text-secondary hover:border-border hover:bg-surface-2 hover:text-text-primary",
   danger:

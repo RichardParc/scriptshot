@@ -4,8 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckSquare, X, Trash2, FolderPlus, FolderInput } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import type { Folder, Project } from "@/lib/types";
-import type { ProjectSummary } from "@/lib/status";
+import type { Folder } from "@/lib/types";
+import {
+  filterProjects,
+  sortProjects,
+  type ProjectEntry,
+  type SortKey,
+} from "@/lib/projectList";
 import { FolderSection } from "./FolderSection";
 import { ProjectCardGrid } from "./ProjectCardGrid";
 import { Button } from "@/components/ui/Button";
@@ -14,14 +19,16 @@ import { useConfirm } from "@/components/ui/useConfirm";
 
 const NO_FOLDER = "__none__";
 
-type ProjectEntry = { project: Project; summary: ProjectSummary };
-
 export function FoldersView({
   folders,
   projects,
+  query,
+  sort,
 }: {
   folders: Folder[];
   projects: ProjectEntry[];
+  query: string;
+  sort: SortKey;
 }) {
   const router = useRouter();
   const { confirm, ConfirmModal } = useConfirm();
@@ -105,11 +112,14 @@ export function FoldersView({
     router.refresh();
   }
 
+  const filtering = query.trim().length > 0;
+  const visible = sortProjects(filterProjects(projects, query), sort);
+
   const sortedFolders = [...folders].sort((a, b) => a.name.localeCompare(b.name));
   const byFolder = new Map<string, ProjectEntry[]>();
   for (const f of sortedFolders) byFolder.set(f.id, []);
   const unfiled: ProjectEntry[] = [];
-  for (const p of projects) {
+  for (const p of visible) {
     if (p.project.folder_id && byFolder.has(p.project.folder_id)) {
       byFolder.get(p.project.folder_id)!.push(p);
     } else {
@@ -166,7 +176,7 @@ export function FoldersView({
                   onChange={(e) => setNewFolderName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
                   placeholder="Nombre de la carpeta"
-                  className="rounded-sm border border-border bg-surface px-3 py-1.5 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none"
+                  className="rounded-full border border-border-strong bg-surface-2 px-4 py-2 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 />
                 <Button
                   variant="primary"
@@ -212,44 +222,58 @@ export function FoldersView({
 
       {error && <p className="mb-4 text-sm text-status-missing">{error}</p>}
 
-      {sortedFolders.length === 0 ? (
+      {filtering && (
+        <p className="mb-4 font-mono text-xs text-text-secondary" aria-live="polite">
+          {visible.length} {visible.length === 1 ? "resultado" : "resultados"}
+        </p>
+      )}
+
+      {filtering && visible.length === 0 ? (
+        <p className="py-16 text-center text-base text-text-secondary">
+          Sin resultados para «{query.trim()}».
+        </p>
+      ) : sortedFolders.length === 0 ? (
         <ProjectCardGrid
-          projects={projects}
+          projects={visible}
           selectionMode={selectionMode}
           selectedIds={selectedIds}
           onToggleSelect={toggle}
         />
       ) : (
         <>
-          {sortedFolders.map((folder) => (
+          {sortedFolders
+            .filter((f) => !filtering || (byFolder.get(f.id)?.length ?? 0) > 0)
+            .map((folder) => (
+              <FolderSection
+                key={folder.id}
+                id={folder.id}
+                name={folder.name}
+                count={byFolder.get(folder.id)?.length ?? 0}
+                editable
+              >
+                <ProjectCardGrid
+                  projects={byFolder.get(folder.id) ?? []}
+                  selectionMode={selectionMode}
+                  selectedIds={selectedIds}
+                  onToggleSelect={toggle}
+                />
+              </FolderSection>
+            ))}
+          {(!filtering || unfiled.length > 0) && (
             <FolderSection
-              key={folder.id}
-              id={folder.id}
-              name={folder.name}
-              count={byFolder.get(folder.id)?.length ?? 0}
-              editable
+              id={null}
+              name="Sin carpeta"
+              count={unfiled.length}
+              editable={false}
             >
               <ProjectCardGrid
-                projects={byFolder.get(folder.id) ?? []}
+                projects={unfiled}
                 selectionMode={selectionMode}
                 selectedIds={selectedIds}
                 onToggleSelect={toggle}
               />
             </FolderSection>
-          ))}
-          <FolderSection
-            id={null}
-            name="Sin carpeta"
-            count={unfiled.length}
-            editable={false}
-          >
-            <ProjectCardGrid
-              projects={unfiled}
-              selectionMode={selectionMode}
-              selectedIds={selectedIds}
-              onToggleSelect={toggle}
-            />
-          </FolderSection>
+          )}
         </>
       )}
 

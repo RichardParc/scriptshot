@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
+import { fieldClass } from "@/lib/field";
 
 export interface SelectOption {
   value: string;
@@ -14,12 +15,14 @@ export function Select({
   options,
   onChange,
   placeholder = "Selecciona…",
+  size = "md",
 }: {
   label?: string;
   value: string;
   options: SelectOption[];
   onChange: (value: string) => void;
   placeholder?: string;
+  size?: "md" | "sm";
 }) {
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(0);
@@ -95,7 +98,7 @@ export function Select({
         id={`${baseId}-value`}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={handleTriggerKeyDown}
-        className="flex w-full items-center justify-between rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className={fieldClass(size, "flex items-center justify-between text-left")}
       >
         <span className={selected ? "" : "text-text-disabled"}>
           {selected ? selected.label : placeholder}
@@ -112,7 +115,7 @@ export function Select({
           aria-labelledby={label ? labelId : undefined}
           aria-activedescendant={`${baseId}-opt-${highlighted}`}
           onKeyDown={handleListKeyDown}
-          className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md border border-border bg-surface-2 py-1 shadow-xl shadow-black/40 focus:outline-none"
+          className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-border-strong bg-surface-2 py-1 shadow-xl shadow-black/40 focus:outline-none"
         >
           {options.map((opt, i) => (
             <li

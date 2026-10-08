@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -97,7 +98,7 @@ export default function NewProjectPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ej. Entre Gigantes"
-            className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md")}
             autoFocus
           />
         </div>
@@ -142,7 +143,7 @@ export default function NewProjectPage() {
             onChange={(e) => setIdea(e.target.value)}
             placeholder="¿Qué quieres contar?"
             rows={4}
-            className="w-full resize-none rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md", "resize-none")}
           />
         </div>
 

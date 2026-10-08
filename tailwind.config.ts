@@ -4,6 +4,20 @@ const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      keyframes: {
+        "slide-in-left": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+      },
+      animation: {
+        "slide-in-left": "slide-in-left 0.2s ease-out",
+        "fade-in": "fade-in 0.2s ease-out",
+      },
       colors: {
         base: "#0A0A0B",
         surface: "#141416",
@@ -16,25 +30,30 @@ const config: Config = {
           disabled: "#828288",
         },
         accent: {
-          DEFAULT: "#4052D6",
-          hover: "#6675DE",
-          muted: "#181C3E",
-          // Text color for content placed ON a filled accent background
-          // (buttons, active states). Deliberately not named the same as
-          // the `base` background color, to avoid colliding with
+          // Brand red, matched to the logo mark. Used as a fill (buttons,
+          // progress, active states) — light text sits on top of it.
+          DEFAULT: "#D32F2F",
+          // Lighter red: this is the one to use for red TEXT/links on the
+          // dark surfaces (>= 4.5:1 contrast there).
+          hover: "#EF5350",
+          // Dark red tint for subtle backgrounds (selected rows, pills).
+          muted: "#3A1416",
+          // Darker red for the hover/pressed state of filled buttons, so
+          // light text on top keeps its contrast.
+          pressed: "#B71C1C",
+          // Text color for content placed ON a filled accent background.
+          // Deliberately not named `base`, to avoid colliding with
           // Tailwind's `text-base` font-size utility.
-          // Light here (not dark) because this accent is a saturated,
-          // fairly dark blue — needs light text on top for contrast.
           ink: "#F5F5F7",
         },
         status: {
           idea: "#9A9A9E",
           planning: "#6B8FCF",
-          ready: "#4052D6",
+          ready: "#D32F2F",
           shooting: "#E0B84D",
           missing: "#D96C5F",
           voiceover: "#00B4FF",
-          edit: "#4052D6",
+          edit: "#D32F2F",
         },
       },
       fontFamily: {

@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useEffect, useState } from "react";
 import { X, Sparkles, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -125,7 +126,7 @@ export function QuickOpportunityButton({
                   placeholder="¿Qué encontraste?"
                   rows={2}
                   autoFocus
-                  className="w-full resize-none rounded-sm border border-border bg-surface-2 px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  className={fieldClass("md", "resize-none")}
                 />
               </div>
 

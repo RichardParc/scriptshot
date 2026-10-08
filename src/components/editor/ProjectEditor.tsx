@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, Loader2, X } from "lucide-react";
+import { AlertCircle, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
 import { useConfirm } from "@/components/ui/useConfirm";
+import { Button } from "@/components/ui/Button";
 import { SortableList } from "./SortableList";
 import { SortableItem } from "./SortableItem";
 
@@ -383,12 +384,10 @@ export function ProjectEditor({
         </div>
       )}
 
-      <button
-        onClick={addBlock}
-        className="self-start rounded-sm border border-border px-4 py-2 text-base text-text-secondary transition-colors hover:border-accent hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-      >
-        + Agregar bloque
-      </button>
+      <Button variant="secondary" onClick={addBlock} className="self-start">
+        <Plus size={16} />
+        Agregar bloque
+      </Button>
 
       {saving && (
         <div className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-secondary shadow-lg">

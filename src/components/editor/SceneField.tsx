@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useId, useState } from "react";
 import { Trash2 } from "lucide-react";
 import type { Scene, ScenePresets } from "@/lib/types";
@@ -37,7 +38,7 @@ export function SceneField({
   ].filter(Boolean).length + (scene.requirements?.length ?? 0);
 
   return (
-    <div className="min-w-0 flex-1 rounded-sm border border-border bg-surface-2 p-3">
+    <div className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2 p-3">
       <div className="mb-1 flex flex-wrap items-center justify-between gap-y-1">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-text-secondary">
@@ -73,18 +74,21 @@ export function SceneField({
         <div className="mt-3 flex flex-col gap-3 border-t border-border pt-3">
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <PresetSelect
+              size="sm"
               label="CÁMARA"
               options={presets.cameraTypes}
               value={scene.camera ?? ""}
               onChange={(camera) => onUpdate({ camera: camera || null })}
             />
             <PresetSelect
+              size="sm"
               label="ÁNGULO"
               options={presets.cameraAngles}
               value={scene.angle ?? ""}
               onChange={(angle) => onUpdate({ angle: angle || null })}
             />
             <PresetSelect
+              size="sm"
               label="MOVIMIENTO"
               options={presets.cameraMovements}
               value={scene.movement ?? ""}
@@ -93,6 +97,7 @@ export function SceneField({
           </div>
 
           <LocationPicker
+            size="sm"
             initialLocationName={scene.location?.name ?? null}
             onChange={(locationId) => onUpdate({ location_id: locationId })}
           />
@@ -115,7 +120,7 @@ export function SceneField({
                 onUpdate({ reference: e.target.value.trim() || null })
               }
               placeholder="https://…"
-              className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className={fieldClass("sm")}
             />
           </div>
 
@@ -141,7 +146,7 @@ export function SceneField({
                 }
                 placeholder="Texto, animación, subtítulos, gráficos…"
                 aria-label="Notas de postproducción"
-                className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className={fieldClass("sm")}
               />
             )}
           </div>
@@ -156,7 +161,7 @@ export function SceneField({
               onBlur={(e) => onUpdate({ notes: e.target.value.trim() || null })}
               rows={2}
               placeholder="Lo que no encaje arriba…"
-              className="w-full resize-none rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className={fieldClass("sm", "resize-none")}
             />
           </div>
         </div>

@@ -160,7 +160,7 @@ function VoiceOverField({
   const [text, setText] = useState(vo.text);
 
   return (
-    <div className="min-w-0 flex-1 rounded-sm border border-border bg-surface-2 p-3">
+    <div className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2 p-3">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

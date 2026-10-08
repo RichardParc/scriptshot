@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BackLink } from "@/components/ui/BackLink";
+import { SectionBar } from "@/components/nav/SectionBar";
 import { PresetCategoryEditor } from "@/components/settings/PresetCategoryEditor";
 
 export const metadata: Metadata = { title: "Configuración — Scriptshot" };
@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Configuración — Scriptshot" };
 export default function SettingsPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-      <BackLink href="/" label="Todos los proyectos" />
+      <SectionBar />
 
       <h1 className="mb-2 mt-6 text-2xl font-medium text-text-primary">
         Configuración

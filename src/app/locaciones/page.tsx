@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MapPin, Clapperboard } from "lucide-react";
 import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
-import { BackLink } from "@/components/ui/BackLink";
+import { SectionBar } from "@/components/nav/SectionBar";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Locaciones — Scriptshot" };
@@ -46,7 +46,7 @@ export default async function LocationsPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-      <BackLink href="/" label="Todos los proyectos" />
+      <SectionBar />
 
       <h1 className="mb-8 mt-6 text-2xl font-medium text-text-primary">
         Locaciones

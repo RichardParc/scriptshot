@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useEffect, useId, useState } from "react";
 import { Pencil, X, Check, AlertCircle, Folder as FolderIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -169,7 +170,7 @@ export function ProjectHeader({
             id={nameId}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-sm border border-border bg-surface-2 px-3 py-2 text-base text-text-primary focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md")}
             autoFocus
           />
         </div>
@@ -211,7 +212,7 @@ export function ProjectHeader({
             value={idea}
             onChange={(e) => setIdea(e.target.value)}
             rows={3}
-            className="w-full resize-none rounded-sm border border-border bg-surface-2 px-3 py-2 text-base text-text-primary focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md", "resize-none")}
           />
         </div>
 

@@ -1,7 +1,7 @@
 import { Sparkles, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
-import { BackLink } from "@/components/ui/BackLink";
+import { SectionBar } from "@/components/nav/SectionBar";
 import { LinkButton } from "@/components/ui/Button";
 import { OpportunityShotCard } from "@/components/OpportunityShotCard";
 import type { OpportunityShot } from "@/lib/types";
@@ -20,7 +20,7 @@ export default async function OpportunitiesPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
       <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <BackLink href="/" label="Todos los proyectos" />
+        <SectionBar />
         <LinkButton href="/oportunidades/new" variant="primary">
           <Plus size={16} />
           Nueva toma de oportunidad

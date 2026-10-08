@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { useId, useState } from "react";
 import { Select } from "@/components/ui/Select";
 
@@ -11,11 +12,13 @@ export function PresetSelect({
   options,
   value,
   onChange,
+  size = "md",
 }: {
   label: string;
   options: readonly string[];
   value: string;
   onChange: (value: string) => void;
+  size?: "md" | "sm";
 }) {
   const isKnown = value === "" || (options as readonly string[]).includes(value);
   const [customMode, setCustomMode] = useState(!isKnown);
@@ -42,7 +45,7 @@ export function PresetSelect({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Personalizado"
-            className="w-full rounded-sm border border-border bg-surface px-2 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass(size)}
           />
           <button
             type="button"
@@ -62,6 +65,7 @@ export function PresetSelect({
 
   return (
     <Select
+      size={size}
       label={label}
       value={value === "" ? EMPTY : value}
       options={selectOptions}

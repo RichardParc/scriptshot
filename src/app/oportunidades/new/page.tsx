@@ -1,5 +1,6 @@
 "use client";
 
+import { fieldClass } from "@/lib/field";
 import { Suspense, useEffect, useId, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles } from "lucide-react";
@@ -106,7 +107,7 @@ function NewOpportunityForm() {
             placeholder="¿Qué encontraste?"
             rows={3}
             autoFocus
-            className="w-full resize-none rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md", "resize-none")}
           />
         </div>
 
@@ -132,7 +133,7 @@ function NewOpportunityForm() {
             value={reference}
             onChange={(e) => setReference(e.target.value)}
             placeholder="https://…"
-            className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md")}
           />
         </div>
 
@@ -145,7 +146,7 @@ function NewOpportunityForm() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full resize-none rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary placeholder:text-text-disabled focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className={fieldClass("md", "resize-none")}
           />
         </div>
 
