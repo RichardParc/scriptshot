@@ -46,12 +46,29 @@ export default async function LocationsPage() {
     .sort((a, b) => b.pending - a.pending);
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
+    <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
       <SectionBar />
 
-      <h1 className="mb-8 mt-6 text-2xl font-medium text-text-primary">
-        Locaciones
-      </h1>
+      <section className="relative mb-7 mt-7 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 sm:px-7 sm:py-7">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative flex items-end justify-between gap-4">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
+              <MapPin size={12} /> PLAN DE RODAJE
+            </div>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Locaciones</h1>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary">
+              Revisa dónde se concentran las escenas pendientes y qué proyectos las necesitan.
+            </p>
+          </div>
+          <div className="hidden shrink-0 rounded-xl border border-border bg-base/70 px-4 py-3 sm:block">
+            <span className="font-mono text-2xl font-semibold text-text-primary">{locations.length}</span>
+            <span className="ml-2 font-mono text-[10px] tracking-[0.12em] text-text-secondary">
+              {locations.length === 1 ? "LOCACIÓN" : "LOCACIONES"}
+            </span>
+          </div>
+        </div>
+      </section>
 
       {error && (
         <p className="rounded-md border border-status-missing/40 bg-surface p-4 text-base text-status-missing">
@@ -60,14 +77,18 @@ export default async function LocationsPage() {
       )}
 
       {!error && locations.length === 0 && (
-        <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border px-6 py-16 text-center">
-          <p className="max-w-md text-base leading-relaxed text-text-secondary">
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-surface/40 px-6 py-16 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent-muted/50 text-accent-hover">
+            <MapPin size={24} />
+          </div>
+          <p className="text-lg font-medium text-text-primary">Aún no hay locaciones por revisar</p>
+          <p className="max-w-md text-sm leading-6 text-text-secondary">
             Todavía no hay tomas pendientes con locación. Asigna una locación en
             los detalles de una escena y aparecerá aquí.
           </p>
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface-2 px-5 py-3 text-base text-text-primary transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-surface-2 px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             Ir a proyectos
           </Link>
@@ -79,22 +100,24 @@ export default async function LocationsPage() {
           <Link
             key={loc.id}
             href={`/locaciones/${loc.id}`}
-            className="flex items-center justify-between rounded-md border border-border bg-surface p-6 transition-colors hover:border-border-strong"
+            className="group flex items-center justify-between rounded-xl border border-border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-border-strong hover:shadow-lg hover:shadow-black/20 sm:p-5"
           >
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
-                <MapPin size={15} className="shrink-0 text-accent-hover" />
+                <MapPin size={15} className="shrink-0 text-accent-hover transition-transform group-hover:-translate-y-0.5" />
                 <span className="truncate text-lg font-medium text-text-primary">
                   {loc.name}
                 </span>
               </div>
-              <p className="truncate font-mono text-xs text-text-secondary">
+              <p className="truncate font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">
                 {loc.projectIds.size}{" "}
                 {loc.projectIds.size === 1 ? "proyecto" : "proyectos"} ·{" "}
                 {loc.pending} {loc.pending === 1 ? "toma pendiente" : "tomas pendientes"}
               </p>
             </div>
-            <Clapperboard size={18} className="ml-3 shrink-0 text-text-secondary" />
+            <div className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-base/60 text-text-secondary transition-colors group-hover:border-accent/30 group-hover:text-accent-hover">
+              <Clapperboard size={17} />
+            </div>
           </Link>
         ))}
       </div>

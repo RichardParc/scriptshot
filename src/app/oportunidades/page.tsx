@@ -19,8 +19,8 @@ export default async function OpportunitiesPage() {
   const shots = (data ?? []) as unknown as OpportunityShot[];
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-      <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
+      <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <SectionBar />
         <LinkButton href="/oportunidades/new" variant="primary">
           <Plus size={16} />
@@ -28,10 +28,26 @@ export default async function OpportunitiesPage() {
         </LinkButton>
       </div>
 
-      <h1 className="mb-8 flex items-center gap-2 text-2xl font-medium text-text-primary">
-        <Sparkles size={22} className="text-accent-hover" />
-        Oportunidades
-      </h1>
+      <section className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 sm:px-7 sm:py-7">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
+              <Sparkles size={12} /> CAPTURA EL MOMENTO
+            </div>
+            <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Oportunidades</h1>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary">
+              Guarda ideas espontáneas de tomas y referencias para incorporarlas a tus proyectos.
+            </p>
+          </div>
+          <div className="shrink-0 rounded-xl border border-border bg-base/70 px-4 py-3">
+            <span className="font-mono text-2xl font-semibold text-text-primary">{shots.length}</span>
+            <span className="ml-2 font-mono text-[10px] tracking-[0.12em] text-text-secondary">
+              {shots.length === 1 ? "TOMA GUARDADA" : "TOMAS GUARDADAS"}
+            </span>
+          </div>
+        </div>
+      </section>
 
       {error && (
         <p className="rounded-md border border-status-missing/40 bg-surface p-4 text-base text-status-missing">
@@ -40,10 +56,13 @@ export default async function OpportunitiesPage() {
       )}
 
       {!error && shots.length === 0 && (
-        <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border py-20 text-center">
-          <Sparkles size={26} className="text-text-disabled" />
-          <p className="text-base text-text-secondary">
-            Sin tomas de oportunidad todavía.
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-surface/40 px-6 py-16 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent-muted/50 text-accent-hover">
+            <Sparkles size={24} />
+          </div>
+          <p className="text-lg font-medium text-text-primary">Las buenas ideas aparecen de repente</p>
+          <p className="max-w-sm text-sm leading-6 text-text-secondary">
+            Guarda aquí una toma, una referencia o una imagen que quieras recordar para después.
           </p>
           <LinkButton href="/oportunidades/new" variant="primary" className="mt-1">
             <Plus size={16} />

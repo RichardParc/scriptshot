@@ -79,12 +79,18 @@ export function RodajeMode({
   if (total === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className="text-base text-text-secondary">
-          No hay escenas todavía en este proyecto.
-        </p>
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-accent/25 bg-accent-muted/60 text-accent-hover">
+          <Camera size={28} />
+        </div>
+        <div>
+          <h1 className="text-xl font-semibold text-text-primary">Aún no hay escenas para rodar</h1>
+          <p className="mt-2 max-w-sm text-sm leading-6 text-text-secondary">
+            Añade escenas al guion del proyecto y aparecerán aquí para acompañarte durante la grabación.
+          </p>
+        </div>
         <Link
           href={backHref}
-          className="rounded-full border border-border bg-surface-2 px-5 py-3 text-base text-text-primary hover:border-border-strong"
+          className="rounded-lg border border-border bg-surface-2 px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:border-border-strong"
         >
           Volver
         </Link>
@@ -97,7 +103,7 @@ export function RodajeMode({
   return (
     <div className="flex min-h-screen flex-col bg-base">
       {/* Top bar */}
-      <div className="border-b border-border px-4 py-3">
+      <div className="border-b border-border bg-surface/70 px-4 py-3 sm:py-4">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <Link
             href={backHref}
@@ -106,15 +112,27 @@ export function RodajeMode({
             <ChevronLeft size={14} className="shrink-0" />
             <span className="truncate">{backLabel}</span>
           </Link>
-          <span className="shrink-0 font-mono text-sm text-text-secondary">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          <span className="shrink-0 rounded-md border border-border bg-base px-2.5 py-1 font-mono text-xs text-text-secondary">
+            {String(index + 1).padStart(2, "0")} <span className="text-text-disabled">/</span> {String(total).padStart(2, "0")}
           </span>
         </div>
-        <div className="mx-auto mt-2 h-1.5 max-w-2xl overflow-hidden rounded-full bg-surface-2">
+        <div className="mx-auto mt-3 flex max-w-2xl items-center gap-3">
           <div
-            className="h-full bg-accent transition-all"
+            role="progressbar"
+            aria-label="Progreso del rodaje"
+            aria-valuemin={0}
+            aria-valuemax={total}
+            aria-valuenow={recorded}
+            className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2"
+          >
+          <div
+            className="h-full bg-accent transition-[width] duration-500"
             style={{ width: `${(recorded / total) * 100}%` }}
           />
+          </div>
+          <span className="shrink-0 font-mono text-[10px] tracking-wide text-text-secondary">
+            {recorded}/{total} LISTAS
+          </span>
         </div>
       </div>
 
@@ -135,15 +153,18 @@ export function RodajeMode({
       )}
 
       {/* Scene content */}
-      <div className="flex-1 overflow-y-auto px-4 py-6">
+      <div className="flex-1 overflow-y-auto px-4 py-5 sm:py-8">
         <div className="mx-auto max-w-2xl">
           {allDone ? (
             <>
-              <div className="mb-6 flex flex-col items-center gap-1 py-6 text-center">
-                <p className="text-xl font-medium text-accent-hover">
+              <div className="mb-6 flex flex-col items-center gap-2 rounded-2xl border border-accent/25 bg-accent-muted/30 px-5 py-8 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-accent-ink">
+                  <Check size={22} />
+                </div>
+                <p className="text-xl font-semibold tracking-wide text-text-primary">
                   RODAJE COMPLETADO
                 </p>
-                <p className="text-base text-text-secondary">
+                <p className="max-w-md text-sm leading-6 text-text-secondary">
                   Todas las escenas están grabadas. Repaso rápido abajo — toca
                   una escena para volver a verla.
                 </p>
@@ -154,7 +175,7 @@ export function RodajeMode({
                   <button
                     key={s.id}
                     onClick={() => setIndex(i)}
-                    className={`rounded-md border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+                    className={`rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
                       i === index
                         ? "border-accent bg-accent-muted"
                         : "border-border hover:border-border-strong"
@@ -178,8 +199,9 @@ export function RodajeMode({
               </div>
             </>
           ) : (
-            <>
-              <div className="mb-1 flex items-center justify-between gap-3">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:p-8">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-52 w-52 rounded-full bg-accent/10 blur-3xl" />
+              <div className="relative mb-5 flex flex-wrap items-center justify-between gap-3">
                 <p className="min-w-0 truncate font-mono text-xs uppercase tracking-wide text-text-secondary">
                   {current.projectName
                     ? `${current.projectName} · ${current.blockTitle}`
@@ -189,13 +211,13 @@ export function RodajeMode({
                   <SceneStatusPill status={current.status} />
                 </div>
               </div>
-              <p className="mb-6 text-3xl leading-snug text-text-primary">
+              <p className="relative mb-6 text-3xl font-medium leading-snug tracking-tight text-text-primary sm:text-4xl">
                 {current.description || "Sin descripción."}
               </p>
 
               {current.voiceOver && (
-                <div className="mb-6 rounded-xl border border-border bg-surface p-4">
-                  <p className="mb-2 font-mono text-xs text-text-secondary">
+                <div className="relative mb-6 rounded-xl border border-accent/20 bg-accent-muted/20 p-4 sm:p-5">
+                  <p className="mb-2 font-mono text-[10px] tracking-[0.14em] text-accent-hover">
                     VOZ EN OFF · {current.voiceOver.recorded ? "GRABADA" : "PENDIENTE"}
                   </p>
                   <p className="whitespace-pre-wrap text-base leading-relaxed text-text-primary">
@@ -204,7 +226,7 @@ export function RodajeMode({
                 </div>
               )}
 
-              <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="relative mb-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {current.camera && (
                   <MetaTag icon={<Camera size={13} />} label={current.camera} />
                 )}
@@ -220,15 +242,15 @@ export function RodajeMode({
               </div>
 
               {current.requirements && current.requirements.length > 0 && (
-                <div className="mb-6">
-                  <p className="mb-2 font-mono text-xs text-text-secondary">
+                <div className="relative mb-6">
+                  <p className="mb-2 font-mono text-[10px] tracking-[0.14em] text-text-secondary">
                     NECESIDADES
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {current.requirements.map((r) => (
                       <span
                         key={r}
-                        className="rounded-full border border-border px-3 py-1 text-sm text-text-secondary"
+                        className="rounded-md border border-border bg-base/50 px-3 py-1.5 text-sm text-text-secondary"
                       >
                         {r}
                       </span>
@@ -242,7 +264,7 @@ export function RodajeMode({
                   href={current.reference}
                   target="_blank"
                   rel="noreferrer"
-                  className="mb-6 flex items-center gap-2 text-base text-accent-hover transition-opacity hover:opacity-80"
+                  className="relative mb-6 inline-flex min-h-10 items-center gap-2 rounded-lg border border-accent/25 bg-accent-muted/30 px-3 text-sm font-medium text-accent-hover transition-colors hover:bg-accent-muted/60"
                 >
                   <LinkIcon size={14} />
                   Ver referencia
@@ -250,8 +272,8 @@ export function RodajeMode({
               )}
 
               {current.post_production && (
-                <div className="mb-6 rounded-xl border border-border bg-surface p-3">
-                  <p className="mb-1 flex items-center gap-1.5 font-mono text-xs text-text-secondary">
+                <div className="relative mb-6 rounded-xl border border-border bg-base/50 p-4">
+                  <p className="mb-2 flex items-center gap-1.5 font-mono text-[10px] tracking-[0.14em] text-text-secondary">
                     <Wand2 size={12} />
                     POSTPRODUCCIÓN
                   </p>
@@ -262,20 +284,20 @@ export function RodajeMode({
               )}
 
               {current.notes && (
-                <p className="text-base text-text-secondary">{current.notes}</p>
+                <p className="relative border-t border-border pt-4 text-sm leading-6 text-text-secondary">{current.notes}</p>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
 
       {/* Bottom nav — large touch targets */}
-      <div className="border-t border-border px-3 py-3 sm:px-4 sm:py-4">
+      <div className="border-t border-border bg-surface/95 px-3 py-3 shadow-[0_-12px_32px_rgba(0,0,0,0.22)] sm:px-4 sm:py-4">
         <div className="mx-auto flex max-w-2xl items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="flex shrink-0 items-center justify-center rounded-full border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-base px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Anterior"
           >
             <ChevronLeft size={20} />
@@ -284,7 +306,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("repetir", false)}
             aria-pressed={current.status === "repetir"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border px-2 py-3 text-sm font-medium text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-semibold tracking-wide text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
               current.status === "repetir"
                 ? "border-status-shooting bg-status-shooting/20"
                 : "border-status-shooting hover:bg-status-shooting/10"
@@ -297,7 +319,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("grabada", true)}
             aria-pressed={current.status === "grabada"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border px-2 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-base ${
+            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
                 : "border-accent text-text-primary hover:bg-accent/10"
@@ -310,7 +332,7 @@ export function RodajeMode({
           <button
             onClick={() => setIndex((i) => Math.min(total - 1, i + 1))}
             disabled={index === total - 1}
-            className="flex shrink-0 items-center justify-center rounded-full border border-border px-3 py-3 text-text-secondary hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-base px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Siguiente"
           >
             <ChevronRight size={20} />
@@ -328,9 +350,9 @@ export function RodajeMode({
 
 function MetaTag({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary">
+    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-base/60 px-3 py-2 text-sm text-text-secondary">
       <span className="text-accent-hover">{icon}</span>
-      {label}
+      <span className="truncate">{label}</span>
     </div>
   );
 }

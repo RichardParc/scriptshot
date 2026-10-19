@@ -25,9 +25,9 @@ export function ProjectCard({
     <>
       <div className={`h-1 w-full ${STATUS_COLOR[status]}`} />
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
         <div className="mb-3 flex flex-col items-start gap-2">
-          <h3 className="min-w-0 line-clamp-2 break-words text-lg font-medium text-text-primary">
+          <h3 className="min-w-0 line-clamp-2 break-words text-lg font-semibold tracking-tight text-text-primary">
             {project.name}
           </h3>
           <div>
@@ -62,12 +62,12 @@ export function ProjectCard({
           </div>
         )}
 
-        <div className="flex items-center gap-3 border-t border-border pt-3 font-mono text-xs text-text-secondary">
-          <span className="flex items-center gap-1 rounded-full border border-border px-2 py-0.5">
+        <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">
+          <span className="flex items-center gap-1.5 rounded-md border border-border bg-base/40 px-2 py-1">
             <Clapperboard size={12} />
             {project.format}
           </span>
-          <span className="flex items-center gap-1 rounded-full border border-border px-2 py-0.5">
+          <span className="flex items-center gap-1.5 rounded-md border border-border bg-base/40 px-2 py-1">
             <Timer size={12} />
             {project.duration}
           </span>
@@ -77,7 +77,7 @@ export function ProjectCard({
   );
 
   const baseClasses =
-    "group relative flex h-full flex-col overflow-hidden rounded-lg border bg-surface transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+    "group relative flex h-full flex-col overflow-hidden rounded-xl border bg-surface transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
   if (selectionMode) {
     return (

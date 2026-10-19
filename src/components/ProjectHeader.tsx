@@ -2,7 +2,7 @@
 
 import { fieldClass } from "@/lib/field";
 import { useEffect, useId, useState } from "react";
-import { Pencil, X, Check, AlertCircle, Folder as FolderIcon } from "lucide-react";
+import { Pencil, X, Check, AlertCircle, Folder as FolderIcon, Clock3, Film } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import {
   PROJECT_DURATIONS,
@@ -93,71 +93,82 @@ export function ProjectHeader({
 
   if (!editing) {
     return (
-      <div className="mb-10">
-        <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <h1 className="min-w-0 flex-1 truncate text-2xl font-medium text-text-primary sm:flex-initial">
+      <div className="relative mb-8 overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:p-7">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <StatusBadge status={summary.status} />
+            {currentFolderName && (
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-base/50 px-2.5 py-1 font-mono text-[10px] tracking-wide text-text-secondary">
+                <FolderIcon size={12} /> {currentFolderName}
+              </span>
+            )}
+            <button
+              onClick={startEdit}
+              className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-base/50 px-3 text-sm text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            >
+              <Pencil size={13} /> Editar
+            </button>
+          </div>
+
+          <h1 className="max-w-3xl break-words text-3xl font-semibold tracking-tight text-text-primary sm:text-4xl">
             {project.name}
           </h1>
-          <StatusBadge status={summary.status} />
-          <button
-            onClick={startEdit}
-            className="ml-auto flex shrink-0 items-center gap-1 text-sm text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-sm"
-          >
-            <Pencil size={13} />
-            Editar
-          </button>
-        </div>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2 font-mono text-sm text-text-secondary">
-          <span>{project.format}</span>
-          <span className="text-border-strong">·</span>
-          <span>{project.duration}</span>
-          {currentFolderName && (
-            <>
-              <span className="text-border-strong">·</span>
-              <span className="flex items-center gap-1">
-                <FolderIcon size={12} />
-                {currentFolderName}
-              </span>
-            </>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-base/50 px-3 py-2 font-mono text-xs text-text-secondary">
+              <Film size={14} className="text-accent-hover" /> {project.format}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-base/50 px-3 py-2 font-mono text-xs text-text-secondary">
+              <Clock3 size={14} className="text-accent-hover" /> {project.duration}
+            </span>
+          </div>
+
+          {project.idea && (
+            <p className="mt-5 max-w-2xl whitespace-pre-wrap text-sm leading-7 text-text-secondary sm:text-base">
+              {project.idea}
+            </p>
           )}
-        </div>
 
-        {project.idea && (
-          <p className="mb-4 max-w-xl text-base leading-relaxed text-text-secondary">
-            {project.idea}
-          </p>
-        )}
-
-        {summary.totalScenes > 0 && (
-          <div>
-            <div className="mb-1 flex items-center justify-between font-mono text-xs text-text-secondary">
-              <span>
-                {summary.recordedScenes}/{summary.totalScenes} tomas
-              </span>
-              <span>
-                {Math.round(
-                  (summary.recordedScenes / summary.totalScenes) * 100
-                )}
-                %
+          <div className="mt-6 rounded-xl border border-border bg-base/55 p-4 sm:p-5">
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">PROGRESO DEL RODAJE</p>
+                <p className="mt-1 text-sm font-medium text-text-primary">
+                  {summary.totalScenes > 0
+                    ? `${summary.recordedScenes} de ${summary.totalScenes} tomas grabadas`
+                    : "Aún no hay escenas en el guion"}
+                </p>
+              </div>
+              <span className="font-mono text-xl font-semibold text-text-primary">
+                {summary.totalScenes > 0
+                  ? `${Math.round((summary.recordedScenes / summary.totalScenes) * 100)}%`
+                  : "—"}
               </span>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
+            <div
+              role="progressbar"
+              aria-label="Progreso de escenas grabadas"
+              aria-valuemin={0}
+              aria-valuemax={summary.totalScenes || 1}
+              aria-valuenow={summary.recordedScenes}
+              className="h-2 overflow-hidden rounded-full bg-surface-2"
+            >
               <div
-                className={`h-full ${STATUS_COLOR[summary.status]}`}
+                className={`h-full transition-[width] duration-500 ${STATUS_COLOR[summary.status]}`}
                 style={{
-                  width: `${(summary.recordedScenes / summary.totalScenes) * 100}%`,
+                  width: `${summary.totalScenes > 0 ? (summary.recordedScenes / summary.totalScenes) * 100 : 0}%`,
                 }}
               />
             </div>
           </div>
-        )}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mb-10 rounded-lg border border-border bg-surface p-6">
+    <div className="mb-8 rounded-2xl border border-border bg-surface p-4 sm:p-6">
       <div className="flex flex-col gap-4">
         <div>
           <label

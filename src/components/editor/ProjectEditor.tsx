@@ -325,9 +325,24 @@ export function ProjectEditor({
 
   const sortedBlocks = [...blocks].sort((a, b) => a.order - b.order);
   const blockIds = sortedBlocks.map((b) => b.id);
+  const sceneCount = blocks.reduce((count, block) => count + block.scene.length, 0);
+  const voiceOverCount = blocks.reduce((count, block) => count + block.voice_over.length, 0);
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-4">
+        <div>
+          <p className="mb-1 font-mono text-[10px] tracking-[0.16em] text-text-secondary">DESARROLLO DEL PROYECTO</p>
+          <h2 className="text-xl font-semibold tracking-tight text-text-primary">Guion y escenas</h2>
+          <p className="mt-1 text-sm text-text-secondary">
+            {sortedBlocks.length} {sortedBlocks.length === 1 ? "bloque" : "bloques"} · {sceneCount} {sceneCount === 1 ? "escena" : "escenas"} · {voiceOverCount} voces en off
+          </p>
+        </div>
+        <Button variant="secondary" size="sm" onClick={addBlock} className="shrink-0">
+          <Plus size={15} /> Agregar bloque
+        </Button>
+      </div>
+
       {error && (
         <div role="alert" className="flex items-center justify-between gap-3 rounded-md border border-status-missing/40 bg-status-missing/10 px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-status-missing">
@@ -378,16 +393,13 @@ export function ProjectEditor({
       </SortableList>
 
       {sortedBlocks.length === 0 && (
-        <div className="rounded-md border border-dashed border-border p-8 text-center text-base text-text-secondary">
-          Sin bloques todavía. Empieza con uno (Hook, Contexto, Desarrollo...
-          lo que tenga sentido para esta historia).
+        <div className="rounded-xl border border-dashed border-border bg-surface/40 px-5 py-10 text-center sm:px-8">
+          <p className="text-base font-medium text-text-primary">Empieza a construir el guion</p>
+          <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-text-secondary">
+            Divide la historia en bloques —por ejemplo, Hook, Contexto y Desarrollo— y añade dentro las voces en off y escenas.
+          </p>
         </div>
       )}
-
-      <Button variant="secondary" onClick={addBlock} className="self-start">
-        <Plus size={16} />
-        Agregar bloque
-      </Button>
 
       {saving && (
         <div className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-secondary shadow-lg">

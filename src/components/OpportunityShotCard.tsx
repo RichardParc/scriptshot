@@ -48,16 +48,17 @@ export function OpportunityShotCard({
   if (hidden) return null;
 
   return (
-    <div className="rounded-md border border-border bg-surface p-5">
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+    <div className="group relative overflow-hidden rounded-xl border border-border bg-surface p-4 transition-all hover:border-border-strong hover:shadow-lg hover:shadow-black/20 sm:p-5">
+      <div aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-accent/70 to-transparent opacity-60 transition-opacity group-hover:opacity-100" />
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 pl-1">
         <div className="flex flex-wrap items-center gap-2">
           {shot.type && (
-            <span className="rounded-full border border-border px-2 py-0.5 font-mono text-xs text-text-secondary">
+            <span className="rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] tracking-wide text-text-secondary">
               {shot.type}
             </span>
           )}
           {shot.location && (
-            <span className="flex items-center gap-1 rounded-full border border-border px-2 py-0.5 font-mono text-xs text-text-secondary">
+            <span className="flex items-center gap-1 rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
               <MapPin size={11} />
               {shot.location.name}
             </span>
@@ -65,7 +66,7 @@ export function OpportunityShotCard({
           {showProject && shot.project && (
             <Link
               href={`/project/${shot.project.id}`}
-              className="rounded-full border border-accent/40 bg-accent-muted px-2 py-0.5 font-mono text-xs text-accent-hover hover:border-accent"
+              className="rounded-md border border-accent/30 bg-accent-muted/70 px-2 py-1 font-mono text-[10px] text-accent-hover transition-colors hover:border-accent"
             >
               {shot.project.name}
             </Link>
@@ -75,13 +76,13 @@ export function OpportunityShotCard({
           onClick={handleDelete}
           disabled={deleting}
           aria-label="Eliminar toma de oportunidad"
-          className="rounded-sm text-text-secondary hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
         >
           <Trash2 size={15} />
         </button>
       </div>
 
-      <p className="mb-2 text-base text-text-primary">
+      <p className="mb-3 pl-1 text-base leading-6 text-text-primary">
         {shot.description || "Sin descripción."}
       </p>
 
@@ -90,7 +91,7 @@ export function OpportunityShotCard({
           href={shot.reference}
           target="_blank"
           rel="noreferrer"
-          className="mb-2 flex items-center gap-1.5 text-sm text-accent-hover transition-opacity hover:opacity-80"
+          className="mb-3 flex items-center gap-2 rounded-md pl-1 text-sm font-medium text-accent-hover transition-opacity hover:opacity-80"
         >
           <LinkIcon size={13} />
           Ver referencia

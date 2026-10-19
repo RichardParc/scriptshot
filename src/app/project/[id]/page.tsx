@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { Clapperboard, Sparkles, Plus } from "lucide-react";
+import Link from "next/link";
+import { Clapperboard, Sparkles, Plus, ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
@@ -84,8 +85,8 @@ export default async function ProjectPage({
     .order("created_at", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
-      <div className="mb-8 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+    <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
+      <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <BackLink href="/" label="Todos los proyectos" />
         <DeleteProjectButton projectId={project.id} projectName={project.name} />
       </div>
@@ -95,14 +96,22 @@ export default async function ProjectPage({
         summary={computeProjectSummary((blocks ?? []) as StoryBlock[])}
       />
 
-      <LinkButton
+      <Link
         href={`/project/${project.id}/rodaje`}
-        variant="primary"
-        className="mb-10"
+        className="group mb-8 flex items-center justify-between gap-4 overflow-hidden rounded-xl border border-accent/35 bg-gradient-to-r from-accent-muted/70 via-surface to-surface p-4 transition-colors hover:border-accent/70 sm:p-5"
       >
-        <Clapperboard size={16} />
-        Ir a RODAJE
-      </LinkButton>
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-ink shadow-lg shadow-accent/20 sm:h-12 sm:w-12">
+            <Clapperboard size={20} />
+          </div>
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] tracking-[0.16em] text-accent-hover">MODO DE PRODUCCIÓN</p>
+            <p className="mt-1 text-base font-semibold text-text-primary sm:text-lg">Ir al modo rodaje</p>
+            <p className="mt-0.5 hidden text-sm text-text-secondary sm:block">Revisa tus tomas y actualiza su estado mientras grabas.</p>
+          </div>
+        </div>
+        <ArrowUpRight size={20} className="shrink-0 text-accent-hover transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </Link>
 
       <ProjectEditor
         projectId={project.id}
@@ -110,12 +119,15 @@ export default async function ProjectPage({
         presets={presets}
       />
 
-      <div className="mt-10 border-t border-border pt-8">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-lg font-medium text-text-primary">
-            <Sparkles size={17} className="text-accent-hover" />
-            Tomas de oportunidad
-          </h2>
+      <section className="mt-10 border-t border-border pt-7 sm:pt-8">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="mb-1 font-mono text-[10px] tracking-[0.16em] text-text-secondary">IDEAS PARA ESTE PROYECTO</p>
+            <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-text-primary">
+              <Sparkles size={17} className="text-accent-hover" />
+              Tomas de oportunidad
+            </h2>
+          </div>
           <LinkButton
             href={`/oportunidades/new?project=${project.id}`}
             variant="ghost"
@@ -133,11 +145,11 @@ export default async function ProjectPage({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-text-secondary">
-            Sin tomas de oportunidad asociadas a este proyecto todavía.
+          <p className="rounded-xl border border-dashed border-border bg-surface/40 px-4 py-6 text-sm text-text-secondary">
+            Sin tomas de oportunidad asociadas todavía. Guarda ideas de tomas para tenerlas a mano durante la producción.
           </p>
         )}
-      </div>
+      </section>
     </main>
   );
 }
