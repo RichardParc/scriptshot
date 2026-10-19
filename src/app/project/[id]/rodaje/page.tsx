@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { supabase } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { RodajeMode } from "@/components/rodaje/RodajeMode";
 import type { FlatScene, Scene, StoryBlock } from "@/lib/types";
 
@@ -11,6 +11,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
+  const supabase = await createServerSupabaseClient();
   const { id } = await params;
   const { data } = await supabase
     .from("project")
@@ -27,6 +28,7 @@ export default async function RodajePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const supabase = await createServerSupabaseClient();
   const { id } = await params;
 
   const { data: project, error } = await supabase

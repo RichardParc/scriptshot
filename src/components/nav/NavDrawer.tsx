@@ -9,10 +9,12 @@ import {
   MapPin,
   Menu,
   Settings,
+  LogOut,
   Sparkles,
   X,
   type LucideIcon,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 function isActive(href: string, pathname: string) {
   if (href === "/") {
@@ -86,7 +88,7 @@ export function NavDrawer() {
         href={href}
         onClick={() => setOpen(false)}
         aria-current={active ? "page" : undefined}
-        className={`flex items-center gap-3 rounded-full px-4 py-3 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 ${
+        className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 ${
           active
             ? "bg-accent font-medium text-accent-ink"
             : "text-text-primary hover:bg-surface-2"
@@ -107,7 +109,7 @@ export function NavDrawer() {
         aria-label="Abrir menú"
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface-2 text-text-primary transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-accent bg-accent text-accent-ink transition-colors hover:border-accent-pressed hover:bg-accent-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         <Menu size={20} />
       </button>
@@ -165,6 +167,17 @@ export function NavDrawer() {
 
               <div className="my-3 border-t border-border" />
               {navItem("/configuracion", "Configuración", Settings)}
+              <button
+                type="button"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.assign("/login");
+                }}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left text-base text-text-secondary transition-colors hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+              >
+                <LogOut size={20} />
+                Cerrar sesión
+              </button>
             </nav>
           </div>
         </div>

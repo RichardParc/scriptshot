@@ -39,7 +39,7 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
     supabase
       .from("folder")
       .select("*")
-      .then(({ data }) => {
+      .then(({ data }: { data: Folder[] | null }) => {
         if (data) setFolders(data as Folder[]);
       });
   }, []);

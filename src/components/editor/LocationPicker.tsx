@@ -24,7 +24,7 @@ export function LocationPicker({
       .from("location")
       .select("id, name")
       .order("name")
-      .then(({ data }) => {
+      .then(({ data }: { data: Location[] | null }) => {
         if (data) setOptions(data);
       });
   }, []);

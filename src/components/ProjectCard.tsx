@@ -26,11 +26,11 @@ export function ProjectCard({
       <div className={`h-1 w-full ${STATUS_COLOR[status]}`} />
 
       <div className="flex flex-1 flex-col p-6">
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <h3 className="min-w-0 line-clamp-1 text-lg font-medium text-text-primary">
+        <div className="mb-3 flex flex-col items-start gap-2">
+          <h3 className="min-w-0 line-clamp-2 break-words text-lg font-medium text-text-primary">
             {project.name}
           </h3>
-          <div className="shrink-0">
+          <div>
             <StatusBadge status={status} />
           </div>
         </div>

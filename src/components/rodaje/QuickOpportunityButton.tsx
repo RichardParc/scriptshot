@@ -39,7 +39,7 @@ export function QuickOpportunityButton({
       .from("project")
       .select("id, name")
       .order("created_at", { ascending: false })
-      .then(({ data }) => {
+      .then(({ data }: { data: { id: string; name: string }[] | null }) => {
         if (data) {
           setProjects(data.map((p) => ({ value: p.id, label: p.name })));
         }
@@ -80,23 +80,16 @@ export function QuickOpportunityButton({
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setSavedFlash(false);
+          setOpen(true);
+        }}
         aria-haspopup="dialog"
-        className="fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full border border-accent bg-accent-muted px-4 py-3 text-sm font-medium text-accent-hover shadow-lg shadow-black/40 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:bottom-28"
+        className="fixed bottom-[calc(7rem+env(safe-area-inset-bottom))] right-4 z-30 flex items-center gap-2 rounded-full border border-accent bg-accent-muted px-4 py-3 text-sm font-medium text-accent-hover shadow-lg shadow-black/40 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:bottom-[calc(8rem+env(safe-area-inset-bottom))]"
       >
-        <Sparkles size={16} />
-        Oportunidad
+        {savedFlash ? <Check size={16} /> : <Sparkles size={16} />}
+        {savedFlash ? "Guardada" : "Oportunidad"}
       </button>
-
-      {savedFlash && (
-        <div
-          role="status"
-          className="fixed bottom-24 right-4 z-30 flex items-center gap-2 rounded-full border border-accent bg-surface px-4 py-3 text-sm text-accent-hover shadow-lg sm:bottom-28"
-        >
-          <Check size={14} />
-          Guardada
-        </div>
-      )}
 
       <BottomSheet
         open={open}

@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { DashboardShell } from "@/components/DashboardShell";
 import { computeProjectSummary } from "@/lib/status";
 import type { ProjectEntry } from "@/lib/projectList";
@@ -14,6 +14,7 @@ interface ProjectWithBlocks extends Project {
 }
 
 export default async function DashboardPage() {
+  const supabase = await createServerSupabaseClient();
   const [{ data, error }, { data: foldersData }] = await Promise.all([
     supabase
       .from("project")

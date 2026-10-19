@@ -51,7 +51,7 @@ function NewOpportunityForm() {
       .from("project")
       .select("id, name")
       .order("created_at", { ascending: false })
-      .then(({ data }) => {
+      .then(({ data }: { data: { id: string; name: string }[] | null }) => {
         if (data) {
           setProjects(data.map((p) => ({ value: p.id, label: p.name })));
         }

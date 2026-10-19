@@ -1,6 +1,6 @@
 import { Sparkles, Plus } from "lucide-react";
 import type { Metadata } from "next";
-import { supabase } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { SectionBar } from "@/components/nav/SectionBar";
 import { LinkButton } from "@/components/ui/Button";
 import { OpportunityShotCard } from "@/components/OpportunityShotCard";
@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Oportunidades — Scriptshot" };
 
 export default async function OpportunitiesPage() {
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("opportunity_shot")
     .select("*, location(id, name), project(id, name)")

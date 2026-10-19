@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MapPin, Clapperboard } from "lucide-react";
 import type { Metadata } from "next";
-import { supabase } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { SectionBar } from "@/components/nav/SectionBar";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +14,7 @@ interface PendingSceneRow {
 }
 
 export default async function LocationsPage() {
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("scene")
     .select("status, location(id, name), story_block(project(id, name))")
@@ -59,8 +60,17 @@ export default async function LocationsPage() {
       )}
 
       {!error && locations.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border py-16 text-center text-base text-text-secondary">
-          No hay tomas pendientes con locación asignada todavía.
+        <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border px-6 py-16 text-center">
+          <p className="max-w-md text-base leading-relaxed text-text-secondary">
+            Todavía no hay tomas pendientes con locación. Asigna una locación en
+            los detalles de una escena y aparecerá aquí.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface-2 px-5 py-3 text-base text-text-primary transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            Ir a proyectos
+          </Link>
         </div>
       )}
 

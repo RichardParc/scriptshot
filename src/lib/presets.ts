@@ -9,5 +9,5 @@ export async function fetchPresetLabels(
     .select("label")
     .eq("category", category)
     .order("order", { ascending: true });
-  return (data ?? []).map((d) => d.label as string);
+  return ((data ?? []) as { label: string }[]).map((d) => d.label);
 }
