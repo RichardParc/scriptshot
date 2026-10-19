@@ -1,116 +1,60 @@
-# Scriptshot — Fase 1 a 7
+# Scriptshot
 
-De la idea al rodaje. Fase 1: proyectos. Fase 2: editor de historia. Fase 3:
-metadata de producción por escena. Fase 4: RODAJE por proyecto. Fase 5:
-RODAJE global por locación. Fase 6: estado automático del proyecto.
-Fase 7: tomas de oportunidad.
+Scriptshot organiza el proceso de creación audiovisual desde la idea hasta el rodaje. Es una aplicación web personal con proyectos, editor narrativo, lista de tomas, rodaje por proyecto y locación, y capturas de oportunidad.
 
-## Qué incluye
+## Estado actual
 
-**Configuración** (`/configuracion`)
-- Las listas de opciones de los selectores (cámara, ángulo, movimiento,
-  necesidades de producción, tipos de toma de oportunidad) viven en la
-  tabla `preset_option` y se editan desde la UI: agregar, renombrar,
-  eliminar. Ya no están fijas en el código.
+El producto cubre el alcance funcional de las fases 1 a 7 del roadmap:
 
-**Fase 7 — Tomas de oportunidad**
-- `/oportunidades`: lista de capturas espontáneas, no ligadas a ningún
-  proyecto necesariamente (descripción, tipo, locación, referencia, notas,
-  y asociación opcional a un proyecto existente)
-- Botón flotante "+ Oportunidad" dentro de RODAJE — abre un formulario
-  corto sin salir de la pantalla de grabación, para capturar algo
-  espontáneo sin perder el hilo de lo que se está filmando
+- **Proyectos:** crear, editar, buscar, ordenar y organizar en carpetas.
+- **Historia y voz en off:** bloques editables, varias voces por bloque, estado de grabación y reordenamiento.
+- **Escenas:** descripción, voz en off relacionada, cámara, ángulo, movimiento, locación, necesidades, referencia URL, postproducción y notas.
+- **RODAJE por proyecto:** navegación escena por escena, progreso y estados pendiente, grabada y repetir.
+- **RODAJE por locación:** reúne las tomas aún no grabadas de distintos proyectos en una misma locación.
+- **Estados del proyecto:** se calculan en `src/lib/status.ts` a partir de escenas y voces en off; no son editables manualmente.
+- **Tomas de oportunidad:** lista general, asociación opcional a proyectos y captura rápida desde RODAJE.
+- **Configuración:** presets editables para tipos de plano, ángulos, movimientos, necesidades y tipos de oportunidad.
 
+La aplicación guarda los cambios en Supabase/PostgreSQL. No usa sincronización en tiempo real por suscripción: las páginas consultan los datos al cargarse y las ediciones se escriben al guardar cada campo o acción.
 
-**Fase 6 — Estado automático**
-- El estado del proyecto (IDEA, EN PLANIFICACIÓN, LISTO PARA RODAJE, EN
-  RODAJE, FALTAN TOMAS, FALTA VOZ EN OFF, LISTO PARA EDITAR) ya no se guarda
-  manualmente — se calcula en `src/lib/status.ts` a partir de las escenas y
-  la voz en off reales, cada vez que se muestra
-- El progreso ("18/24 tomas", con barra) aparece en el dashboard y en la
-  página del proyecto
-- La columna `status` de la tabla `project` sigue existiendo (se usa como
-  valor inicial al crear un proyecto) pero ya no se lee en ningún otro
-  lado — toda la UI confía en el cálculo, no en ese campo
+## Stack
 
+- Next.js 15 con App Router
+- React 19 y TypeScript
+- Tailwind CSS
+- Supabase/PostgreSQL
+- `@dnd-kit` para reordenamiento accesible con teclado
 
-**Fase 1** — Dashboard con lista de proyectos, crear/eliminar proyecto
+## Configuración local
 
-**Fase 2** — Bloques de historia, voz en off, escenas — crear, editar, reordenar
+1. Crea un proyecto en Supabase.
+2. En el SQL Editor, ejecuta una vez y en este orden:
 
-**Fase 3** — Metadata de producción por escena (cámara, ángulo, movimiento,
-necesidades, referencia, postproducción, notas)
+   `supabase/schema.sql` → `supabase/phase2.sql` → `supabase/phase3.sql` → `supabase/phase4.sql` → `supabase/phase5.sql` → `supabase/phase7.sql` → `supabase/folders.sql` → `supabase/settings.sql`
 
-**Fase 4 — RODAJE** — `/project/[id]/rodaje`: modo pantalla completa, una
-escena a la vez, con progreso y navegación ← →, GRABADA/REPETIR
+   La fase 6 solo calcula estados en la aplicación y no añade tablas.
+3. Copia `.env.local.example` a `.env.local` y configura `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` con los datos de tu proyecto Supabase.
+4. Instala dependencias y arranca el servidor:
 
-**Fase 5 — RODAJE por locación** (el diferenciador clave del producto)
-- La locación de cada escena ahora es un registro compartido (tabla
-  `location`), no texto libre — se escribe con autocompletar y se crea
-  automáticamente si no existe
-- `/locaciones`: lista todas las locaciones con tomas pendientes, cuántos
-  proyectos y cuántas tomas hay en cada una
-- `/locaciones/[id]`: mismo modo RODAJE de Fase 4, pero mezclando las
-  escenas pendientes de *todos* los proyectos que comparten esa locación
-
-Todo persiste en Supabase en tiempo real.
-
-Fuera de alcance a propósito: tomas de oportunidad (Fase 7), cálculo
-automático de estado del proyecto (Fase 6), IA, autenticación,
-colaboración. Ver el prompt maestro del producto para el roadmap completo.
-
-**Simplificaciones conscientes sobre el prompt maestro:**
-- El reordenamiento de bloques, voz en off y escenas usa arrastrar y soltar
-  (`@dnd-kit`), con soporte de teclado (Tab al ícono de arrastre, luego
-  flechas)
-- La búsqueda de locación usa un `<datalist>` nativo del navegador, sin
-  componente de autocompletar custom
-
-## Setup
-
-1. **Crear proyecto en Supabase**
-   - Ve a [supabase.com](https://supabase.com) → New Project.
-   - En el SQL Editor, corre en orden: `supabase/schema.sql`,
-     `supabase/phase2.sql`, `supabase/phase3.sql`, `supabase/phase4.sql`,
-     `supabase/phase5.sql`, `supabase/phase7.sql`, `supabase/folders.sql`,
-     `supabase/settings.sql`
-     (Fase 6 no agrega tablas).
-   - En Project Settings → Data API, copia el Project URL. En Project
-     Settings → API Keys, copia la anon/publishable key.
-
-2. **Variables de entorno**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   Rellena `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` con
-   los valores del paso anterior.
-
-3. **Instalar y correr localmente**
    ```bash
    npm install
    npm run dev
    ```
-   Abre [http://localhost:3000](http://localhost:3000).
 
-## Deploy (GitHub → Vercel)
+   Abre `http://localhost:3000`.
 
-1. Sube este proyecto a un repo de GitHub.
-2. En [vercel.com](https://vercel.com), importa el repo.
-3. En la configuración del proyecto en Vercel, agrega las mismas dos
-   variables de entorno (`NEXT_PUBLIC_SUPABASE_URL`,
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
-4. Deploy. Cada push a la rama principal vuelve a desplegar automáticamente.
+## Datos y seguridad
 
-## Notas de arquitectura
+La app usa la clave pública de Supabase desde el navegador. Las políticas actuales permiten acceso completo a esa clave y **no hay autenticación ni separación de datos por usuario**. Esto sirve únicamente para una instancia privada de uso personal; cualquier persona que consiga la URL y la clave pública podría leer, cambiar o borrar datos.
 
-- **Sin auth todavía.** La tabla `project` usa la `anon key` directamente,
-  con una política de RLS abierta. Es un trade-off consciente de la Fase 1
-  (uso personal, un solo dueño implícito) — se cierra cuando llegue la fase
-  de autenticación/colaboración.
-- **`status` es manual por ahora.** El cálculo automático de estado
-  (sección 34/35 del prompt maestro: LISTO PARA EDITAR, FALTAN TOMAS, etc.)
-  depende de escenas y voz en off, que llegan en fases posteriores.
-- **Sin Dexie/IndexedDB.** Se decidió deliberadamente ir remote-first desde
-  esta fase (Supabase/Postgres) en vez de local-first, porque la promesa
-  central del producto (mismo shot list en laptop y en el celular durante
-  el rodaje) no es alcanzable con almacenamiento solo-en-navegador.
+Antes de publicar la aplicación para otras personas o guardar datos que deban ser privados, hay que implementar autenticación y políticas RLS ligadas al usuario propietario. No se debe intentar ocultar la clave pública: la protección debe estar en las políticas de la base de datos.
+
+Las referencias visuales actualmente se guardan como URL. La app todavía no sube archivos a Supabase Storage.
+
+## Despliegue
+
+El proyecto está preparado para el flujo GitHub → Vercel. Configura las mismas variables de entorno en Vercel. Mantén el despliegue privado hasta resolver autenticación y políticas de acceso.
+
+## Siguiente trabajo recomendado
+
+La prioridad inmediata es validar el flujo de rodaje y el manejo de guardados en móvil. Después, antes de compartir la aplicación, implementar autenticación y acceso por propietario. El roadmap restante —archivos de referencia, colaboración e IA— debe abordarse solo cuando sea necesario y aprobado.

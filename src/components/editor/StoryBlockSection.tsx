@@ -126,6 +126,7 @@ export function StoryBlockSection({
                     <SceneField
                       scene={scene}
                       index={i + 1}
+                      voiceOvers={sortedVO}
                       presets={presets}
                       onUpdate={(updates) => onUpdateScene(scene.id, updates)}
                       onDelete={() => onDeleteScene(scene.id)}

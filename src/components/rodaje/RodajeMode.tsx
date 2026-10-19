@@ -193,6 +193,17 @@ export function RodajeMode({
                 {current.description || "Sin descripción."}
               </p>
 
+              {current.voiceOver && (
+                <div className="mb-6 rounded-xl border border-border bg-surface p-4">
+                  <p className="mb-2 font-mono text-xs text-text-secondary">
+                    VOZ EN OFF · {current.voiceOver.recorded ? "GRABADA" : "PENDIENTE"}
+                  </p>
+                  <p className="whitespace-pre-wrap text-base leading-relaxed text-text-primary">
+                    {current.voiceOver.text || "Sin texto todavía."}
+                  </p>
+                </div>
+              )}
+
               <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {current.camera && (
                   <MetaTag icon={<Camera size={13} />} label={current.camera} />

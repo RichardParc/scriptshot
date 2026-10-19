@@ -41,7 +41,7 @@ export default async function RodajePage({
 
   const { data: blocks } = await supabase
     .from("story_block")
-    .select("*, scene(*, location(id, name))")
+    .select("*, voice_over(*), scene(*, location(id, name))")
     .eq("project_id", id)
     .order("order", { ascending: true })
     .order("order", { ascending: true, referencedTable: "scene" });
@@ -51,7 +51,13 @@ export default async function RodajePage({
   const flatScenes: FlatScene[] = typedBlocks.flatMap((block) =>
     [...block.scene]
       .sort((a, b) => a.order - b.order)
-      .map((scene) => ({ ...scene, blockTitle: block.title }))
+      .map((scene) => ({
+        ...scene,
+        blockTitle: block.title,
+        voiceOver:
+          block.voice_over.find((voiceOver) => voiceOver.id === scene.voice_over_id) ??
+          null,
+      }))
   );
 
   return (

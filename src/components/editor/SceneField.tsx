@@ -3,22 +3,25 @@
 import { fieldClass } from "@/lib/field";
 import { useId, useState } from "react";
 import { Trash2 } from "lucide-react";
-import type { Scene, ScenePresets } from "@/lib/types";
+import type { Scene, ScenePresets, VoiceOver } from "@/lib/types";
 import { PresetSelect } from "./PresetSelect";
 import { ChipMultiSelect } from "./ChipMultiSelect";
 import { LocationPicker } from "./LocationPicker";
 import { SceneStatusPill } from "@/components/SceneStatusPill";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 
 export function SceneField({
   scene,
   index,
+  voiceOvers,
   presets,
   onUpdate,
   onDelete,
 }: {
   scene: Scene;
   index: number;
+  voiceOvers: VoiceOver[];
   presets: ScenePresets;
   onUpdate: (updates: Partial<Scene>) => void;
   onDelete: () => void;
@@ -72,6 +75,23 @@ export function SceneField({
 
       {expanded && (
         <div className="mt-3 flex flex-col gap-3 border-t border-border pt-3">
+          <Select
+            size="sm"
+            label="VOZ EN OFF RELACIONADA"
+            value={scene.voice_over_id ?? ""}
+            options={[
+              { value: "", label: "Sin asociar" },
+              ...voiceOvers.map((voiceOver, voiceOverIndex) => ({
+                value: voiceOver.id,
+                label: `VO ${String(voiceOverIndex + 1).padStart(2, "0")} · ${
+                  voiceOver.text.trim().slice(0, 56) || "Sin texto todavía"
+                }`,
+              })),
+            ]}
+            onChange={(voice_over_id) =>
+              onUpdate({ voice_over_id: voice_over_id || null })
+            }
+          />
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <PresetSelect
               size="sm"
