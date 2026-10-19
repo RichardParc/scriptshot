@@ -62,14 +62,16 @@ export default function LoginPage() {
 
   return (
     <main className="relative isolate flex min-h-screen overflow-hidden bg-base">
-      <Image
-        src="/login-poster.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover object-center opacity-50"
-      />
+      {!playBackground && (
+        <Image
+          src="/login-poster.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover object-center opacity-50"
+        />
+      )}
       {playBackground && (
         <video
           aria-hidden="true"
@@ -79,7 +81,7 @@ export default function LoginPage() {
           playsInline
           preload="none"
           poster="/login-poster.jpg"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-45"
+          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover"
         >
           <source
             src="https://videos.pexels.com/video-files/8089126/8089126-uhd_4096_2160_25fps.mp4"

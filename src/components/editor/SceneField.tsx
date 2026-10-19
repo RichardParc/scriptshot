@@ -42,7 +42,7 @@ export function SceneField({
 
   return (
     <div className="min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 sm:p-4">
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+      <div className="mb-2 flex flex-wrap items-start justify-between gap-x-3 gap-y-2 sm:items-center">
         <div className="flex items-center gap-2">
           <span className="rounded-md bg-accent-muted/60 px-2 py-1 font-mono text-[10px] tracking-[0.12em] text-accent-hover">
             ESCENA {String(index).padStart(2, "0")}
@@ -53,7 +53,7 @@ export function SceneField({
           type="button"
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          className="rounded-md px-2 py-1 font-mono text-[10px] tracking-wide text-text-secondary transition-colors hover:bg-white/[0.04] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          className="min-h-10 rounded-md px-2 py-1 text-left font-mono text-[10px] tracking-wide text-text-secondary transition-colors hover:bg-white/[0.04] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
           {expanded
             ? "OCULTAR DETALLES"

@@ -59,31 +59,28 @@ export function DashboardShell({
       )}
 
       {!errorMessage && (
-        <section className="relative mb-8 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:px-8 sm:py-8">
+        <section className="relative mb-8 overflow-hidden border-b border-border/70 px-1 pb-7 pt-3 sm:pb-8 sm:pt-4">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl"
           />
-          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.18em] text-accent-hover">
-                <Sparkles size={12} />
+              <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-accent-hover">
+                <Sparkles size={13} />
                 TU ESTUDIO CREATIVO
               </div>
               <h2 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
                 {hasProjects ? "Tus proyectos, listos para rodar." : "De una idea a un plan de rodaje."}
               </h2>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
+              <p className="mt-2 max-w-xl text-sm leading-6 text-white/70 sm:text-base">
                 Organiza guiones, escenas y oportunidades en un solo lugar.
               </p>
             </div>
             {hasProjects && (
-              <div className="flex shrink-0 items-center gap-3 rounded-xl border border-border bg-base/70 px-4 py-3">
-                <span className="font-mono text-2xl font-semibold text-text-primary">{projects.length}</span>
-                <span className="font-mono text-[10px] leading-4 tracking-[0.14em] text-text-secondary">
-                  {projects.length === 1 ? "PROYECTO" : "PROYECTOS"}<br />EN TU ESPACIO
-                </span>
-              </div>
+              <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-white/50 sm:text-right">
+                {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}
+              </p>
             )}
           </div>
         </section>

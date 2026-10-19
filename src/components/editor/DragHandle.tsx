@@ -14,7 +14,7 @@ export function DragHandle({
     <button
       type="button"
       aria-label="Reordenar (mantén presionado y arrastra, o usa las flechas del teclado)"
-      className={`flex cursor-grab touch-none items-center justify-center text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:cursor-grabbing ${className}`}
+      className={`flex h-10 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-lg text-text-secondary hover:bg-white/[0.04] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 active:cursor-grabbing sm:h-8 sm:w-8 ${className}`}
       {...dragHandleProps.attributes}
       {...dragHandleProps.listeners}
     >

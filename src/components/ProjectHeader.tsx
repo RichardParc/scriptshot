@@ -93,13 +93,13 @@ export function ProjectHeader({
 
   if (!editing) {
     return (
-      <div className="relative mb-8 overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:p-7">
+      <div className="relative mb-8 overflow-hidden border-b border-border/70 pb-6 sm:pb-7">
         <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
         <div className="relative">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <StatusBadge status={summary.status} />
             {currentFolderName && (
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-base/50 px-2.5 py-1 font-mono text-[10px] tracking-wide text-text-secondary">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wide text-text-secondary">
                 <FolderIcon size={12} /> {currentFolderName}
               </span>
             )}
@@ -116,10 +116,10 @@ export function ProjectHeader({
           </h1>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-base/50 px-3 py-2 font-mono text-xs text-text-secondary">
+            <span className="inline-flex items-center gap-2 font-mono text-xs text-text-secondary">
               <Film size={14} className="text-accent-hover" /> {project.format}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-base/50 px-3 py-2 font-mono text-xs text-text-secondary">
+            <span className="inline-flex items-center gap-2 font-mono text-xs text-text-secondary">
               <Clock3 size={14} className="text-accent-hover" /> {project.duration}
             </span>
           </div>
@@ -130,7 +130,7 @@ export function ProjectHeader({
             </p>
           )}
 
-          <div className="mt-6 rounded-xl border border-border bg-base/55 p-4 sm:p-5">
+          <div className="mt-6 border-t border-border/70 pt-5">
             <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">PROGRESO DEL RODAJE</p>

@@ -12,6 +12,7 @@ import {
   LogOut,
   Sparkles,
   X,
+  UserRound,
   type LucideIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -29,11 +30,29 @@ function isActive(href: string, pathname: string) {
 
 export function NavDrawer() {
   const [open, setOpen] = useState(false);
+  const [accountEmail, setAccountEmail] = useState<string | null>(null);
   const pathname = usePathname();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth
+      .getUser()
+      .then((result: { data: { user: { email?: string | null } | null } }) => {
+        const user = result.data.user;
+        if (active) setAccountEmail(user?.email ?? null);
+      })
+      .catch(() => {
+        if (active) setAccountEmail(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Close whenever the route changes.
   useEffect(() => {
@@ -157,6 +176,24 @@ export function NavDrawer() {
             </div>
 
             <nav aria-label="Principal" className="flex flex-col gap-1">
+              {accountEmail && (
+                <div className="mb-3 flex min-w-0 items-center gap-3 rounded-xl border border-accent/25 bg-accent-muted/35 px-3 py-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/30 bg-accent-muted text-accent-hover">
+                    <UserRound size={18} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] tracking-[0.14em] text-accent-hover">
+                      SESIÓN INICIADA
+                    </p>
+                    <p
+                      className="mt-1 break-all text-xs leading-5 text-text-primary"
+                      title={accountEmail}
+                    >
+                      {accountEmail}
+                    </p>
+                  </div>
+                </div>
+              )}
               {navItem("/", "Proyectos", LayoutGrid)}
 
               <p className="px-4 pb-1 pt-5 font-mono text-xs text-text-secondary">

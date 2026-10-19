@@ -172,17 +172,17 @@ function VoiceOverField({
         rows={2}
         className="w-full resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       />
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
         <button
           onClick={onToggleRecorded}
           aria-pressed={vo.recorded}
-          className={`rounded-sm font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+          className={`min-h-10 rounded-sm py-1 text-left font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
             vo.recorded ? "text-accent-hover" : "text-text-secondary"
           }`}
         >
           {vo.recorded ? "✓ GRABADA" : "PENDIENTE DE GRABAR"}
         </button>
-        <Button variant="ghost" size="sm" onClick={onDelete} className="px-2 py-1">
+        <Button variant="ghost" size="sm" onClick={onDelete} className="min-h-10 px-2 py-1">
           <Trash2 size={13} />
           Borrar
         </Button>

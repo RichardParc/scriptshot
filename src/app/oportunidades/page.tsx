@@ -28,24 +28,21 @@ export default async function OpportunitiesPage() {
         </LinkButton>
       </div>
 
-      <section className="relative mb-7 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 sm:px-7 sm:py-7">
+      <section className="relative mb-7 overflow-hidden border-b border-border/70 px-1 pb-7 sm:pb-8">
         <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
+            <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
               <Sparkles size={12} /> CAPTURA EL MOMENTO
             </div>
             <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Oportunidades</h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary">
+            <p className="mt-2 max-w-xl text-sm leading-6 text-white/70 sm:text-base">
               Guarda ideas espontáneas de tomas y referencias para incorporarlas a tus proyectos.
             </p>
           </div>
-          <div className="shrink-0 rounded-xl border border-border bg-base/70 px-4 py-3">
-            <span className="font-mono text-2xl font-semibold text-text-primary">{shots.length}</span>
-            <span className="ml-2 font-mono text-[10px] tracking-[0.12em] text-text-secondary">
-              {shots.length === 1 ? "TOMA GUARDADA" : "TOMAS GUARDADAS"}
-            </span>
-          </div>
+          <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-white/50 sm:text-right">
+            {shots.length} {shots.length === 1 ? "toma guardada" : "tomas guardadas"}
+          </p>
         </div>
       </section>
 

@@ -101,7 +101,7 @@ export function RodajeMode({
   const allDone = recorded === total;
 
   return (
-    <div className="flex min-h-screen flex-col bg-base">
+    <div className="flex min-h-dvh flex-col bg-base">
       {/* Top bar */}
       <div className="border-b border-border bg-surface/70 px-4 py-3 sm:py-4">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
@@ -211,7 +211,7 @@ export function RodajeMode({
                   <SceneStatusPill status={current.status} />
                 </div>
               </div>
-              <p className="relative mb-6 text-3xl font-medium leading-snug tracking-tight text-text-primary sm:text-4xl">
+              <p className="relative mb-6 break-words text-2xl font-medium leading-snug tracking-tight text-text-primary sm:text-4xl">
                 {current.description || "Sin descripción."}
               </p>
 
@@ -292,12 +292,12 @@ export function RodajeMode({
       </div>
 
       {/* Bottom nav — large touch targets */}
-      <div className="border-t border-border bg-surface/95 px-3 py-3 shadow-[0_-12px_32px_rgba(0,0,0,0.22)] sm:px-4 sm:py-4">
+      <div className="border-t border-border bg-surface/95 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.22)] sm:px-4 sm:pt-4 sm:pb-[calc(1rem+env(safe-area-inset-bottom))]">
         <div className="mx-auto flex max-w-2xl items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-base px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-base text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-14 sm:w-14"
             aria-label="Anterior"
           >
             <ChevronLeft size={20} />
@@ -306,7 +306,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("repetir", false)}
             aria-pressed={current.status === "repetir"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-semibold tracking-wide text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
+            className={`flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1 rounded-lg border px-1.5 py-2 text-[10px] font-semibold tracking-wide text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
               current.status === "repetir"
                 ? "border-status-shooting bg-status-shooting/20"
                 : "border-status-shooting hover:bg-status-shooting/10"
@@ -319,7 +319,7 @@ export function RodajeMode({
           <button
             onClick={() => setStatus("grabada", true)}
             aria-pressed={current.status === "grabada"}
-            className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-3 text-xs font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
+            className={`flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1 rounded-lg border px-1.5 py-2 text-[10px] font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:gap-2 sm:px-4 sm:py-4 sm:text-sm ${
               current.status === "grabada"
                 ? "border-accent bg-accent text-accent-ink"
                 : "border-accent text-text-primary hover:bg-accent/10"
@@ -338,7 +338,7 @@ export function RodajeMode({
             <ChevronRight size={20} />
           </button>
         </div>
-        <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-text-disabled">
+        <p className="mx-auto mt-2 max-w-2xl text-center text-[10px] leading-4 text-text-disabled sm:text-xs">
           GRABADA: ya la tienes. REPETIR: quedó mal, hay que volver a grabarla.
         </p>
       </div>
