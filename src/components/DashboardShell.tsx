@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Clapperboard, Plus } from "lucide-react";
+import { Clapperboard, Plus, Sparkles } from "lucide-react";
 import { NavDrawer } from "@/components/nav/NavDrawer";
 import { SearchBar } from "@/components/nav/SearchBar";
 import { FoldersView } from "@/components/FoldersView";
@@ -58,11 +58,45 @@ export function DashboardShell({
         </p>
       )}
 
+      {!errorMessage && (
+        <section className="relative mb-8 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:px-8 sm:py-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl"
+          />
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.18em] text-accent-hover">
+                <Sparkles size={12} />
+                TU ESTUDIO CREATIVO
+              </div>
+              <h2 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+                {hasProjects ? "Tus proyectos, listos para rodar." : "De una idea a un plan de rodaje."}
+              </h2>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
+                Organiza guiones, escenas y oportunidades en un solo lugar.
+              </p>
+            </div>
+            {hasProjects && (
+              <div className="flex shrink-0 items-center gap-3 rounded-xl border border-border bg-base/70 px-4 py-3">
+                <span className="font-mono text-2xl font-semibold text-text-primary">{projects.length}</span>
+                <span className="font-mono text-[10px] leading-4 tracking-[0.14em] text-text-secondary">
+                  {projects.length === 1 ? "PROYECTO" : "PROYECTOS"}<br />EN TU ESPACIO
+                </span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {!errorMessage && !hasProjects && (
-        <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border py-24 text-center">
-          <Clapperboard size={28} className="text-text-disabled" />
-          <p className="text-base text-text-secondary">
-            Todavía no tienes proyectos.
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-surface/40 px-6 py-16 text-center sm:py-20">
+          <div className="mb-1 flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent-muted/50 text-accent-hover">
+            <Clapperboard size={25} />
+          </div>
+          <p className="text-lg font-medium text-text-primary">Tu próximo proyecto empieza aquí</p>
+          <p className="max-w-sm text-sm leading-6 text-text-secondary">
+            Crea un espacio para ordenar tu guion, planear escenas y preparar el rodaje.
           </p>
           <Button
             variant="primary"

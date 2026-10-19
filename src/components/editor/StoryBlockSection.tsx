@@ -48,15 +48,16 @@ export function StoryBlockSection({
   const sceneIds = sortedScenes.map((s) => s.id);
 
   return (
-    <section className="mb-4 rounded-md border border-border bg-surface p-6">
-      <div className="mb-4 flex flex-wrap items-start gap-3">
+    <section className="relative mb-4 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:p-5">
+      <div aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-transparent" />
+      <div className="mb-5 flex flex-wrap items-start gap-3">
         <DragHandle dragHandleProps={dragHandleProps} className="mt-1" />
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && onRename(title.trim())}
           aria-label="Título del bloque"
-          className="min-w-0 flex-1 rounded-sm bg-transparent text-lg font-medium text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          className="min-w-0 flex-1 rounded-sm bg-transparent text-lg font-semibold tracking-tight text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:text-xl"
         />
         <Button variant="danger" size="sm" onClick={onDelete} className="shrink-0">
           <Trash2 size={13} />
@@ -65,14 +66,14 @@ export function StoryBlockSection({
       </div>
 
       {/* Voice-over */}
-      <div className="mb-4 pl-6">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-xs text-text-secondary">
+      <div className="mb-5 pl-1 sm:pl-2">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <span className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">
             VOZ EN OFF
           </span>
           <button
             onClick={onAddVoiceOver}
-            className="rounded-sm text-sm text-accent-hover hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="rounded-md border border-accent/25 bg-accent-muted/50 px-3 py-2 text-xs font-medium text-accent-hover transition-colors hover:bg-accent-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             + Voz en off
           </button>
@@ -104,14 +105,14 @@ export function StoryBlockSection({
       </div>
 
       {/* Scenes */}
-      <div className="pl-6">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-xs text-text-secondary">
+      <div className="pl-1 sm:pl-2">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <span className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">
             ESCENAS
           </span>
           <button
             onClick={onAddScene}
-            className="rounded-sm text-sm text-accent-hover hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="rounded-md border border-accent/25 bg-accent-muted/50 px-3 py-2 text-xs font-medium text-accent-hover transition-colors hover:bg-accent-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             + Escena
           </button>
@@ -161,7 +162,7 @@ function VoiceOverField({
   const [text, setText] = useState(vo.text);
 
   return (
-    <div className="min-w-0 flex-1 rounded-xl border border-border bg-surface-2 p-3">
+    <div className="min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 sm:p-4">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
