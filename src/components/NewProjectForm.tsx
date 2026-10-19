@@ -80,7 +80,7 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
       <div>
         <label
           htmlFor={nameId}
-          className="mb-2 block font-mono text-sm text-text-secondary"
+          className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary"
         >
           NOMBRE
         </label>
@@ -124,7 +124,7 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
       <div>
         <label
           htmlFor={ideaId}
-          className="mb-2 block font-mono text-sm text-text-secondary"
+          className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary"
         >
           IDEA
         </label>
@@ -139,7 +139,7 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
       </div>
 
       {error && (
-        <p role="alert" className="text-base text-status-missing">
+        <p role="alert" className="rounded-lg border border-status-missing/30 bg-status-missing/10 px-3 py-2 text-sm text-status-missing">
           {error}
         </p>
       )}

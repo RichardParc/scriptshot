@@ -59,7 +59,7 @@ export function LocationPicker({
 
   return (
     <div>
-      <label htmlFor={inputId} className="mb-1 block font-mono text-xs text-text-secondary">
+      <label htmlFor={inputId} className="mb-1 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
         LOCACIÓN
       </label>
       <input
@@ -71,6 +71,11 @@ export function LocationPicker({
         placeholder="¿Dónde se graba?"
         className={fieldClass(size)}
       />
+      {size === "md" && (
+        <p className="mt-1.5 text-xs leading-5 text-text-disabled">
+          Elige una locación existente o escribe una nueva.
+        </p>
+      )}
       <datalist id={listId}>
         {options.map((o) => (
           <option key={o.id} value={o.name} />

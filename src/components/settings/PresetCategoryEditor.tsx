@@ -99,15 +99,28 @@ export function PresetCategoryEditor({
   }
 
   return (
-    <section className="rounded-md border border-border bg-surface p-5">
-      <h2 className="text-base font-medium text-text-primary">{title}</h2>
-      {hint && <p className="mb-3 text-sm text-text-secondary">{hint}</p>}
-      {!hint && <div className="mb-3" />}
+    <section className="rounded-xl border border-border bg-surface p-4 transition-colors hover:border-border-strong sm:p-5">
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h2 className="text-base font-semibold text-text-primary">{title}</h2>
+          {hint && <p className="mt-1 text-sm leading-5 text-text-secondary">{hint}</p>}
+        </div>
+        {!loading && (
+          <span className="rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
+            {options.length} {options.length === 1 ? "OPCIÓN" : "OPCIONES"}
+          </span>
+        )}
+      </div>
 
       {loading ? (
-        <p className="text-sm text-text-secondary">Cargando…</p>
+        <div className="h-9 animate-pulse rounded-lg bg-surface-2" aria-label="Cargando opciones" />
       ) : (
         <div className="flex flex-wrap gap-2">
+          {options.length === 0 && !adding && (
+            <p className="w-full rounded-lg border border-dashed border-border px-3 py-3 text-sm text-text-secondary">
+              Aún no hay opciones. Agrega la primera para usarla en tus proyectos.
+            </p>
+          )}
           {options.map((opt) =>
             editingId === opt.id ? (
               <input
@@ -118,12 +131,12 @@ export function PresetCategoryEditor({
                 onBlur={() => handleRename(opt.id)}
                 onKeyDown={(e) => e.key === "Enter" && handleRename(opt.id)}
                 aria-label={`Renombrar ${opt.label}`}
-                className="rounded-full border border-accent bg-surface-2 px-3 py-1 text-sm text-text-primary focus:outline-none"
+                className="rounded-lg border border-accent bg-surface-2 px-3 py-2 text-sm text-text-primary focus:outline-none"
               />
             ) : (
               <span
                 key={opt.id}
-                className="flex items-center gap-1 rounded-full border border-border bg-surface-2 py-1 pl-3 pr-1.5 text-sm text-text-primary"
+                className="flex items-center gap-1 rounded-lg border border-border bg-base/50 py-1 pl-3 pr-1.5 text-sm text-text-primary"
               >
                 {opt.label}
                 <button
@@ -132,14 +145,14 @@ export function PresetCategoryEditor({
                     setEditingLabel(opt.label);
                   }}
                   aria-label={`Renombrar ${opt.label}`}
-                  className="rounded-full p-1 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  className="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-white/[0.05] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 >
                   <Pencil size={11} />
                 </button>
                 <button
                   onClick={() => handleDelete(opt.id, opt.label)}
                   aria-label={`Eliminar ${opt.label}`}
-                  className="rounded-full p-1 text-text-secondary hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  className="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 >
                   <X size={11} />
                 </button>
@@ -162,12 +175,12 @@ export function PresetCategoryEditor({
                 }}
                 placeholder="Nueva opción"
                 aria-label="Nueva opción"
-                className="rounded-full border border-accent bg-surface-2 px-3 py-1 text-sm text-text-primary placeholder:text-text-disabled focus:outline-none"
+                className="rounded-lg border border-accent bg-surface-2 px-3 py-2 text-sm text-text-primary placeholder:text-text-disabled focus:outline-none"
               />
               <button
                 onClick={handleAdd}
                 aria-label="Guardar opción"
-                className="rounded-full p-1 text-accent-hover hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className="rounded-md p-1.5 text-accent-hover transition-colors hover:bg-accent-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
                 <Check size={16} />
               </button>
@@ -177,7 +190,7 @@ export function PresetCategoryEditor({
                   setNewLabel("");
                 }}
                 aria-label="Cancelar"
-                className="rounded-full p-1 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-white/[0.05] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
                 <X size={16} />
               </button>
@@ -185,7 +198,7 @@ export function PresetCategoryEditor({
           ) : (
             <button
               onClick={() => setAdding(true)}
-              className="flex items-center gap-1 rounded-full border border-dashed border-border-strong px-3 py-1 text-sm text-text-secondary hover:border-accent hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className="flex min-h-9 items-center gap-1.5 rounded-lg border border-dashed border-border-strong px-3 py-1.5 text-sm text-text-secondary transition-colors hover:border-accent hover:bg-accent-muted/30 hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
               <Plus size={13} />
               Agregar
@@ -194,7 +207,7 @@ export function PresetCategoryEditor({
         </div>
       )}
 
-      {error && <p className="mt-3 text-sm text-status-missing">{error}</p>}
+      {error && <p role="alert" className="mt-3 rounded-lg border border-status-missing/30 bg-status-missing/10 px-3 py-2 text-sm text-status-missing">{error}</p>}
       {ConfirmModal}
     </section>
   );

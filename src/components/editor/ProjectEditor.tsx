@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
@@ -41,6 +42,7 @@ export function ProjectEditor({
   initialBlocks: StoryBlock[];
   presets: ScenePresets;
 }) {
+  const router = useRouter();
   const [blocks, setBlocks] = useState<StoryBlock[]>(
     [...initialBlocks].sort((a, b) => a.order - b.order)
   );
@@ -138,6 +140,7 @@ export function ProjectEditor({
           : b
       )
     );
+    router.refresh();
   }
 
   async function updateVoiceOver(blockId: string, id: string, text: string) {
@@ -189,6 +192,7 @@ export function ProjectEditor({
           : b
       )
     );
+    router.refresh();
   }
 
   async function deleteVoiceOver(blockId: string, id: string) {
@@ -206,6 +210,7 @@ export function ProjectEditor({
           : b
       )
     );
+    router.refresh();
   }
 
   async function reorderVoiceOvers(blockId: string, newOrderIds: string[]) {

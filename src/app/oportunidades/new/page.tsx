@@ -87,17 +87,25 @@ function NewOpportunityForm() {
   }
 
   return (
-    <main className="mx-auto max-w-lg px-6 py-16">
+    <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6 sm:py-12">
       <BackLink href="/oportunidades" label="Oportunidades" />
 
-      <h1 className="mb-8 mt-6 flex items-center gap-2 text-2xl font-medium text-text-primary">
-        <Sparkles size={20} className="text-accent-hover" />
-        Nueva toma de oportunidad
-      </h1>
+      <section className="relative mb-6 mt-6 overflow-hidden rounded-2xl border border-border bg-surface px-5 py-6 sm:px-7 sm:py-7">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
+        <div className="relative">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent-muted/60 px-3 py-1 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
+            <Sparkles size={12} /> NOTA DE PRODUCCIÓN
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Nueva toma de oportunidad</h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
+            Registra una idea o referencia que quieras tener presente durante el rodaje.
+          </p>
+        </div>
+      </section>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-2xl border border-border bg-surface p-4 sm:gap-6 sm:p-6">
         <div>
-          <label htmlFor={descId} className="mb-2 block font-mono text-sm text-text-secondary">
+          <label htmlFor={descId} className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
             DESCRIPCIÓN
           </label>
           <textarea
@@ -125,7 +133,7 @@ function NewOpportunityForm() {
         </div>
 
         <div>
-          <label htmlFor={refId} className="mb-2 block font-mono text-sm text-text-secondary">
+          <label htmlFor={refId} className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
             REFERENCIA (URL)
           </label>
           <input
@@ -138,7 +146,7 @@ function NewOpportunityForm() {
         </div>
 
         <div>
-          <label htmlFor={notesId} className="mb-2 block font-mono text-sm text-text-secondary">
+          <label htmlFor={notesId} className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
             NOTAS
           </label>
           <textarea
@@ -157,10 +165,10 @@ function NewOpportunityForm() {
           onChange={setProjectId}
         />
 
-        {error && <p className="text-base text-status-missing">{error}</p>}
+        {error && <p role="alert" className="rounded-lg border border-status-missing/30 bg-status-missing/10 px-3 py-2 text-sm text-status-missing">{error}</p>}
 
-        <Button type="submit" variant="primary" disabled={submitting} className="self-start">
-          {submitting ? "Guardando…" : "Guardar"}
+        <Button type="submit" variant="primary" size="lg" disabled={submitting} className="w-full sm:ml-auto sm:w-auto">
+          {submitting ? "Guardando…" : "Guardar oportunidad"}
         </Button>
       </form>
     </main>
