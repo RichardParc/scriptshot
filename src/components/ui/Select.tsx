@@ -3,10 +3,18 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { fieldClass } from "@/lib/field";
+import { BottomSheet } from "@/components/ui/BottomSheet";
+import { OptionList } from "@/components/ui/OptionList";
 
 export interface SelectOption {
   value: string;
   label: string;
+}
+
+// "FORMATO" -> "Formato" (labels are shown in caps on the field itself).
+function sentenceCase(s: string) {
+  const t = s.trim().toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
 export function Select({
@@ -26,6 +34,7 @@ export function Select({
 }) {
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const baseId = useId();
@@ -49,6 +58,12 @@ export function Select({
   }, [open]);
 
   function openList() {
+    // On phones the choices open as a bottom sheet with big tap targets;
+    // on larger screens they stay a compact dropdown.
+    if (window.matchMedia("(max-width: 639px)").matches) {
+      setSheetOpen(true);
+      return;
+    }
     const idx = options.findIndex((o) => o.value === value);
     setHighlighted(idx >= 0 ? idx : 0);
     setOpen(true);
@@ -93,7 +108,7 @@ export function Select({
       <button
         type="button"
         aria-haspopup="listbox"
-        aria-expanded={open}
+        aria-expanded={open || sheetOpen}
         aria-labelledby={label ? `${labelId} ${baseId}-value` : undefined}
         id={`${baseId}-value`}
         onClick={() => (open ? setOpen(false) : openList())}
@@ -139,6 +154,21 @@ export function Select({
           ))}
         </ul>
       )}
+      <BottomSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title={label ? sentenceCase(label) : "Selecciona una opción"}
+      >
+        <OptionList
+          options={options}
+          value={value}
+          ariaLabel={label ? sentenceCase(label) : "Opciones"}
+          onChange={(v) => {
+            onChange(v);
+            setSheetOpen(false);
+          }}
+        />
+      </BottomSheet>
     </div>
   );
 }

@@ -25,9 +25,9 @@ export function PresetSelect({
   const inputId = useId();
 
   const selectOptions = [
-    { value: EMPTY, label: "—" },
+    { value: EMPTY, label: "Sin especificar" },
+    { value: OTHER, label: "Personalizado…" },
     ...options.map((o) => ({ value: o, label: o })),
-    { value: OTHER, label: "Otro…" },
   ];
 
   if (customMode) {

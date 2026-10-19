@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Clapperboard, Plus } from "lucide-react";
 import { NavDrawer } from "@/components/nav/NavDrawer";
 import { SearchBar } from "@/components/nav/SearchBar";
 import { FoldersView } from "@/components/FoldersView";
-import { LinkButton } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
+import { BottomSheet } from "@/components/ui/BottomSheet";
+import { NewProjectForm } from "@/components/NewProjectForm";
 import type { Folder } from "@/lib/types";
 import type { ProjectEntry, SortKey } from "@/lib/projectList";
 
@@ -22,6 +23,7 @@ export function DashboardShell({
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("recent");
+  const [creating, setCreating] = useState(false);
   const hasProjects = projects.length > 0;
 
   return (
@@ -62,10 +64,14 @@ export function DashboardShell({
           <p className="text-base text-text-secondary">
             Todavía no tienes proyectos.
           </p>
-          <LinkButton href="/new" variant="primary" className="mt-1">
+          <Button
+            variant="primary"
+            onClick={() => setCreating(true)}
+            className="mt-1"
+          >
             <Plus size={16} />
             Crea el primero
-          </LinkButton>
+          </Button>
         </div>
       )}
 
@@ -78,16 +84,26 @@ export function DashboardShell({
         />
       )}
 
-      <Link
-        href="/new"
+      <button
+        type="button"
+        onClick={() => setCreating(true)}
         aria-label="Nuevo proyecto"
+        aria-haspopup="dialog"
         className="fixed bottom-6 right-6 z-30 flex h-14 w-14 items-center justify-center gap-2 rounded-full bg-accent text-accent-ink shadow-lg shadow-black/50 transition-colors hover:bg-accent-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:w-auto sm:px-6"
       >
         <Plus size={22} />
         <span className="hidden text-base font-medium sm:inline">
           Nuevo proyecto
         </span>
-      </Link>
+      </button>
+
+      <BottomSheet
+        open={creating}
+        onClose={() => setCreating(false)}
+        title="Nuevo proyecto"
+      >
+        <NewProjectForm onCancel={() => setCreating(false)} />
+      </BottomSheet>
     </main>
   );
 }

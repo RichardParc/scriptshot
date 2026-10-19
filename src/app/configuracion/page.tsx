@@ -18,7 +18,7 @@ export default function SettingsPage() {
       </p>
 
       <div className="flex flex-col gap-4">
-        <PresetCategoryEditor category="camera_type" title="Cámara" />
+        <PresetCategoryEditor category="camera_type" title="Tipo de plano" />
         <PresetCategoryEditor category="camera_angle" title="Ángulo" />
         <PresetCategoryEditor category="camera_movement" title="Movimiento" />
         <PresetCategoryEditor

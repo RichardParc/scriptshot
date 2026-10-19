@@ -13,10 +13,15 @@ const config: Config = {
           from: { opacity: "0" },
           to: { opacity: "1" },
         },
+        "slide-up": {
+          from: { transform: "translateY(100%)" },
+          to: { transform: "translateY(0)" },
+        },
       },
       animation: {
         "slide-in-left": "slide-in-left 0.2s ease-out",
         "fade-in": "fade-in 0.2s ease-out",
+        "slide-up": "slide-up 0.25s ease-out",
       },
       colors: {
         base: "#0A0A0B",

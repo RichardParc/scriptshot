@@ -14,7 +14,8 @@ import {
 import { FolderSection } from "./FolderSection";
 import { ProjectCardGrid } from "./ProjectCardGrid";
 import { Button } from "@/components/ui/Button";
-import { Select } from "@/components/ui/Select";
+import { BottomSheet } from "@/components/ui/BottomSheet";
+import { OptionList } from "@/components/ui/OptionList";
 import { useConfirm } from "@/components/ui/useConfirm";
 
 const NO_FOLDER = "__none__";
@@ -277,36 +278,41 @@ export function FoldersView({
         </>
       )}
 
-      {movingOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-          onClick={() => setMovingOpen(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-lg border border-border bg-surface p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="mb-4 text-lg font-medium text-text-primary">
-              Mover {selectedIds.size}{" "}
-              {selectedIds.size === 1 ? "proyecto" : "proyectos"}
-            </h2>
-            <Select
-              label="CARPETA"
-              value={moveTarget}
-              options={folderOptions}
-              onChange={setMoveTarget}
-            />
-            <div className="mt-6 flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setMovingOpen(false)}>
-                Cancelar
-              </Button>
-              <Button variant="primary" onClick={handleMove} disabled={busy}>
-                {busy ? "Moviendo…" : "Mover"}
-              </Button>
-            </div>
+      <BottomSheet
+        open={movingOpen}
+        onClose={() => setMovingOpen(false)}
+        title={`Mover ${selectedIds.size} ${
+          selectedIds.size === 1 ? "proyecto" : "proyectos"
+        }`}
+        footer={
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              size="lg"
+              className="flex-1"
+              onClick={() => setMovingOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="flex-1"
+              onClick={handleMove}
+              disabled={busy}
+            >
+              {busy ? "Moviendo…" : "Mover"}
+            </Button>
           </div>
-        </div>
-      )}
+        }
+      >
+        <OptionList
+          options={folderOptions}
+          value={moveTarget}
+          onChange={setMoveTarget}
+          ariaLabel="Carpeta de destino"
+        />
+      </BottomSheet>
 
       {ConfirmModal}
     </div>

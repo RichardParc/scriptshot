@@ -75,7 +75,7 @@ export function SceneField({
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <PresetSelect
               size="sm"
-              label="CÁMARA"
+              label="TIPO DE PLANO"
               options={presets.cameraTypes}
               value={scene.camera ?? ""}
               onChange={(camera) => onUpdate({ camera: camera || null })}
