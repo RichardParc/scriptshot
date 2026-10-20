@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { Clapperboard, Sparkles, Plus, ArrowUpRight } from "lucide-react";
+import { Sparkles, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
@@ -105,23 +104,6 @@ export default async function ProjectPage({
         initialProject={project}
         summary={computeProjectSummary((blocks ?? []) as StoryBlock[])}
       />
-
-      <Link
-        href={`/project/${project.id}/rodaje`}
-        className="group mb-8 flex items-center justify-between gap-4 overflow-hidden rounded-xl border border-accent/35 bg-gradient-to-r from-accent-muted/70 via-surface to-surface p-4 transition-colors hover:border-accent/70 sm:p-5"
-      >
-        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-ink shadow-lg shadow-accent/20 sm:h-12 sm:w-12">
-            <Clapperboard size={20} />
-          </div>
-          <div className="min-w-0">
-            <p className="font-mono text-[10px] tracking-[0.16em] text-accent-hover">MODO DE PRODUCCIÓN</p>
-            <p className="mt-1 text-base font-semibold text-text-primary sm:text-lg">Ir al modo rodaje</p>
-            <p className="mt-0.5 hidden text-sm text-text-secondary sm:block">Revisa tus tomas y actualiza su estado mientras grabas.</p>
-          </div>
-        </div>
-        <ArrowUpRight size={20} className="shrink-0 text-accent-hover transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-      </Link>
 
       <ProjectEditor
         projectId={project.id}

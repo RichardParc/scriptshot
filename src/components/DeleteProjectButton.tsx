@@ -49,13 +49,14 @@ export function DeleteProjectButton({
     <div className="flex flex-col items-end gap-1">
       <Button
         variant="danger"
+        size="sm"
         onClick={handleDelete}
         disabled={deleting}
         aria-label={deleting ? "Borrando proyecto" : "Borrar proyecto"}
         title={deleting ? "Borrando proyecto" : "Borrar proyecto"}
-        className="h-11 w-11 rounded-lg p-0"
+        className="h-12 w-12 shrink-0 rounded-xl !p-0"
       >
-        <Trash2 size={18} />
+        <Trash2 size={20} />
       </Button>
       {error && <p className="text-sm text-status-missing">{error}</p>}
       {ConfirmModal}

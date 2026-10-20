@@ -15,7 +15,7 @@ import type { ProjectReference } from "@/lib/types";
 import { useConfirm } from "@/components/ui/useConfirm";
 
 const BUCKET = "project-references";
-const MAX_IMAGE_SIZE = 8 * 1024 * 1024;
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export function ProjectReferences({
@@ -28,7 +28,6 @@ export function ProjectReferences({
   const [references, setReferences] = useState(initialReferences);
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [link, setLink] = useState("");
-  const [linkTitle, setLinkTitle] = useState("");
   const [addingLink, setAddingLink] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -85,7 +84,7 @@ export function ProjectReferences({
       .insert({
         project_id: projectId,
         kind: "link",
-        title: linkTitle.trim() || parsedUrl.hostname.replace(/^www\./, ""),
+        title: parsedUrl.hostname.replace(/^www\./, ""),
         url: parsedUrl.toString(),
       })
       .select("*")
@@ -98,7 +97,6 @@ export function ProjectReferences({
     }
     setReferences((current) => [...current, data as ProjectReference]);
     setLink("");
-    setLinkTitle("");
   }
 
   async function uploadImage(file?: File) {
@@ -111,7 +109,7 @@ export function ProjectReferences({
     }
     if (file.size > MAX_IMAGE_SIZE) {
       if (fileInputRef.current) fileInputRef.current.value = "";
-      setError("La imagen debe pesar 8 MB o menos.");
+      setError("La imagen debe pesar 2 MB o menos.");
       return;
     }
 
@@ -197,23 +195,20 @@ export function ProjectReferences({
 
   return (
     <section className="mb-7 border-b border-border/70 pb-6" aria-labelledby="project-references-title">
-      <div className="mb-4 flex items-start justify-between gap-3">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <p className="mb-1 font-mono text-[10px] tracking-[0.16em] text-text-secondary">
-            INSPIRACIÓN DEL PROYECTO
-          </p>
-          <h2 id="project-references-title" className="text-base font-semibold text-text-primary">
+          <h2 id="project-references-title" className="text-sm font-semibold text-text-primary">
             Referentes
           </h2>
-          <p className="mt-1 text-sm text-text-secondary">
-            Guarda enlaces e imágenes para tenerlos a mano mientras desarrollas el guion.
+          <p className="mt-1 text-xs text-text-secondary">
+            Enlaces e imágenes que orientan este proyecto.
           </p>
         </div>
       </div>
 
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
         <label className="min-w-0 flex-1 text-xs text-text-secondary">
-          Enlace
+          Añadir referente web
           <input
             type="url"
             value={link}
@@ -225,37 +220,9 @@ export function ProjectReferences({
               }
             }}
             placeholder="https://…"
-            className="mt-1 min-h-10 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
+            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
         </label>
-        <label className="min-w-0 flex-1 text-xs text-text-secondary">
-          Nombre (opcional)
-          <input
-            type="text"
-            value={linkTitle}
-            onChange={(event) => setLinkTitle(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                void addLink();
-              }
-            }}
-            placeholder="Ej. Referencia de color"
-            className="mt-1 min-h-10 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
-          />
-        </label>
-        <button
-          type="button"
-          onClick={() => void addLink()}
-          disabled={addingLink || !link.trim()}
-          className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-3 text-sm font-medium text-accent-ink transition-colors hover:bg-accent-pressed disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-        >
-          {addingLink ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />}
-          Añadir enlace
-        </button>
-      </div>
-
-      <div className="mb-4">
         <input
           ref={fileInputRef}
           type="file"
@@ -265,17 +232,28 @@ export function ProjectReferences({
           disabled={uploading}
           onChange={(event) => void uploadImage(event.target.files?.[0])}
         />
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-border px-3 text-sm text-text-secondary transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-text-primary disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-        >
-          {uploading ? <Loader2 size={15} className="animate-spin" /> : <ImagePlus size={15} />}
-          {uploading ? "Subiendo imagen…" : "Subir captura o imagen"}
-          <span className="text-xs text-text-disabled">JPG, PNG o WebP · máx. 8 MB</span>
-        </button>
+        <div className="flex shrink-0 items-center gap-2 sm:pt-4">
+          <button
+            type="button"
+            onClick={() => void addLink()}
+            disabled={addingLink || !link.trim()}
+            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-accent px-2.5 text-xs font-medium text-accent-ink transition-colors hover:bg-accent-pressed disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            {addingLink ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+            Añadir enlace
+          </button>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-border px-2.5 text-xs text-text-secondary transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-text-primary disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          >
+            {uploading ? <Loader2 size={14} className="animate-spin" /> : <ImagePlus size={14} />}
+            {uploading ? "Subiendo…" : "Subir imagen"}
+          </button>
+        </div>
       </div>
+      <p className="mb-3 text-[11px] text-text-disabled">JPG, PNG o WebP · máx. 2 MB por imagen</p>
 
       {error && (
         <p role="alert" className="mb-3 text-sm text-status-missing">

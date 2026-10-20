@@ -42,7 +42,7 @@ values (
   'project-references',
   'project-references',
   false,
-  8388608,
+  2097152,
   array['image/jpeg', 'image/png', 'image/webp']
 )
 on conflict (id) do update set
