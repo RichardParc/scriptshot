@@ -16,6 +16,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import packageInfo from "../../../package.json";
+
+const appVersion = packageInfo.version;
 
 function isActive(href: string, pathname: string) {
   if (href === "/") {
@@ -128,9 +131,9 @@ export function NavDrawer() {
         aria-label="Abrir menú"
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-accent bg-accent text-accent-ink transition-colors hover:border-accent-pressed hover:bg-accent-pressed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-accent-hover transition-colors hover:border-accent/50 hover:bg-accent-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
-        <Menu size={20} />
+        <Menu size={20} strokeWidth={2.5} />
       </button>
 
       {open && (
@@ -175,7 +178,7 @@ export function NavDrawer() {
               </button>
             </div>
 
-            <nav aria-label="Principal" className="flex flex-col gap-1">
+            <nav aria-label="Principal" className="flex flex-1 flex-col gap-1">
               {accountEmail && (
                 <div className="mb-3 flex min-w-0 items-center gap-3 rounded-xl border border-accent/25 bg-accent-muted/35 px-3 py-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/30 bg-accent-muted text-accent-hover">
@@ -216,6 +219,43 @@ export function NavDrawer() {
                 Cerrar sesión
               </button>
             </nav>
+
+            <footer className="mt-8 border-t border-border px-4 pt-4">
+              <p className="text-xs text-text-secondary">
+                Hecho por{" "}
+                <a
+                  href="https://www.instagram.com/richardparc/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="RichardParc en Instagram, abre en una pestaña nueva"
+                  className="font-medium text-text-primary underline decoration-accent/60 underline-offset-4 transition-colors hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                >
+                  RichardParc
+                </a>
+              </p>
+              <a
+                href="https://www.instagram.com/richardparc/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram de RichardParc, abre en una pestaña nueva"
+                className="mt-2 inline-flex items-center gap-2 text-xs text-text-secondary transition-colors hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="h-3.5 w-3.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.7" />
+                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+                  <circle cx="17.5" cy="6.8" r="1" fill="currentColor" />
+                </svg>
+                @richardparc
+              </a>
+              <p className="mt-4 font-mono text-[10px] tracking-[0.12em] text-text-disabled">
+                SCRIPTSHOT · VERSIÓN {appVersion}
+              </p>
+            </footer>
           </div>
         </div>
       )}

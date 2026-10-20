@@ -193,9 +193,15 @@ export function SceneField({
       )}
 
       <div className="mt-2 flex justify-end">
-        <Button variant="ghost" size="sm" onClick={onDelete} className="px-2 py-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onDelete}
+          aria-label="Borrar escena"
+          title="Borrar escena"
+          className="h-9 w-9 rounded-lg p-0"
+        >
           <Trash2 size={13} />
-          Borrar
         </Button>
       </div>
     </div>

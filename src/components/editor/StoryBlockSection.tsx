@@ -57,11 +57,17 @@ export function StoryBlockSection({
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && onRename(title.trim())}
           aria-label="Título del bloque"
-          className="min-w-0 flex-1 rounded-sm bg-transparent pl-5 text-lg font-semibold tracking-tight text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:text-xl"
+          className="min-w-0 flex-1 rounded-sm bg-transparent pl-4 text-lg font-semibold tracking-tight text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:text-xl"
         />
-        <Button variant="danger" size="sm" onClick={onDelete} className="shrink-0">
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={onDelete}
+          aria-label={`Borrar bloque: ${title || block.title}`}
+          title={`Borrar bloque: ${title || block.title}`}
+          className="h-9 w-9 shrink-0 rounded-lg p-0"
+        >
           <Trash2 size={13} />
-          Borrar
         </Button>
       </div>
 
@@ -182,9 +188,15 @@ function VoiceOverField({
         >
           {vo.recorded ? "✓ GRABADA" : "PENDIENTE DE GRABAR"}
         </button>
-        <Button variant="ghost" size="sm" onClick={onDelete} className="min-h-10 px-2 py-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onDelete}
+          aria-label="Borrar voz en off"
+          title="Borrar voz en off"
+          className="h-10 w-10 shrink-0 rounded-lg p-0"
+        >
           <Trash2 size={13} />
-          Borrar
         </Button>
       </div>
     </div>

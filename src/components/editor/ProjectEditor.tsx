@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { AlertCircle, Check, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
+import type { ProjectReference } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
+import { ProjectReferences } from "@/components/ProjectReferences";
 import { useConfirm } from "@/components/ui/useConfirm";
 import { Button } from "@/components/ui/Button";
 import { SortableList } from "./SortableList";
@@ -37,10 +39,12 @@ export function ProjectEditor({
   projectId,
   initialBlocks,
   presets,
+  initialReferences,
 }: {
   projectId: string;
   initialBlocks: StoryBlock[];
   presets: ScenePresets;
+  initialReferences: ProjectReference[];
 }) {
   const router = useRouter();
   const [blocks, setBlocks] = useState<StoryBlock[]>(
@@ -390,6 +394,8 @@ export function ProjectEditor({
           </Button>
         </div>
       </div>
+
+      <ProjectReferences projectId={projectId} initialReferences={initialReferences} />
 
       {error && (
         <div role="alert" className="flex items-center justify-between gap-3 rounded-md border border-status-missing/40 bg-status-missing/10 px-4 py-3">

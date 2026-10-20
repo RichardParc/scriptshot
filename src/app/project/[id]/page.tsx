@@ -11,7 +11,7 @@ import { OpportunityShotCard } from "@/components/OpportunityShotCard";
 import { BackLink } from "@/components/ui/BackLink";
 import { LinkButton } from "@/components/ui/Button";
 import { computeProjectSummary } from "@/lib/status";
-import type { OpportunityShot, PresetOption, ScenePresets, StoryBlock } from "@/lib/types";
+import type { OpportunityShot, PresetOption, ProjectReference, ScenePresets, StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +55,12 @@ export default async function ProjectPage({
     .order("order", { ascending: true })
     .order("order", { ascending: true, referencedTable: "voice_over" })
     .order("order", { ascending: true, referencedTable: "scene" });
+
+  const { data: projectReferences } = await supabase
+    .from("project_reference")
+    .select("*")
+    .eq("project_id", id)
+    .order("created_at", { ascending: true });
 
   const { data: presetRows } = await supabase
     .from("preset_option")
@@ -121,6 +127,7 @@ export default async function ProjectPage({
         projectId={project.id}
         initialBlocks={(blocks ?? []) as StoryBlock[]}
         presets={presets}
+        initialReferences={(projectReferences ?? []) as ProjectReference[]}
       />
 
       <section className="mt-10 border-t border-border pt-7 sm:pt-8">

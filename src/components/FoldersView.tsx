@@ -161,9 +161,11 @@ export function FoldersView({
                 size="sm"
                 onClick={handleBulkDelete}
                 disabled={selectedIds.size === 0 || busy}
+                aria-label={busy ? "Borrando proyectos seleccionados" : `Borrar ${selectedIds.size} proyectos seleccionados`}
+                title={busy ? "Borrando proyectos seleccionados" : `Borrar ${selectedIds.size} proyectos seleccionados`}
+                className="h-9 w-9 rounded-lg p-0"
               >
                 <Trash2 size={14} />
-                {busy ? "Borrando…" : "Borrar"}
               </Button>
             </div>
           </>

@@ -47,9 +47,15 @@ export function DeleteProjectButton({
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <Button variant="danger" onClick={handleDelete} disabled={deleting}>
+      <Button
+        variant="danger"
+        onClick={handleDelete}
+        disabled={deleting}
+        aria-label={deleting ? "Borrando proyecto" : "Borrar proyecto"}
+        title={deleting ? "Borrando proyecto" : "Borrar proyecto"}
+        className="h-10 w-10 rounded-lg p-0"
+      >
         <Trash2 size={15} />
-        {deleting ? "Borrando…" : "Borrar"}
       </Button>
       {error && <p className="text-sm text-status-missing">{error}</p>}
       {ConfirmModal}

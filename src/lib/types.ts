@@ -45,6 +45,16 @@ export interface Project {
   folder_id: string | null;
 }
 
+export interface ProjectReference {
+  id: string;
+  project_id: string;
+  kind: "link" | "image";
+  title: string;
+  url: string | null;
+  storage_path: string | null;
+  created_at: string;
+}
+
 export interface Folder {
   id: string;
   name: string;
