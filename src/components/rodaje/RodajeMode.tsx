@@ -254,7 +254,7 @@ export function RodajeMode({
     scopedScenes.every((scene) => scene.status === "grabada");
 
   return (
-    <div className="flex min-h-dvh flex-col bg-base">
+    <div className="flex min-h-dvh flex-col bg-canvas">
       {/* Top bar */}
       <div className="border-b border-border bg-surface/70 px-4 py-3 sm:py-4">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
@@ -265,7 +265,7 @@ export function RodajeMode({
             <ChevronLeft size={14} className="shrink-0" />
             <span className="truncate">{backLabel}</span>
           </Link>
-          <span className="shrink-0 rounded-md border border-border bg-base px-2.5 py-1 font-mono text-xs text-text-secondary">
+          <span className="shrink-0 rounded-md border border-border bg-canvas px-2.5 py-1 font-mono text-xs text-text-secondary">
             {String(total > 0 ? visibleIndex + 1 : 0).padStart(2, "0")} <span className="text-text-disabled">/</span> {String(total).padStart(2, "0")}
           </span>
         </div>
@@ -487,7 +487,7 @@ export function RodajeMode({
                     {current.requirements.map((r) => (
                       <span
                         key={r}
-                        className="rounded-md border border-border bg-base/50 px-3 py-1.5 text-sm text-text-secondary"
+                        className="rounded-md border border-border bg-canvas/50 px-3 py-1.5 text-sm text-text-secondary"
                       >
                         {r}
                       </span>
@@ -506,7 +506,7 @@ export function RodajeMode({
               )}
 
               {current.post_production && (
-                <div className="relative mb-6 rounded-xl border border-border bg-base/50 p-4">
+                <div className="relative mb-6 rounded-xl border border-border bg-canvas/50 p-4">
                   <p className="mb-2 flex items-center gap-1.5 font-mono text-[10px] tracking-[0.14em] text-text-secondary">
                     <Wand2 size={12} />
                     POSTPRODUCCIÓN
@@ -537,7 +537,7 @@ export function RodajeMode({
               }
             }}
             disabled={visibleIndex === 0}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-base text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-14 sm:w-14"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-canvas text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-14 sm:w-14"
             aria-label="Anterior"
           >
             <ChevronLeft size={20} />
@@ -577,7 +577,7 @@ export function RodajeMode({
               }
             }}
             disabled={visibleIndex === total - 1}
-            className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-base px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
+            className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-canvas px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Siguiente"
           >
             <ChevronRight size={20} />
@@ -596,7 +596,7 @@ export function RodajeMode({
 
 function MetaTag({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-base/60 px-3 py-2 text-sm text-text-secondary">
+    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-canvas/60 px-3 py-2 text-sm text-text-secondary">
       <span className="text-accent-hover">{icon}</span>
       <span className="truncate">{label}</span>
     </div>

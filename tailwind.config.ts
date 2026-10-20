@@ -24,7 +24,7 @@ const config: Config = {
         "slide-up": "slide-up 0.25s ease-out",
       },
       colors: {
-        base: "#0A0A0B",
+        canvas: "#0A0A0B",
         surface: "#141416",
         "surface-2": "#1B1B1E",
         border: "#28282C",

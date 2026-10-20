@@ -53,12 +53,12 @@ export function OpportunityShotCard({
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 pl-1">
         <div className="flex flex-wrap items-center gap-2">
           {shot.type && (
-            <span className="rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] tracking-wide text-text-secondary">
+            <span className="rounded-md border border-border bg-canvas/50 px-2 py-1 font-mono text-[10px] tracking-wide text-text-secondary">
               {shot.type}
             </span>
           )}
           {shot.location && (
-            <span className="flex items-center gap-1 rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
+            <span className="flex items-center gap-1 rounded-md border border-border bg-canvas/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
               <MapPin size={11} />
               ¿Dónde se grabó? {shot.location.name}
             </span>

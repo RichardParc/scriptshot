@@ -106,7 +106,7 @@ export function PresetCategoryEditor({
           {hint && <p className="mt-1 text-sm leading-5 text-text-secondary">{hint}</p>}
         </div>
         {!loading && (
-          <span className="rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
+          <span className="rounded-md border border-border bg-canvas/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
             {options.length} {options.length === 1 ? "OPCIÓN" : "OPCIONES"}
           </span>
         )}
@@ -136,7 +136,7 @@ export function PresetCategoryEditor({
             ) : (
               <span
                 key={opt.id}
-                className="flex items-center gap-1 rounded-lg border border-border bg-base/50 py-1 pl-3 pr-1.5 text-sm text-text-primary"
+                className="flex items-center gap-1 rounded-lg border border-border bg-canvas/50 py-1 pl-3 pr-1.5 text-sm text-text-primary"
               >
                 {opt.label}
                 <button

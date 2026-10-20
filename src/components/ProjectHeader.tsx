@@ -104,7 +104,7 @@ export function ProjectHeader({
             )}
             <button
               onClick={startEdit}
-              className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-base/50 px-3 text-sm text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className="ml-auto inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-canvas/50 px-3 text-sm text-text-secondary transition-colors hover:border-border-strong hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
               <Pencil size={13} /> Editar
             </button>

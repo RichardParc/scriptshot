@@ -256,7 +256,7 @@ export function ProjectReferences({
               }
             }}
             placeholder="https://…"
-            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
+            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-canvas/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
         </label>
         <label className="col-span-2 min-w-0 text-xs text-text-secondary sm:col-span-1 sm:flex-1">
@@ -272,7 +272,7 @@ export function ProjectReferences({
               }
             }}
             placeholder="Ej. Referencia de color"
-            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
+            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-canvas/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
         </label>
         <input

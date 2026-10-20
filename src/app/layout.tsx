@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${jbMono.variable}`}>
-      <body className="min-h-screen bg-base font-sans text-text-primary antialiased">
+      <body className="min-h-screen bg-canvas font-sans text-text-primary antialiased">
         {children}
       </body>
     </html>

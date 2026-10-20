@@ -61,7 +61,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative isolate flex min-h-screen overflow-hidden bg-base">
+    <main className="relative isolate flex min-h-screen overflow-hidden bg-canvas">
       {!playBackground && (
         <Image
           src="/login-poster.jpg"
@@ -112,7 +112,7 @@ export default function LoginPage() {
           </a>
         </div>
 
-        <section className="mx-auto w-full max-w-md rounded-2xl border border-white/10 bg-base/85 p-6 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-8">
+        <section className="mx-auto w-full max-w-md rounded-2xl border border-white/10 bg-canvas/85 p-6 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-8">
           <div className="mb-7 flex justify-center lg:hidden">
             <Image src="/logo.png" alt="Scriptshot" width={616} height={139} className="h-9 w-auto" priority />
           </div>

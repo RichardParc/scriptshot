@@ -116,7 +116,7 @@ export default async function LocationsPage() {
                 {loc.repeat > 0 && `${loc.repeat} por repetir`}
               </p>
             </div>
-            <div className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-base/60 text-text-secondary transition-colors group-hover:border-accent/30 group-hover:text-accent-hover">
+            <div className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-canvas/60 text-text-secondary transition-colors group-hover:border-accent/30 group-hover:text-accent-hover">
               <Clapperboard size={17} />
             </div>
           </Link>

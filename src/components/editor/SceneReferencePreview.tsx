@@ -36,7 +36,7 @@ export function SceneReferencePreview({ url }: { url: string | null }) {
   return (
     <div className="mt-3 max-w-xl">
       {canPreview && (
-        <div className="overflow-hidden rounded-lg bg-base/70">
+        <div className="overflow-hidden rounded-lg bg-canvas/70">
           {reference.media === "image" ? (
             <img
               src={reference.href}

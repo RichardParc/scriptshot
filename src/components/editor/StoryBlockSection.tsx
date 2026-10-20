@@ -185,7 +185,7 @@ function VoiceOverField({
   }
 
   return (
-    <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
+    <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

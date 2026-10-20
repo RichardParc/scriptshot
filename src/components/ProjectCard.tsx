@@ -74,11 +74,11 @@ export function ProjectCard({
         )}
 
         <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">
-          <span className="flex items-center gap-1.5 rounded-md border border-border bg-base/40 px-2 py-1">
+          <span className="flex items-center gap-1.5 rounded-md border border-border bg-canvas/40 px-2 py-1">
             <Clapperboard size={12} />
             {project.format}
           </span>
-          <span className="flex items-center gap-1.5 rounded-md border border-border bg-base/40 px-2 py-1">
+          <span className="flex items-center gap-1.5 rounded-md border border-border bg-canvas/40 px-2 py-1">
             <Timer size={12} />
             {project.duration}
           </span>
