@@ -95,6 +95,7 @@ export interface FlatScene extends Scene {
   voiceOver?: Pick<VoiceOver, "text" | "recorded"> | null;
   // Only set in location-based RODAJE (Phase 5), where scenes come from
   // multiple projects.
+  projectId?: string;
   projectName?: string;
 }
 

@@ -10,6 +10,7 @@ import { LocationPicker } from "./LocationPicker";
 import { SceneStatusPill } from "@/components/SceneStatusPill";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import { SceneReferencePreview } from "./SceneReferencePreview";
 
 export function SceneField({
   scene,
@@ -131,7 +132,7 @@ export function SceneField({
 
           <div>
             <label htmlFor={referenceId} className="mb-1 block font-mono text-xs text-text-secondary">
-              REFERENCIA (URL)
+              REFERENCIA VISUAL
             </label>
             <input
               id={referenceId}
@@ -139,9 +140,13 @@ export function SceneField({
               onBlur={(e) =>
                 onUpdate({ reference: e.target.value.trim() || null })
               }
-              placeholder="https://…"
+              placeholder="Pega el enlace de una imagen o video"
               className={fieldClass("sm")}
             />
+            <p className="mt-1.5 text-xs leading-5 text-text-disabled">
+              Los enlaces directos a imágenes y videos se mostrarán aquí.
+            </p>
+            <SceneReferencePreview url={scene.reference} />
           </div>
 
           <div>

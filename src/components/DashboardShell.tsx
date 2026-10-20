@@ -59,12 +59,8 @@ export function DashboardShell({
       )}
 
       {!errorMessage && (
-        <section className="relative mb-8 overflow-hidden border-b border-border/70 px-1 pb-7 pt-3 sm:pb-8 sm:pt-4">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl"
-          />
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <section className="mb-8 border-b border-border/70 px-1 pb-7 pt-3 sm:pb-8 sm:pt-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-2xl">
               <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.18em] text-accent-hover">
                 <Sparkles size={13} />
@@ -73,12 +69,12 @@ export function DashboardShell({
               <h2 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
                 {hasProjects ? "Tus proyectos, listos para rodar." : "De una idea a un plan de rodaje."}
               </h2>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-white/70 sm:text-base">
+              <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
                 Organiza guiones, escenas y oportunidades en un solo lugar.
               </p>
             </div>
             {hasProjects && (
-              <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-white/50 sm:text-right">
+              <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-text-secondary sm:text-right">
                 {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"}
               </p>
             )}

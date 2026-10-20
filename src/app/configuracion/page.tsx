@@ -10,9 +10,8 @@ export default function SettingsPage() {
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
       <SectionBar />
 
-      <section className="relative mb-7 mt-7 overflow-hidden border-b border-border/70 px-1 pb-7 sm:pb-8">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative flex items-start gap-4">
+      <section className="mb-7 mt-7 border-b border-border/70 px-1 pb-7 sm:pb-8">
+        <div className="flex items-start gap-4">
           <div className="hidden shrink-0 pt-1 text-accent-hover sm:flex">
             <SlidersHorizontal size={21} />
           </div>
@@ -22,7 +21,7 @@ export default function SettingsPage() {
             </div>
             <p className="mb-2 hidden font-mono text-[10px] tracking-[0.16em] text-accent-hover sm:block">PREFERENCIAS DE PRODUCCIÓN</p>
             <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Configuración</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
               Personaliza las opciones que aparecen al planear escenas y guardar tomas de oportunidad.
             </p>
           </div>

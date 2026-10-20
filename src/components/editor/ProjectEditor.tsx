@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Loader2, Plus, X } from "lucide-react";
+import { AlertCircle, Check, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
@@ -47,18 +47,36 @@ export function ProjectEditor({
     [...initialBlocks].sort((a, b) => a.order - b.order)
   );
   const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const pendingSaves = useRef(0);
+  const batchFailed = useRef(false);
+  const saving = saveState === "saving";
   const { confirm, ConfirmModal } = useConfirm();
 
+  function beginSave() {
+    if (pendingSaves.current === 0) batchFailed.current = false;
+    pendingSaves.current += 1;
+    setError(null);
+    setSaveState("saving");
+  }
+
+  function finishSave(success: boolean) {
+    if (!success) batchFailed.current = true;
+    pendingSaves.current = Math.max(0, pendingSaves.current - 1);
+    if (pendingSaves.current === 0) {
+      setSaveState(batchFailed.current ? "error" : "saved");
+    }
+  }
+
   async function addBlock() {
-    setSaving(true);
+    beginSave();
     const order = nextOrder(blocks);
     const { data, error } = await supabase
       .from("story_block")
       .insert({ project_id: projectId, title: "Nuevo bloque", order })
       .select("*")
       .single();
-    setSaving(false);
+    finishSave(Boolean(data) && !error);
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -70,12 +88,12 @@ export function ProjectEditor({
   }
 
   async function renameBlock(id: string, title: string) {
-    setSaving(true);
+    beginSave();
     const { error } = await supabase
       .from("story_block")
       .update({ title })
       .eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -91,9 +109,9 @@ export function ProjectEditor({
     });
     if (!confirmed) return;
 
-    setSaving(true);
+    beginSave();
     const { error } = await supabase.from("story_block").delete().eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -103,9 +121,9 @@ export function ProjectEditor({
 
   async function reorderBlocks(newOrderIds: string[]) {
     const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
-    setSaving(true);
+    beginSave();
     const ok = await persistReorder("story_block", itemsWithNewOrder);
-    setSaving(false);
+    finishSave(ok);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -122,13 +140,13 @@ export function ProjectEditor({
     const block = blocks.find((b) => b.id === blockId);
     if (!block) return;
     const order = nextOrder(block.voice_over);
-    setSaving(true);
+    beginSave();
     const { data, error } = await supabase
       .from("voice_over")
       .insert({ story_block_id: blockId, text: "", recorded: false, order })
       .select("*")
       .single();
-    setSaving(false);
+    finishSave(Boolean(data) && !error);
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -144,12 +162,12 @@ export function ProjectEditor({
   }
 
   async function updateVoiceOver(blockId: string, id: string, text: string) {
-    setSaving(true);
+    beginSave();
     const { error } = await supabase
       .from("voice_over")
       .update({ text })
       .eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -170,12 +188,12 @@ export function ProjectEditor({
 
   async function toggleVoiceOverRecorded(blockId: string, vo: VoiceOver) {
     const recorded = !vo.recorded;
-    setSaving(true);
+    beginSave();
     const { error } = await supabase
       .from("voice_over")
       .update({ recorded })
       .eq("id", vo.id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -196,9 +214,9 @@ export function ProjectEditor({
   }
 
   async function deleteVoiceOver(blockId: string, id: string) {
-    setSaving(true);
+    beginSave();
     const { error } = await supabase.from("voice_over").delete().eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -215,9 +233,9 @@ export function ProjectEditor({
 
   async function reorderVoiceOvers(blockId: string, newOrderIds: string[]) {
     const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
-    setSaving(true);
+    beginSave();
     const ok = await persistReorder("voice_over", itemsWithNewOrder);
-    setSaving(false);
+    finishSave(ok);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -243,13 +261,13 @@ export function ProjectEditor({
     const block = blocks.find((b) => b.id === blockId);
     if (!block) return;
     const order = nextOrder(block.scene);
-    setSaving(true);
+    beginSave();
     const { data, error } = await supabase
       .from("scene")
       .insert({ story_block_id: blockId, description: "", order })
       .select("*")
       .single();
-    setSaving(false);
+    finishSave(Boolean(data) && !error);
     if (error || !data) {
       setError(GENERIC_ERROR);
       return;
@@ -266,9 +284,9 @@ export function ProjectEditor({
     id: string,
     updates: Partial<Scene>
   ) {
-    setSaving(true);
+    beginSave();
     const { error } = await supabase.from("scene").update(updates).eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -288,9 +306,9 @@ export function ProjectEditor({
   }
 
   async function deleteScene(blockId: string, id: string) {
-    setSaving(true);
+    beginSave();
     const { error } = await supabase.from("scene").delete().eq("id", id);
-    setSaving(false);
+    finishSave(!error);
     if (error) {
       setError(GENERIC_ERROR);
       return;
@@ -306,9 +324,9 @@ export function ProjectEditor({
 
   async function reorderScenes(blockId: string, newOrderIds: string[]) {
     const itemsWithNewOrder = newOrderIds.map((id, index) => ({ id, order: index }));
-    setSaving(true);
+    beginSave();
     const ok = await persistReorder("scene", itemsWithNewOrder);
-    setSaving(false);
+    finishSave(ok);
     if (!ok) {
       setError(GENERIC_ERROR);
       return;
@@ -343,9 +361,34 @@ export function ProjectEditor({
             {sortedBlocks.length} {sortedBlocks.length === 1 ? "bloque" : "bloques"} · {sceneCount} {sceneCount === 1 ? "escena" : "escenas"} · {voiceOverCount} voces en off
           </p>
         </div>
-        <Button variant="secondary" size="sm" onClick={addBlock} className="shrink-0">
-          <Plus size={15} /> Agregar bloque
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          {saveState !== "idle" && (
+            <p
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className={`inline-flex items-center gap-1.5 text-xs ${
+                saveState === "error" ? "text-status-missing" : "text-text-secondary"
+              }`}
+            >
+              {saving ? (
+                <Loader2 size={13} className="animate-spin" aria-hidden="true" />
+              ) : saveState === "saved" ? (
+                <Check size={13} aria-hidden="true" />
+              ) : (
+                <AlertCircle size={13} aria-hidden="true" />
+              )}
+              {saving
+                ? "Guardando cambios…"
+                : saveState === "saved"
+                  ? "Cambios guardados"
+                  : "No se pudo guardar"}
+            </p>
+          )}
+          <Button variant="secondary" size="sm" onClick={addBlock} className="shrink-0">
+            <Plus size={15} /> Agregar bloque
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -355,7 +398,10 @@ export function ProjectEditor({
             {error}
           </div>
           <button
-            onClick={() => setError(null)}
+            onClick={() => {
+              setError(null);
+              setSaveState("idle");
+            }}
             className="rounded-sm text-status-missing hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             aria-label="Cerrar aviso"
           >
@@ -403,13 +449,6 @@ export function ProjectEditor({
           <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-text-secondary">
             Divide la historia en bloques —por ejemplo, Hook, Contexto y Desarrollo— y añade dentro las voces en off y escenas.
           </p>
-        </div>
-      )}
-
-      {saving && (
-        <div className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-text-secondary shadow-lg">
-          <Loader2 size={14} className="animate-spin" />
-          Guardando…
         </div>
       )}
 

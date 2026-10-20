@@ -93,8 +93,7 @@ export function ProjectHeader({
 
   if (!editing) {
     return (
-      <div className="relative mb-8 overflow-hidden border-b border-border/70 pb-6 sm:pb-7">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-28 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
+      <div className="mb-8 border-b border-border/70 pb-6 sm:pb-7">
         <div className="relative">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <StatusBadge status={summary.status} />
@@ -162,6 +161,11 @@ export function ProjectHeader({
               />
             </div>
           </div>
+            {summary.totalVoiceOvers > 0 && (
+              <p className="mt-3 text-sm text-text-secondary">
+                Voz en off: {summary.recordedVoiceOvers} de {summary.totalVoiceOvers} grabadas
+              </p>
+            )}
         </div>
       </div>
     );

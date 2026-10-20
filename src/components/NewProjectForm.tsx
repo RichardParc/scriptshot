@@ -17,6 +17,17 @@ import { Select } from "@/components/ui/Select";
 const FORMAT_OPTIONS = PROJECT_FORMATS.map((f) => ({ value: f, label: f }));
 const DURATION_OPTIONS = PROJECT_DURATIONS.map((d) => ({ value: d, label: d }));
 const NO_FOLDER = "__none__";
+const STORY_TEMPLATES = {
+  blank: [],
+  short: ["Hook", "Contexto", "Desarrollo", "Cierre"],
+  complete: ["Hook", "Contexto", "Conflicto", "Desarrollo", "Giro", "Clímax", "Cierre"],
+} as const;
+type StoryTemplate = keyof typeof STORY_TEMPLATES;
+const STORY_TEMPLATE_OPTIONS = [
+  { value: "blank", label: "En blanco" },
+  { value: "short", label: "Historia breve · 4 bloques" },
+  { value: "complete", label: "Historia completa · 7 bloques" },
+];
 
 /** The "new project" form, used both in the bottom sheet and on /new. */
 export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
@@ -27,6 +38,7 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
     PROJECT_DURATIONS[0]
   );
   const [idea, setIdea] = useState("");
+  const [storyTemplate, setStoryTemplate] = useState<StoryTemplate>("blank");
   const [folderId, setFolderId] = useState(NO_FOLDER);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -70,6 +82,31 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
       setSubmitting(false);
       setError(error.message);
       return;
+    }
+
+    const initialBlocks = STORY_TEMPLATES[storyTemplate];
+    if (initialBlocks.length > 0) {
+      const { error: blocksError } = await supabase.from("story_block").insert(
+        initialBlocks.map((title, order) => ({
+          project_id: data.id,
+          title,
+          order,
+        }))
+      );
+
+      if (blocksError) {
+        const { error: rollbackError } = await supabase
+          .from("project")
+          .delete()
+          .eq("id", data.id);
+        setSubmitting(false);
+        setError(
+          rollbackError
+            ? "El proyecto se creó, pero no pudimos guardar sus bloques. Revisa tus proyectos antes de volver a intentarlo."
+            : "No se pudo guardar la estructura inicial. Intenta de nuevo."
+        );
+        return;
+      }
     }
 
     router.push(`/project/${data.id}`);
@@ -136,6 +173,20 @@ export function NewProjectForm({ onCancel }: { onCancel: () => void }) {
           rows={4}
           className={fieldClass("md", "resize-none")}
         />
+      </div>
+
+      <div>
+        <Select
+          label="ESTRUCTURA INICIAL (OPCIONAL)"
+          value={storyTemplate}
+          options={STORY_TEMPLATE_OPTIONS}
+          onChange={(value) => setStoryTemplate(value as StoryTemplate)}
+        />
+        <p className="mt-2 text-sm leading-5 text-text-secondary">
+          {storyTemplate === "blank"
+            ? "Empieza en blanco y añade los bloques a tu manera."
+            : `${STORY_TEMPLATES[storyTemplate].join(" · ")} · podrás cambiar, reordenar o borrar cualquier bloque.`}
+        </p>
       </div>
 
       {error && (

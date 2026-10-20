@@ -3,12 +3,13 @@ import { MapPin, Clapperboard } from "lucide-react";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { SectionBar } from "@/components/nav/SectionBar";
+import type { SceneStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Locaciones — Scriptshot" };
 
 interface PendingSceneRow {
-  status: string;
+  status: SceneStatus;
   location: { id: string; name: string } | null;
   story_block: { project: { id: string; name: string } | null } | null;
 }
@@ -25,7 +26,7 @@ export default async function LocationsPage() {
 
   const byLocation = new Map<
     string,
-    { name: string; projectIds: Set<string>; pending: number }
+    { name: string; projectIds: Set<string>; pending: number; repeat: number }
   >();
 
   for (const row of rows) {
@@ -35,8 +36,10 @@ export default async function LocationsPage() {
       name: row.location.name,
       projectIds: new Set<string>(),
       pending: 0,
+      repeat: 0,
     };
-    entry.pending += 1;
+    if (row.status === "repetir") entry.repeat += 1;
+    else entry.pending += 1;
     if (projectId) entry.projectIds.add(projectId);
     byLocation.set(row.location.id, entry);
   }
@@ -49,19 +52,18 @@ export default async function LocationsPage() {
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
       <SectionBar />
 
-      <section className="relative mb-7 mt-7 overflow-hidden border-b border-border/70 px-1 pb-7 sm:pb-8">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mb-7 mt-7 border-b border-border/70 px-1 pb-7 sm:pb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
               <MapPin size={12} /> PLAN DE RODAJE
             </div>
             <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Locaciones</h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-white/70 sm:text-base">
-              Revisa dónde se concentran las escenas pendientes y qué proyectos las necesitan.
+            <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
+              Revisa qué escenas faltan y cuáles necesitan otra toma en cada locación.
             </p>
           </div>
-          <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-white/50 sm:text-right">
+          <p className="shrink-0 pb-1 font-mono text-xs tracking-wide text-text-secondary sm:text-right">
             {locations.length} {locations.length === 1 ? "locación" : "locaciones"}
           </p>
         </div>
@@ -80,7 +82,7 @@ export default async function LocationsPage() {
           </div>
           <p className="text-lg font-medium text-text-primary">Aún no hay locaciones por revisar</p>
           <p className="max-w-md text-sm leading-6 text-text-secondary">
-            Todavía no hay tomas pendientes con locación. Asigna una locación en
+            Todavía no hay tomas por grabar o repetir con locación. Asigna una locación en
             los detalles de una escena y aparecerá aquí.
           </p>
           <Link
@@ -109,7 +111,9 @@ export default async function LocationsPage() {
               <p className="truncate font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">
                 {loc.projectIds.size}{" "}
                 {loc.projectIds.size === 1 ? "proyecto" : "proyectos"} ·{" "}
-                {loc.pending} {loc.pending === 1 ? "toma pendiente" : "tomas pendientes"}
+                {loc.pending > 0 && `${loc.pending} ${loc.pending === 1 ? "pendiente" : "pendientes"}`}
+                {loc.pending > 0 && loc.repeat > 0 && " · "}
+                {loc.repeat > 0 && `${loc.repeat} por repetir`}
               </p>
             </div>
             <div className="ml-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-base/60 text-text-secondary transition-colors group-hover:border-accent/30 group-hover:text-accent-hover">

@@ -17,9 +17,8 @@ export default function NewProjectPage() {
     <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6 sm:py-12">
       <BackLink href="/" label="Todos los proyectos" />
 
-      <section className="relative mb-6 mt-6 overflow-hidden border-b border-border/70 px-1 pb-6 sm:pb-7">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative flex items-start gap-4">
+      <section className="mb-6 mt-6 border-b border-border/70 px-1 pb-6 sm:pb-7">
+        <div className="flex items-start gap-4">
           <div className="hidden shrink-0 pt-1 text-accent-hover sm:flex">
             <Clapperboard size={22} />
           </div>
@@ -29,7 +28,7 @@ export default function NewProjectPage() {
             </div>
             <p className="mb-2 hidden font-mono text-[10px] tracking-[0.16em] text-accent-hover sm:block">NUEVA PRODUCCIÓN</p>
             <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Crea un proyecto</h1>
-            <p className="mt-2 text-sm leading-6 text-white/70 sm:text-base">
+            <p className="mt-2 text-sm leading-6 text-text-secondary sm:text-base">
               Define la idea y el formato. Luego podrás desarrollar el guion y preparar las escenas.
             </p>
           </div>

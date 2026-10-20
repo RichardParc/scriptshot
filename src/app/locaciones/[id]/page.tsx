@@ -53,8 +53,7 @@ export default async function LocationRodajePage({
   const { data } = await supabase
     .from("scene")
     .select("*, story_block(title, order, voice_over(*), project(id, name))")
-    .eq("location_id", id)
-    .neq("status", "grabada");
+    .eq("location_id", id);
 
   const rows = (data ?? []) as unknown as SceneWithContext[];
 
@@ -62,6 +61,7 @@ export default async function LocationRodajePage({
     .map((row) => ({
       ...row,
       blockTitle: row.story_block?.title ?? "",
+      projectId: row.story_block?.project?.id ?? undefined,
       projectName: row.story_block?.project?.name ?? "",
       voiceOver:
         row.story_block?.voice_over.find(

@@ -46,6 +46,8 @@ export interface ProjectSummary {
   status: ProjectStatus;
   recordedScenes: number;
   totalScenes: number;
+  recordedVoiceOvers: number;
+  totalVoiceOvers: number;
 }
 
 export function computeProjectSummary(
@@ -62,5 +64,7 @@ export function computeProjectSummary(
     status: computeProjectStatus({ hasBlocks, scenes, voiceOvers }),
     recordedScenes: scenes.filter((s) => s.status === "grabada").length,
     totalScenes: scenes.length,
+    recordedVoiceOvers: voiceOvers.filter((voiceOver) => voiceOver.recorded).length,
+    totalVoiceOvers: voiceOvers.length,
   };
 }

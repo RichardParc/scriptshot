@@ -90,14 +90,13 @@ function NewOpportunityForm() {
     <main className="mx-auto max-w-2xl px-5 py-8 sm:px-6 sm:py-12">
       <BackLink href="/oportunidades" label="Oportunidades" />
 
-      <section className="relative mb-6 mt-6 overflow-hidden border-b border-border/70 px-1 pb-6 sm:pb-7">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-24 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative">
+      <section className="mb-6 mt-6 border-b border-border/70 px-1 pb-6 sm:pb-7">
+        <div>
           <div className="mb-3 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-accent-hover">
             <Sparkles size={12} /> NOTA DE PRODUCCIÓN
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Nueva toma de oportunidad</h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-white/70 sm:text-base">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
             Registra una idea o referencia que quieras tener presente durante el rodaje.
           </p>
         </div>

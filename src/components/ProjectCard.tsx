@@ -19,7 +19,13 @@ export function ProjectCard({
   selected?: boolean;
   onToggleSelect?: () => void;
 }) {
-  const { status, recordedScenes, totalScenes } = summary;
+  const {
+    status,
+    recordedScenes,
+    totalScenes,
+    recordedVoiceOvers,
+    totalVoiceOvers,
+  } = summary;
 
   const content = (
     <>
@@ -53,13 +59,26 @@ export function ProjectCard({
               </span>
               <span>{Math.round((recordedScenes / totalScenes) * 100)}%</span>
             </div>
-            <div className="h-1 overflow-hidden rounded-full bg-surface-2">
+            <div
+              role="progressbar"
+              aria-label={`Progreso del rodaje de ${project.name}`}
+              aria-valuemin={0}
+              aria-valuemax={totalScenes}
+              aria-valuenow={recordedScenes}
+              className="h-1 overflow-hidden rounded-full bg-surface-2"
+            >
               <div
                 className={`h-full ${STATUS_COLOR[status]}`}
                 style={{ width: `${(recordedScenes / totalScenes) * 100}%` }}
               />
             </div>
           </div>
+        )}
+
+        {totalVoiceOvers > 0 && (
+          <p className="mb-3 text-xs text-text-secondary">
+            Voz en off: {recordedVoiceOvers} de {totalVoiceOvers} grabadas
+          </p>
         )}
 
         <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">

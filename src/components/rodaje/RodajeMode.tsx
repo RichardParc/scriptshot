@@ -11,14 +11,35 @@ import {
   Compass,
   Move,
   MapPin,
-  Link as LinkIcon,
   Wand2,
   AlertCircle,
+  SkipForward,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { FlatScene, SceneStatus } from "@/lib/types";
 import { SceneStatusPill } from "@/components/SceneStatusPill";
+import { SceneReferencePreview } from "@/components/editor/SceneReferencePreview";
+import { Select } from "@/components/ui/Select";
 import { QuickOpportunityButton } from "./QuickOpportunityButton";
+
+const ALL_PROJECTS = "__all_projects__";
+const ALL_STATUSES = "__all_statuses__";
+const ALL_CAMERA_TYPES = "__all_camera_types__";
+
+const STATUS_FILTER_OPTIONS = [
+  { value: ALL_STATUSES, label: "Todos los estados" },
+  { value: "pendiente", label: "Por grabar" },
+  { value: "repetir", label: "Por repetir" },
+  { value: "grabada", label: "Grabadas" },
+];
+
+function findNextPending(scenes: FlatScene[], currentIndex: number) {
+  for (let offset = 1; offset < scenes.length; offset += 1) {
+    const candidate = (currentIndex + offset) % scenes.length;
+    if (scenes[candidate].status !== "grabada") return candidate;
+  }
+  return -1;
+}
 
 export function RodajeMode({
   backHref,
@@ -32,6 +53,10 @@ export function RodajeMode({
   projectId?: string;
 }) {
   const [scenes, setScenes] = useState<FlatScene[]>(initialScenes);
+  const isLocationRodaje = !projectId;
+  const [selectedProjectId, setSelectedProjectId] = useState(ALL_PROJECTS);
+  const [selectedStatus, setSelectedStatus] = useState(ALL_STATUSES);
+  const [selectedCamera, setSelectedCamera] = useState(ALL_CAMERA_TYPES);
   const [index, setIndex] = useState<number>(() => {
     const firstPending = initialScenes.findIndex(
       (s) => s.status !== "grabada"
@@ -39,13 +64,88 @@ export function RodajeMode({
     return firstPending === -1 ? 0 : firstPending;
   });
 
-  const total = scenes.length;
-  const recorded = useMemo(
-    () => scenes.filter((s) => s.status === "grabada").length,
+  const visibleScenes = useMemo(
+    () => scenes.filter((scene) =>
+      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
+      (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
+      (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
+    ),
+    [isLocationRodaje, scenes, selectedProjectId, selectedStatus, selectedCamera]
+  );
+  const projectOptions = useMemo(
+    () => [
+      { value: ALL_PROJECTS, label: "Todos los proyectos" },
+      ...Array.from(
+        new Map(
+          scenes
+            .filter((scene) => scene.projectId)
+            .map((scene) => [scene.projectId!, scene.projectName ?? "Proyecto"])
+        ),
+        ([value, label]) => ({ value, label })
+      ).sort((a, b) => a.label.localeCompare(b.label)),
+    ],
     [scenes]
   );
-  const current = scenes[index];
+  const cameraOptions = useMemo(
+    () => [
+      { value: ALL_CAMERA_TYPES, label: "Todos los tipos de plano" },
+      ...Array.from(new Set(scenes.map((scene) => scene.camera).filter((camera): camera is string => Boolean(camera))))
+        .sort((a, b) => a.localeCompare(b))
+        .map((camera) => ({ value: camera, label: camera })),
+    ],
+    [scenes]
+  );
+  const total = visibleScenes.length;
+  const scopedScenes = useMemo(
+    () =>
+      isLocationRodaje && selectedProjectId !== ALL_PROJECTS
+        ? scenes.filter((scene) => scene.projectId === selectedProjectId)
+        : scenes,
+    [isLocationRodaje, scenes, selectedProjectId]
+  );
+  const recorded = useMemo(
+    () => visibleScenes.filter((s) => s.status === "grabada").length,
+    [visibleScenes]
+  );
+  const current =
+    visibleScenes.find((scene) => scene.id === scenes[index]?.id) ?? visibleScenes[0];
+  const isFilteringToProject =
+    isLocationRodaje && selectedProjectId !== ALL_PROJECTS;
+  const visibleIndex = current
+    ? visibleScenes.findIndex((scene) => scene.id === current.id)
+    : 0;
   const [error, setError] = useState<string | null>(null);
+
+  function changeProjectFilter(nextProjectId: string) {
+    setSelectedProjectId(nextProjectId);
+    const firstScene =
+      scenes.find((scene) =>
+        (nextProjectId === ALL_PROJECTS || scene.projectId === nextProjectId) &&
+        (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
+        (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
+      );
+    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+  }
+
+  function changeStatusFilter(nextStatus: string) {
+    setSelectedStatus(nextStatus);
+    const firstScene = scenes.find((scene) =>
+      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
+      (nextStatus === ALL_STATUSES || scene.status === nextStatus) &&
+      (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
+    );
+    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+  }
+
+  function changeCameraFilter(nextCamera: string) {
+    setSelectedCamera(nextCamera);
+    const firstScene = scenes.find((scene) =>
+      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
+      (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
+      (nextCamera === ALL_CAMERA_TYPES || scene.camera === nextCamera)
+    );
+    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+  }
 
   async function setStatus(status: SceneStatus, advance: boolean) {
     if (!current) return;
@@ -65,18 +165,28 @@ export function RodajeMode({
     setScenes(updated);
 
     if (advance) {
-      const nextPending = updated.findIndex(
-        (s, i) => i > index && s.status !== "grabada"
+      const updatedVisible =
+        updated.filter((scene) =>
+          (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
+          (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
+          (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
+        );
+      const currentOrder = updated.findIndex((scene) => scene.id === current.id);
+      const pendingScenes = updatedVisible.filter(
+        (scene) => scene.id !== current.id && scene.status !== "grabada"
       );
-      if (nextPending !== -1) {
-        setIndex(nextPending);
-      } else if (index < total - 1) {
-        setIndex(index + 1);
+      const nextScene =
+        pendingScenes.find((scene) => updated.findIndex((item) => item.id === scene.id) > currentOrder) ??
+        pendingScenes[0] ??
+        updatedVisible.find((scene) => updated.findIndex((item) => item.id === scene.id) > currentOrder) ??
+        updatedVisible[0];
+      if (nextScene) {
+        setIndex(updated.findIndex((scene) => scene.id === nextScene.id));
       }
     }
   }
 
-  if (total === 0) {
+  if (scenes.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-accent/25 bg-accent-muted/60 text-accent-hover">
@@ -98,7 +208,9 @@ export function RodajeMode({
     );
   }
 
-  const allDone = recorded === total;
+  const allDone =
+    scopedScenes.length > 0 &&
+    scopedScenes.every((scene) => scene.status === "grabada");
 
   return (
     <div className="flex min-h-dvh flex-col bg-base">
@@ -113,27 +225,73 @@ export function RodajeMode({
             <span className="truncate">{backLabel}</span>
           </Link>
           <span className="shrink-0 rounded-md border border-border bg-base px-2.5 py-1 font-mono text-xs text-text-secondary">
-            {String(index + 1).padStart(2, "0")} <span className="text-text-disabled">/</span> {String(total).padStart(2, "0")}
+            {String(total > 0 ? visibleIndex + 1 : 0).padStart(2, "0")} <span className="text-text-disabled">/</span> {String(total).padStart(2, "0")}
           </span>
         </div>
-        <div className="mx-auto mt-3 flex max-w-2xl items-center gap-3">
+        <div className="mx-auto mt-3 flex max-w-2xl items-center gap-2 sm:gap-3">
           <div
             role="progressbar"
             aria-label="Progreso del rodaje"
             aria-valuemin={0}
-            aria-valuemax={total}
+            aria-valuemax={total || 1}
             aria-valuenow={recorded}
             className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2"
           >
           <div
             className="h-full bg-accent transition-[width] duration-500"
-            style={{ width: `${(recorded / total) * 100}%` }}
+            style={{ width: `${total > 0 ? (recorded / total) * 100 : 0}%` }}
           />
           </div>
           <span className="shrink-0 font-mono text-[10px] tracking-wide text-text-secondary">
-            {recorded}/{total} LISTAS
+            {recorded}/{total} GRABADAS
           </span>
+          {findNextPending(visibleScenes, visibleIndex) !== -1 && (
+            <button
+              type="button"
+              onClick={() => {
+                const nextPending = findNextPending(visibleScenes, visibleIndex);
+                if (nextPending !== -1) {
+                  const nextScene = visibleScenes[nextPending];
+                  setIndex(scenes.findIndex((scene) => scene.id === nextScene.id));
+                }
+              }}
+              aria-label="Ir a la siguiente escena pendiente"
+              className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-accent-hover transition-colors hover:bg-accent-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-3"
+            >
+              <SkipForward size={14} aria-hidden="true" />
+              <span>Siguiente pendiente</span>
+            </button>
+          )}
         </div>
+        {isLocationRodaje && (
+          <div className="mx-auto mt-3 grid max-w-2xl grid-cols-1 gap-2 sm:grid-cols-2">
+            {projectOptions.length > 2 && (
+              <Select
+                label="PROYECTO"
+                size="sm"
+                value={selectedProjectId}
+                options={projectOptions}
+                onChange={changeProjectFilter}
+              />
+            )}
+            <Select
+              label="ESTADO"
+              size="sm"
+              value={selectedStatus}
+              options={STATUS_FILTER_OPTIONS}
+              onChange={changeStatusFilter}
+            />
+            {cameraOptions.length > 1 && (
+              <Select
+                label="TIPO DE PLANO"
+                size="sm"
+                value={selectedCamera}
+                options={cameraOptions}
+                onChange={changeCameraFilter}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {error && (
@@ -155,28 +313,48 @@ export function RodajeMode({
       {/* Scene content */}
       <div className="flex-1 overflow-y-auto px-4 py-5 sm:py-8">
         <div className="mx-auto max-w-2xl">
-          {allDone ? (
+          {total === 0 ? (
+            <div className="py-12 text-center">
+              <p className="text-base font-medium text-text-primary">No hay tomas con estos filtros</p>
+              <p className="mt-2 text-sm text-text-secondary">
+                Prueba con otro estado, tipo de plano o proyecto.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedProjectId(ALL_PROJECTS);
+                  setSelectedStatus(ALL_STATUSES);
+                  setSelectedCamera(ALL_CAMERA_TYPES);
+                  setIndex(0);
+                }}
+                className="mt-3 min-h-10 text-sm font-medium text-accent-hover hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                Limpiar filtros
+              </button>
+            </div>
+          ) : allDone ? (
             <>
               <div className="mb-6 flex flex-col items-center gap-2 rounded-2xl border border-accent/25 bg-accent-muted/30 px-5 py-8 text-center">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-accent-ink">
                   <Check size={22} />
                 </div>
                 <p className="text-xl font-semibold tracking-wide text-text-primary">
-                  RODAJE COMPLETADO
+                  {isFilteringToProject ? "PROYECTO COMPLETADO" : "RODAJE COMPLETADO"}
                 </p>
                 <p className="max-w-md text-sm leading-6 text-text-secondary">
-                  Todas las escenas están grabadas. Repaso rápido abajo — toca
-                  una escena para volver a verla.
+                  {isFilteringToProject
+                    ? "Todas las escenas de este proyecto en la locación están grabadas. Puedes repasarlas abajo."
+                    : "Todas las escenas están grabadas. Repaso rápido abajo — toca una escena para volver a verla."}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2">
-                {scenes.map((s, i) => (
+                {visibleScenes.map((s, i) => (
                   <button
                     key={s.id}
-                    onClick={() => setIndex(i)}
+                    onClick={() => setIndex(scenes.findIndex((scene) => scene.id === s.id))}
                     className={`rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
-                      i === index
+                      i === visibleIndex
                         ? "border-accent bg-accent-muted"
                         : "border-border hover:border-border-strong"
                     }`}
@@ -260,15 +438,12 @@ export function RodajeMode({
               )}
 
               {current.reference && (
-                <a
-                  href={current.reference}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="relative mb-6 inline-flex min-h-10 items-center gap-2 rounded-lg border border-accent/25 bg-accent-muted/30 px-3 text-sm font-medium text-accent-hover transition-colors hover:bg-accent-muted/60"
-                >
-                  <LinkIcon size={14} />
-                  Ver referencia
-                </a>
+                <div className="relative mb-6">
+                  <p className="mb-1 font-mono text-[10px] tracking-[0.14em] text-text-secondary">
+                    REFERENCIA VISUAL
+                  </p>
+                  <SceneReferencePreview url={current.reference} />
+                </div>
               )}
 
               {current.post_production && (
@@ -292,11 +467,17 @@ export function RodajeMode({
       </div>
 
       {/* Bottom nav — large touch targets */}
+      {current && (
       <div className="border-t border-border bg-surface/95 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.22)] sm:px-4 sm:pt-4 sm:pb-[calc(1rem+env(safe-area-inset-bottom))]">
         <div className="mx-auto flex max-w-2xl items-center gap-1.5 sm:gap-2">
           <button
-            onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            disabled={index === 0}
+            onClick={() => {
+              const previousScene = visibleScenes[visibleIndex - 1];
+              if (previousScene) {
+                setIndex(scenes.findIndex((scene) => scene.id === previousScene.id));
+              }
+            }}
+            disabled={visibleIndex === 0}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-base text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-14 sm:w-14"
             aria-label="Anterior"
           >
@@ -330,8 +511,13 @@ export function RodajeMode({
           </button>
 
           <button
-            onClick={() => setIndex((i) => Math.min(total - 1, i + 1))}
-            disabled={index === total - 1}
+            onClick={() => {
+              const nextScene = visibleScenes[visibleIndex + 1];
+              if (nextScene) {
+                setIndex(scenes.findIndex((scene) => scene.id === nextScene.id));
+              }
+            }}
+            disabled={visibleIndex === total - 1}
             className="flex shrink-0 items-center justify-center rounded-lg border border-border bg-base px-3 py-3 text-text-secondary transition-colors hover:border-border-strong disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-4 sm:py-4"
             aria-label="Siguiente"
           >
@@ -342,6 +528,7 @@ export function RodajeMode({
           GRABADA: ya la tienes. REPETIR: quedó mal, hay que volver a grabarla.
         </p>
       </div>
+      )}
 
       <QuickOpportunityButton defaultProjectId={projectId} />
     </div>
