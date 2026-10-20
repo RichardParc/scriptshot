@@ -145,6 +145,33 @@ const styles = StyleSheet.create({
   detail: { fontSize: 7.5, lineHeight: 1.3, color: "#444444", marginTop: 1 },
   detailLabel: { fontFamily: "Helvetica-Bold", color: "#262626" },
   empty: { fontSize: 8, color: "#666666" },
+  referencesHeading: {
+    fontSize: 13,
+    fontFamily: "Helvetica-Bold",
+    marginBottom: 12,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "#333333",
+  },
+  referenceGrid: { flexDirection: "row", flexWrap: "wrap" },
+  referenceCard: {
+    width: "50%",
+    paddingHorizontal: 6,
+    paddingBottom: 12,
+  },
+  referenceImage: {
+    width: "100%",
+    height: 230,
+    objectFit: "contain",
+    borderWidth: 0.6,
+    borderColor: "#d4d4d4",
+  },
+  referenceTitle: {
+    fontSize: 8,
+    fontFamily: "Helvetica-Bold",
+    color: "#333333",
+    marginBottom: 5,
+  },
 });
 
 function Detail({ label, value }: { label: string; value: string }) {
@@ -171,6 +198,7 @@ export async function createProjectPdf(
   projectName: string,
   blocks: StoryBlock[],
   logoDataUrl: string,
+  imageReferences: { id: string; title: string; dataUrl: string }[] = [],
 ) {
   let shotNumber = 0;
   const numberedBlocks = blocks.map((block) => ({
@@ -262,6 +290,20 @@ export async function createProjectPdf(
             </View>
           </View>
         ))}
+
+        {imageReferences.length > 0 && (
+          <View break>
+            <Text style={styles.referencesHeading}>REFERENTES VISUALES</Text>
+            <View style={styles.referenceGrid}>
+              {imageReferences.map((reference) => (
+                <View key={reference.id} style={styles.referenceCard} wrap={false}>
+                  <Text style={styles.referenceTitle}>{reference.title}</Text>
+                  <Image src={reference.dataUrl} style={styles.referenceImage} />
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         <Text
           fixed

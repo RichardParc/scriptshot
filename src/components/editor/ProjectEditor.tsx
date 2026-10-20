@@ -468,11 +468,12 @@ export function ProjectEditor({
       <SortableList items={blockIds} onReorder={reorderBlocks}>
         {sortedBlocks.map((block) => (
           <SortableItem key={block.id} id={block.id}>
-            {({ dragHandleProps }) => (
+            {({ dragHandleProps, isDragging }) => (
               <StoryBlockSection
                 block={block}
                 presets={presets}
                 dragHandleProps={dragHandleProps}
+                isDragging={isDragging}
                 onRename={(title) => renameBlock(block.id, title)}
                 onDelete={() => deleteBlock(block.id)}
                 onAddVoiceOver={() => addVoiceOver(block.id)}

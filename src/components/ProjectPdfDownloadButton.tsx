@@ -13,6 +13,24 @@ function readBlobAsDataUrl(blob: Blob) {
   });
 }
 
+async function fetchReferenceAsJpeg(url: string) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("No se pudo cargar una imagen de referencia.");
+  const bitmap = await createImageBitmap(await response.blob());
+  const maxDimension = 1600;
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("No se pudo preparar una imagen de referencia.");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return canvas.toDataURL("image/jpeg", 0.88);
+}
+
 function fileName(projectName: string) {
   const slug = projectName
     .normalize("NFD")
@@ -26,9 +44,11 @@ function fileName(projectName: string) {
 export function ProjectPdfDownloadButton({
   projectName,
   blocks,
+  imageReferences,
 }: {
   projectName: string;
   blocks: StoryBlock[];
+  imageReferences: { id: string; title: string; url: string }[];
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +63,14 @@ export function ProjectPdfDownloadButton({
       if (!logoResponse.ok) throw new Error("No se pudo cargar el logo.");
       const logoDataUrl = await readBlobAsDataUrl(await logoResponse.blob());
       const { createProjectPdf } = await import("./ProjectPdfDocument");
-      const blob = await createProjectPdf(projectName, blocks, logoDataUrl);
+      const pdfReferences = await Promise.all(
+        imageReferences.map(async (reference) => ({
+          id: reference.id,
+          title: reference.title,
+          dataUrl: await fetchReferenceAsJpeg(reference.url),
+        }))
+      );
+      const blob = await createProjectPdf(projectName, blocks, logoDataUrl, pdfReferences);
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;

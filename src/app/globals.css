@@ -68,7 +68,8 @@ select:focus {
   .print-cover,
   .print-block,
   .print-scene,
-  .print-voiceover {
+  .print-voiceover,
+  .print-reference {
     break-inside: avoid-page;
     page-break-inside: avoid;
   }
@@ -110,5 +111,43 @@ select:focus {
     border: 1px solid #444;
     align-items: center;
     justify-content: center;
+  }
+
+  .print-references {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .print-references h2 {
+    margin: 0 0 0.16in;
+    border-bottom: 1pt solid #333;
+    padding-bottom: 0.08in;
+    font-size: 14pt;
+    font-weight: 700;
+  }
+
+  .print-reference-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.16in;
+  }
+
+  .print-reference {
+    margin: 0;
+    border: 0.6pt solid #d4d4d4;
+    padding: 0.1in;
+  }
+
+  .print-reference figcaption {
+    margin-bottom: 0.07in;
+    font-size: 9pt;
+    font-weight: 600;
+  }
+
+  .print-reference-image {
+    display: block;
+    width: 100%;
+    height: 2.65in;
+    object-fit: contain;
   }
 }

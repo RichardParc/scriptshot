@@ -23,8 +23,6 @@ export function ProjectCard({
     status,
     recordedScenes,
     totalScenes,
-    recordedVoiceOvers,
-    totalVoiceOvers,
   } = summary;
 
   const content = (
@@ -73,12 +71,6 @@ export function ProjectCard({
               />
             </div>
           </div>
-        )}
-
-        {totalVoiceOvers > 0 && (
-          <p className="mb-3 text-xs text-text-secondary">
-            Voz en off: {recordedVoiceOvers} de {totalVoiceOvers} grabadas
-          </p>
         )}
 
         <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 font-mono text-[10px] tracking-wide text-text-secondary sm:text-xs">

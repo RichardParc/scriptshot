@@ -35,8 +35,31 @@ export default async function PrintableProjectPage({
       .order("order", { ascending: true, referencedTable: "voice_over" })
       .order("order", { ascending: true, referencedTable: "scene" }),
   ]);
+  const { data: imageReferences } = await supabase
+    .from("project_reference")
+    .select("id, title, storage_path")
+    .eq("project_id", id)
+    .eq("kind", "image")
+    .order("created_at", { ascending: true });
 
   if (!project) notFound();
+
+  const printableReferences = (
+    await Promise.all(
+      (imageReferences ?? []).map(async (reference) => {
+        if (!reference.storage_path) return null;
+        const { data } = await supabase.storage
+          .from("project-references")
+          .createSignedUrl(reference.storage_path, 60 * 60);
+        return data
+          ? { id: reference.id, title: reference.title, url: data.signedUrl }
+          : null;
+      })
+    )
+  ).filter(
+    (reference): reference is { id: string; title: string; url: string } =>
+      reference !== null
+  );
 
   const sortedBlocks = ((blocks ?? []) as StoryBlock[]).map((block) => ({
     ...block,
@@ -61,7 +84,11 @@ export default async function PrintableProjectPage({
         >
           Volver al proyecto
         </a>
-        <ProjectPdfDownloadButton projectName={project.name} blocks={sortedBlocks} />
+        <ProjectPdfDownloadButton
+          projectName={project.name}
+          blocks={sortedBlocks}
+          imageReferences={printableReferences}
+        />
       </div>
 
       <article className="print-document mx-auto max-w-5xl px-8 pb-12 sm:px-14">
@@ -166,6 +193,29 @@ export default async function PrintableProjectPage({
           </div>
         ) : (
           <p className="text-sm text-neutral-600">Este proyecto aún no tiene bloques para imprimir.</p>
+        )}
+
+        {printableReferences.length > 0 && (
+          <section className="print-references mt-10 border-t border-neutral-200 pt-6" aria-labelledby="print-references-title">
+            <h2 id="print-references-title" className="mb-4 border-b border-neutral-300 pb-2 text-lg font-bold">
+              Referentes visuales
+            </h2>
+            <div className="print-reference-grid grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {printableReferences.map((reference) => (
+                <figure className="print-reference min-w-0 rounded border border-neutral-300 p-3" key={reference.id}>
+                  <figcaption className="mb-2 text-sm font-semibold">{reference.title}</figcaption>
+                  <Image
+                    src={reference.url}
+                    alt={reference.title}
+                    width={1200}
+                    height={900}
+                    unoptimized
+                    className="print-reference-image block h-auto max-h-96 w-full object-contain"
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
         )}
       </article>
     </main>

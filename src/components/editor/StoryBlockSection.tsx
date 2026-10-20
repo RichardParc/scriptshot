@@ -14,6 +14,7 @@ export function StoryBlockSection({
   block,
   presets,
   dragHandleProps,
+  isDragging = false,
   onRename,
   onDelete,
   onAddVoiceOver,
@@ -29,6 +30,7 @@ export function StoryBlockSection({
   block: StoryBlock;
   presets: ScenePresets;
   dragHandleProps: DragHandleProps;
+  isDragging?: boolean;
   onRename: (title: string) => void;
   onDelete: () => void;
   onAddVoiceOver: () => void;
@@ -49,7 +51,7 @@ export function StoryBlockSection({
   const sceneIds = sortedScenes.map((s) => s.id);
 
   return (
-    <section className="relative mb-4 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:p-5">
+    <section className={`relative mb-4 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-[border-color,box-shadow] sm:p-5 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
       <div aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-transparent" />
       <div className="relative mb-5 flex flex-wrap items-start gap-x-1 gap-y-3 sm:gap-3">
         <DragHandle dragHandleProps={dragHandleProps} compact className="absolute -left-3 top-0 z-10" />
@@ -89,11 +91,12 @@ export function StoryBlockSection({
           <SortableList items={voIds} onReorder={onReorderVoiceOvers}>
             {sortedVO.map((vo) => (
               <SortableItem key={vo.id} id={vo.id}>
-                {({ dragHandleProps: voDragProps }) => (
-                  <div className="flex items-start gap-2">
-                    <DragHandle dragHandleProps={voDragProps} className="mt-3" />
+                {({ dragHandleProps: voDragProps, isDragging }) => (
+                  <div className="relative flex items-start sm:gap-2">
+                    <DragHandle dragHandleProps={voDragProps} className="absolute -left-5 top-2 z-10 sm:static sm:mt-3" />
                     <VoiceOverField
                       vo={vo}
+                      isDragging={isDragging}
                       onUpdate={(text) => onUpdateVoiceOver(vo.id, text)}
                       onToggleRecorded={() => onToggleVoiceOverRecorded(vo)}
                       onDelete={() => onDeleteVoiceOver(vo.id)}
@@ -128,11 +131,12 @@ export function StoryBlockSection({
           <SortableList items={sceneIds} onReorder={onReorderScenes}>
             {sortedScenes.map((scene, i) => (
               <SortableItem key={scene.id} id={scene.id}>
-                {({ dragHandleProps: sceneDragProps }) => (
-                  <div className="flex items-start gap-2">
-                    <DragHandle dragHandleProps={sceneDragProps} className="mt-3" />
+                {({ dragHandleProps: sceneDragProps, isDragging }) => (
+                  <div className="relative flex items-start sm:gap-2">
+                    <DragHandle dragHandleProps={sceneDragProps} className="absolute -left-5 top-2 z-10 sm:static sm:mt-3" />
                     <SceneField
                       scene={scene}
+                      isDragging={isDragging}
                       index={i + 1}
                       voiceOvers={sortedVO}
                       presets={presets}
@@ -157,11 +161,13 @@ export function StoryBlockSection({
 
 function VoiceOverField({
   vo,
+  isDragging = false,
   onUpdate,
   onToggleRecorded,
   onDelete,
 }: {
   vo: VoiceOver;
+  isDragging?: boolean;
   onUpdate: (text: string) => void;
   onToggleRecorded: () => void;
   onDelete: () => void;
@@ -179,7 +185,7 @@ function VoiceOverField({
   }
 
   return (
-    <div className="min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 sm:p-4">
+    <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

@@ -9,6 +9,7 @@ import {
   Loader2,
   Plus,
   Trash2,
+  X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { ProjectReference } from "@/lib/types";
@@ -28,12 +29,15 @@ export function ProjectReferences({
   const [references, setReferences] = useState(initialReferences);
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [link, setLink] = useState("");
+  const [linkTitle, setLinkTitle] = useState("");
   const [addingLink, setAddingLink] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [previewReference, setPreviewReference] = useState<ProjectReference | null>(null);
   const { confirm, ConfirmModal } = useConfirm();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewCloseRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -65,6 +69,23 @@ export function ProjectReferences({
     };
   }, [references]);
 
+  useEffect(() => {
+    if (!previewReference) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    previewCloseRef.current?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setPreviewReference(null);
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [previewReference]);
+
   async function addLink() {
     setError(null);
     let parsedUrl: URL;
@@ -84,7 +105,7 @@ export function ProjectReferences({
       .insert({
         project_id: projectId,
         kind: "link",
-        title: parsedUrl.hostname.replace(/^www\./, ""),
+        title: linkTitle.trim() || parsedUrl.hostname.replace(/^www\./, ""),
         url: parsedUrl.toString(),
       })
       .select("*")
@@ -97,6 +118,7 @@ export function ProjectReferences({
     }
     setReferences((current) => [...current, data as ProjectReference]);
     setLink("");
+    setLinkTitle("");
   }
 
   async function uploadImage(file?: File) {
@@ -206,8 +228,8 @@ export function ProjectReferences({
         </div>
       </div>
 
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label className="min-w-0 flex-1 text-xs text-text-secondary">
+      <div className="mb-2 grid grid-cols-2 items-end gap-2 sm:flex">
+        <label className="col-span-2 min-w-0 text-xs text-text-secondary sm:col-span-1 sm:flex-[1.5]">
           Añadir referente web
           <input
             type="url"
@@ -223,6 +245,22 @@ export function ProjectReferences({
             className="mt-1 min-h-9 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
         </label>
+        <label className="col-span-2 min-w-0 text-xs text-text-secondary sm:col-span-1 sm:flex-1">
+          Nombre (opcional)
+          <input
+            type="text"
+            value={linkTitle}
+            onChange={(event) => setLinkTitle(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                void addLink();
+              }
+            }}
+            placeholder="Ej. Referencia de color"
+            className="mt-1 min-h-9 w-full rounded-lg border border-border bg-base/60 px-3 text-sm text-text-primary placeholder:text-text-disabled focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20"
+          />
+        </label>
         <input
           ref={fileInputRef}
           type="file"
@@ -232,7 +270,7 @@ export function ProjectReferences({
           disabled={uploading}
           onChange={(event) => void uploadImage(event.target.files?.[0])}
         />
-        <div className="flex shrink-0 items-center gap-2 sm:pt-4">
+        <div className="col-span-2 flex shrink-0 items-center gap-2 sm:col-span-1 sm:pt-4">
           <button
             type="button"
             onClick={() => void addLink()}
@@ -269,7 +307,14 @@ export function ProjectReferences({
               className="group flex min-w-0 items-center gap-3 rounded-lg border border-border/70 bg-surface/40 p-2.5"
             >
               {reference.kind === "image" ? (
-                <div className="relative h-14 w-16 shrink-0 overflow-hidden rounded-md bg-surface-2">
+                <button
+                  type="button"
+                  onClick={() => setPreviewReference(reference)}
+                  disabled={!signedUrls[reference.id]}
+                  aria-label={`Abrir imagen de referencia: ${reference.title}`}
+                  title="Ver imagen en grande"
+                  className="group/image relative h-14 w-16 shrink-0 overflow-hidden rounded-md bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-wait"
+                >
                   {signedUrls[reference.id] ? (
                     <Image
                       src={signedUrls[reference.id]}
@@ -284,7 +329,10 @@ export function ProjectReferences({
                       <ImagePlus size={18} />
                     </div>
                   )}
-                </div>
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-white opacity-0 transition group-hover/image:bg-black/35 group-hover/image:opacity-100 group-focus-visible/image:opacity-100">
+                    <ImagePlus size={18} />
+                  </span>
+                </button>
               ) : (
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent-muted/50 text-accent-hover">
                   <Link2 size={17} />
@@ -332,6 +380,45 @@ export function ProjectReferences({
         </p>
       )}
       {ConfirmModal}
+      {previewReference && signedUrls[previewReference.id] && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          onClick={() => setPreviewReference(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Imagen de referencia: ${previewReference.title}`}
+            className="w-full max-w-5xl overflow-hidden rounded-xl border border-white/10 bg-surface shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-3 px-4 py-3">
+              <p className="min-w-0 truncate text-sm font-medium text-text-primary">
+                {previewReference.title}
+              </p>
+              <button
+                ref={previewCloseRef}
+                type="button"
+                onClick={() => setPreviewReference(null)}
+                aria-label="Cerrar imagen"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="relative h-[75vh] max-h-[calc(100dvh-6rem)] w-full bg-black/40">
+              <Image
+                src={signedUrls[previewReference.id]}
+                alt={previewReference.title}
+                fill
+                unoptimized
+                sizes="90vw"
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

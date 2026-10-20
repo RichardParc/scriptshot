@@ -30,7 +30,15 @@ export function SortableItem({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={isDragging ? "opacity-50" : ""}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={
+        isDragging
+          ? "relative z-20 opacity-90 drop-shadow-[0_12px_24px_rgba(226,55,55,0.22)]"
+          : ""
+      }
+    >
       {children({ dragHandleProps: { attributes, listeners }, isDragging })}
     </div>
   );
