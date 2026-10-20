@@ -90,7 +90,7 @@ export default async function ProjectPage({
       <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <BackLink href="/" label="Todos los proyectos" />
         <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
-          <PrintProjectButton />
+          <PrintProjectButton href={`/project/${project.id}/imprimir`} />
           <DeleteProjectButton projectId={project.id} projectName={project.name} />
         </div>
       </div>

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { PrintProjectButton } from "@/components/PrintProjectButton";
-import type { Project, StoryBlock } from "@/lib/types";
+import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -64,37 +64,24 @@ export default async function PrintableProjectPage({
       </div>
 
       <article className="print-document mx-auto max-w-5xl px-5 pb-12 sm:px-10">
-        <header className="print-cover mb-7 border-b-2 border-neutral-900 pb-4">
-          <p className="mb-1 text-[9pt] font-semibold uppercase tracking-[0.16em] text-neutral-600">
-            Guion de rodaje
-          </p>
-          <h1 className="text-3xl font-bold leading-tight tracking-tight">{(project as Project).name}</h1>
-          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[10pt] text-neutral-700">
-            <span>{(project as Project).format}</span>
-            <span>Duración: {(project as Project).duration}</span>
-            <span>Fecha: __________________</span>
-          </div>
-          {(project as Project).idea && (
-            <p className="mt-3 max-w-3xl whitespace-pre-wrap text-[10pt] leading-relaxed text-neutral-800">
-              {(project as Project).idea}
-            </p>
-          )}
+        <header className="print-cover mb-5 border-b-2 border-neutral-900 pb-3">
+          <h1 className="print-project-title text-2xl font-bold leading-tight tracking-tight">{project.name}</h1>
         </header>
 
         {sortedBlocks.length ? (
           <div className="print-blocks">
             {sortedBlocks.map((block, blockIndex) => (
               <section className="print-block" key={block.id}>
-                <h2 className="mb-3 flex items-baseline gap-2 border-b border-neutral-400 pb-1.5 text-[14pt] font-bold">
-                  <span className="font-mono text-[9pt] font-normal text-neutral-500">
-                    {String(blockIndex + 1).padStart(2, "0")}
+                <h2 className="print-block-heading mb-3 border-b-2 border-neutral-900 pb-2">
+                  <span className="mb-0.5 block font-mono text-[8pt] font-bold tracking-[0.12em] text-neutral-600">
+                    BLOQUE {String(blockIndex + 1).padStart(2, "0")}
                   </span>
-                  {block.title}
+                  <span className="block text-[14pt] font-bold leading-tight">{block.title}</span>
                 </h2>
 
                 <div className="print-columns grid grid-cols-2 gap-5">
                   <div className="min-w-0">
-                    <h3 className="mb-2 text-[8pt] font-bold uppercase tracking-[0.14em] text-neutral-600">
+                    <h3 className="print-column-heading mb-2 text-[8pt] font-bold uppercase tracking-[0.14em] text-neutral-600">
                       Escenas
                     </h3>
                     {block.scene.length ? (
@@ -131,7 +118,7 @@ export default async function PrintableProjectPage({
                   </div>
 
                   <div className="print-voiceovers min-w-0 border-l border-neutral-300 pl-4">
-                    <h3 className="mb-2 text-[8pt] font-bold uppercase tracking-[0.14em] text-neutral-600">
+                    <h3 className="print-column-heading mb-2 text-[8pt] font-bold uppercase tracking-[0.14em] text-neutral-600">
                       Voz en off
                     </h3>
                     {block.voice_over.length ? (
