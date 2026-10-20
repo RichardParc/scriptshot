@@ -9,6 +9,7 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 import type { StoryBlock } from "@/lib/types";
+import { parseScriptText } from "@/lib/script-format";
 
 const styles = StyleSheet.create({
   page: {
@@ -144,7 +145,32 @@ const styles = StyleSheet.create({
   sceneMetaLabel: { fontFamily: "Helvetica-Bold", color: "#3f3f3f" },
   detail: { fontSize: 7.5, lineHeight: 1.3, color: "#444444", marginTop: 1 },
   detailLabel: { fontFamily: "Helvetica-Bold", color: "#262626" },
+  bold: { fontFamily: "Helvetica-Bold" },
+  boldItalic: { fontFamily: "Helvetica-BoldOblique" },
   empty: { fontSize: 8, color: "#666666" },
+  needsSection: { marginBottom: 13 },
+  needsHeading: {
+    fontSize: 8,
+    fontFamily: "Helvetica-Bold",
+    letterSpacing: 0.6,
+    color: "#444444",
+    marginBottom: 5,
+  },
+  needsGrid: { flexDirection: "row", flexWrap: "wrap" },
+  needChip: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    borderWidth: 0.55,
+    borderColor: "#c7c7c7",
+    borderRadius: 2,
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    marginRight: 5,
+    marginBottom: 4,
+    maxWidth: "100%",
+  },
+  needLabel: { fontSize: 7.5, fontFamily: "Helvetica-Bold" },
+  needShots: { fontSize: 6.8, color: "#555555", marginLeft: 4 },
   referencesHeading: {
     fontSize: 13,
     fontFamily: "Helvetica-Bold",
@@ -166,19 +192,41 @@ const styles = StyleSheet.create({
     borderWidth: 0.6,
     borderColor: "#d4d4d4",
   },
-  referenceTitle: {
-    fontSize: 8,
-    fontFamily: "Helvetica-Bold",
-    color: "#333333",
-    marginBottom: 5,
-  },
 });
+
+function FormattedText({
+  value,
+  style,
+}: {
+  value: string;
+  style?: React.ComponentProps<typeof Text>["style"];
+}) {
+  return (
+    <Text style={style}>
+      {parseScriptText(value).map((segment, index) => (
+        <Text
+          key={index}
+          style={segment.bold ? (segment.italic ? styles.boldItalic : styles.bold) : undefined}
+        >
+          {segment.text}
+        </Text>
+      ))}
+    </Text>
+  );
+}
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <Text style={styles.detail}>
       <Text style={styles.detailLabel}>{label}: </Text>
-      {value}
+      {parseScriptText(value).map((segment, index) => (
+        <Text
+          key={index}
+          style={segment.bold ? (segment.italic ? styles.boldItalic : styles.bold) : undefined}
+        >
+          {segment.text}
+        </Text>
+      ))}
     </Text>
   );
 }
@@ -198,7 +246,7 @@ export async function createProjectPdf(
   projectName: string,
   blocks: StoryBlock[],
   logoDataUrl: string,
-  imageReferences: { id: string; title: string; dataUrl: string }[] = [],
+  imageReferences: { id: string; dataUrl: string }[] = [],
 ) {
   let shotNumber = 0;
   const numberedBlocks = blocks.map((block) => ({
@@ -211,6 +259,19 @@ export async function createProjectPdf(
       })),
     voice_over: [...(block.voice_over ?? [])].sort((a, b) => a.order - b.order),
   }));
+  const projectNeeds = new Map<string, { label: string; shots: string[] }>();
+  for (const block of numberedBlocks) {
+    for (const { scene, number } of block.scene) {
+      for (const rawNeed of scene.requirements ?? []) {
+        const label = rawNeed.trim();
+        if (!label) continue;
+        const key = label.toLocaleLowerCase();
+        const entry = projectNeeds.get(key) ?? { label, shots: [] };
+        if (!entry.shots.includes(number)) entry.shots.push(number);
+        projectNeeds.set(key, entry);
+      }
+    }
+  }
 
   const document = (
     <Document
@@ -227,6 +288,20 @@ export async function createProjectPdf(
           </View>
           <Image src={logoDataUrl} style={styles.logo} />
         </View>
+
+        {projectNeeds.size > 0 && (
+          <View style={styles.needsSection}>
+            <Text style={styles.needsHeading}>NECESIDADES DE RODAJE</Text>
+            <View style={styles.needsGrid}>
+              {[...projectNeeds.values()].map((need) => (
+                <View key={need.label.toLocaleLowerCase()} style={styles.needChip}>
+                  <FormattedText value={need.label} style={styles.needLabel} />
+                  <Text style={styles.needShots}>Tomas {need.shots.join(", ")}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         {numberedBlocks.map((block, blockIndex) => (
           <View key={block.id} style={styles.block}>
@@ -249,7 +324,7 @@ export async function createProjectPdf(
                       <Text style={styles.itemNumber}>
                         TOMA {number}{scene.status === "repetir" && <Text style={styles.retake}> · REPETIR</Text>}
                       </Text>
-                      <Text style={styles.description}>{scene.description || "Descripción pendiente"}</Text>
+                      <FormattedText style={styles.description} value={scene.description || "Descripción pendiente"} />
                       {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
                         <View style={styles.sceneMeta}>
                           {scene.location?.name && <SceneMetaChip label="Locación" value={scene.location.name} />}
@@ -281,7 +356,7 @@ export async function createProjectPdf(
                       <View style={styles.itemContent}>
                         <Text style={styles.itemNumber}>VOZ {String(voiceIndex + 1).padStart(2, "0")}</Text>
                         {relatedShots.length > 0 && <Text style={styles.relatedShots}>TOMAS {relatedShots.join(", ")}</Text>}
-                        <Text style={styles.description}>{voiceOver.text || "Texto pendiente"}</Text>
+                        <FormattedText style={styles.description} value={voiceOver.text || "Texto pendiente"} />
                       </View>
                     </View>
                   );
@@ -297,7 +372,6 @@ export async function createProjectPdf(
             <View style={styles.referenceGrid}>
               {imageReferences.map((reference) => (
                 <View key={reference.id} style={styles.referenceCard} wrap={false}>
-                  <Text style={styles.referenceTitle}>{reference.title}</Text>
                   <Image src={reference.dataUrl} style={styles.referenceImage} />
                 </View>
               ))}
@@ -308,7 +382,7 @@ export async function createProjectPdf(
         <Text
           fixed
           style={styles.footer}
-          render={({ pageNumber, totalPages }) => `PÁGINA ${pageNumber} DE ${totalPages}`}
+          render={({ pageNumber, totalPages }) => `PÁGINA ${pageNumber} DE ${totalPages} · ${projectName}`}
         />
       </Page>
     </Document>

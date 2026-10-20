@@ -66,7 +66,6 @@ export function ProjectPdfDownloadButton({
       const pdfReferences = await Promise.all(
         imageReferences.map(async (reference) => ({
           id: reference.id,
-          title: reference.title,
           dataUrl: await fetchReferenceAsJpeg(reference.url),
         }))
       );

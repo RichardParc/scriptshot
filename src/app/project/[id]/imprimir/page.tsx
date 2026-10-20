@@ -4,8 +4,20 @@ import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { ProjectPdfDownloadButton } from "@/components/ProjectPdfDownloadButton";
 import type { StoryBlock } from "@/lib/types";
+import { parseScriptText } from "@/lib/script-format";
 
 export const dynamic = "force-dynamic";
+
+function PrintText({ value }: { value: string }) {
+  return parseScriptText(value).map((segment, index) => {
+    const text = segment.bold ? <strong>{segment.text}</strong> : segment.text;
+    return (
+      <span key={index}>
+        {segment.italic ? <em>{text}</em> : text}
+      </span>
+    );
+  });
+}
 
 export async function generateMetadata({
   params,
@@ -74,6 +86,25 @@ export default async function PrintableProjectPage({
       sceneNumbers.set(scene.id, String(sceneNumber).padStart(2, "0"));
     }
   }
+  const projectNeeds = new Map<string, { label: string; shots: string[] }>();
+  for (const block of sortedBlocks) {
+    for (const scene of block.scene) {
+      for (const rawNeed of scene.requirements ?? []) {
+        const label = rawNeed.trim();
+        if (!label) continue;
+        const key = label.toLocaleLowerCase();
+        const entry = projectNeeds.get(key) ?? {
+          label,
+          shots: [],
+        };
+        const shotNumber = sceneNumbers.get(scene.id);
+        if (shotNumber && !entry.shots.includes(shotNumber)) {
+          entry.shots.push(shotNumber);
+        }
+        projectNeeds.set(key, entry);
+      }
+    }
+  }
 
   return (
     <main className="print-page min-h-screen bg-white text-neutral-950">
@@ -96,6 +127,22 @@ export default async function PrintableProjectPage({
           <h1 className="print-project-title min-w-0 text-2xl font-bold leading-tight tracking-tight text-neutral-950">{project.name}</h1>
           <Image src="/logo-print.png" alt="Scriptshot" width={154} height={35} className="h-5 w-auto shrink-0 object-contain" priority />
         </header>
+
+        {projectNeeds.size > 0 && (
+          <section className="print-needs mb-5" aria-labelledby="print-needs-title">
+            <h2 id="print-needs-title" className="mb-2 text-[9pt] font-bold uppercase tracking-wide text-neutral-700">
+              Necesidades de rodaje
+            </h2>
+            <ul className="print-needs-list flex flex-wrap gap-2">
+              {[...projectNeeds.values()].map((need) => (
+                <li className="print-need rounded border border-neutral-300 px-2 py-1 text-[8.5pt]" key={need.label.toLocaleLowerCase()}>
+                  <strong><PrintText value={need.label} /></strong>
+                  <span className="ml-1.5 text-neutral-600">Tomas {need.shots.join(", ")}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {sortedBlocks.length ? (
           <div className="print-blocks">
@@ -126,7 +173,7 @@ export default async function PrintableProjectPage({
                                 {scene.status === "repetir" && <span className="font-bold text-red-800"> · REPETIR</span>}
                               </p>
                               <p className="whitespace-pre-wrap text-[10pt] font-medium leading-snug">
-                                {scene.description || "Descripción pendiente"}
+                                <PrintText value={scene.description || "Descripción pendiente"} />
                               </p>
                               {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
                                 <div className="mt-2 flex flex-wrap gap-1 text-[8pt] leading-tight text-neutral-800">
@@ -137,12 +184,12 @@ export default async function PrintableProjectPage({
                                 </div>
                               )}
                               <div className="mt-1.5 space-y-0.5 text-[8.5pt] leading-snug text-neutral-700">
-                                {!!scene.requirements?.length && <p><b>Necesitas:</b> {scene.requirements.join(", ")}</p>}
-                                {scene.notes && <p className="whitespace-pre-wrap"><b>Notas:</b> {scene.notes}</p>}
+                                {!!scene.requirements?.length && <p><b>Necesitas:</b> <PrintText value={scene.requirements.join(", ")} /></p>}
+                                {scene.notes && <p className="whitespace-pre-wrap"><b>Notas:</b> <PrintText value={scene.notes} /></p>}
                                 {scene.post_production && (
-                                  <p className="whitespace-pre-wrap"><b>Post:</b> {scene.post_production_notes || "Requiere postproducción"}</p>
+                                  <p className="whitespace-pre-wrap"><b>Post:</b> <PrintText value={scene.post_production_notes || "Requiere postproducción"} /></p>
                                 )}
-                                {scene.reference && <p className="break-all"><b>Referencia:</b> {scene.reference}</p>}
+                                {scene.reference && <p className="break-all"><b>Referencia:</b> <PrintText value={scene.reference} /></p>}
                               </div>
                             </div>
                           </li>
@@ -177,7 +224,7 @@ export default async function PrintableProjectPage({
                                 </p>
                               )}
                               <p className="whitespace-pre-wrap text-[10pt] leading-relaxed">
-                                {voiceOver.text || "Texto pendiente"}
+                                <PrintText value={voiceOver.text || "Texto pendiente"} />
                               </p>
                             </div>
                           </li>
@@ -203,7 +250,6 @@ export default async function PrintableProjectPage({
             <div className="print-reference-grid grid grid-cols-1 gap-4 sm:grid-cols-2">
               {printableReferences.map((reference) => (
                 <figure className="print-reference min-w-0 rounded border border-neutral-300 p-3" key={reference.id}>
-                  <figcaption className="mb-2 text-sm font-semibold">{reference.title}</figcaption>
                   <Image
                     src={reference.url}
                     alt={reference.title}

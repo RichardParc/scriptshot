@@ -34,7 +34,7 @@ select:focus {
   margin: 0.5in 0.5in 0.65in;
 
   @bottom-center {
-    content: "PÁGINA " counter(page) " DE " counter(pages);
+    content: "GUIÓN DEL PROYECTO · PÁGINA " counter(page) " DE " counter(pages);
     color: #525252;
     font-family: Arial, sans-serif;
     font-size: 8pt;
@@ -113,6 +113,15 @@ select:focus {
     justify-content: center;
   }
 
+  .print-needs {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .print-need {
+    border-color: #d4d4d4;
+  }
+
   .print-references {
     break-before: page;
     page-break-before: always;
@@ -136,12 +145,6 @@ select:focus {
     margin: 0;
     border: 0.6pt solid #d4d4d4;
     padding: 0.1in;
-  }
-
-  .print-reference figcaption {
-    margin-bottom: 0.07in;
-    font-size: 9pt;
-    font-weight: 600;
   }
 
   .print-reference-image {
