@@ -9,7 +9,6 @@ import { SortableList } from "./SortableList";
 import { SortableItem, type DragHandleProps } from "./SortableItem";
 import { DragHandle } from "./DragHandle";
 import { useConfirm } from "@/components/ui/useConfirm";
-import { countWords, estimateVoiceOverSeconds, formatEstimatedDuration } from "@/lib/voice-over-duration";
 
 export function StoryBlockSection({
   block,
@@ -77,15 +76,6 @@ export function StoryBlockSection({
 
       {/* Voice-over */}
       <div className="mb-5 pl-1 sm:pl-2">
-        {(() => {
-          const totalWords = sortedVO.reduce((sum, vo) => sum + countWords(vo.text), 0);
-          const totalSeconds = sortedVO.reduce((sum, vo) => sum + estimateVoiceOverSeconds(vo.text), 0);
-          return totalWords > 0 ? (
-            <p className="mb-2 text-right text-xs text-text-secondary" aria-live="polite">
-              Este bloque · {totalWords} {totalWords === 1 ? "palabra" : "palabras"} · {formatEstimatedDuration(totalSeconds)}
-            </p>
-          ) : null;
-        })()}
         <div className="mb-3 flex items-center justify-between gap-3">
           <span className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">
             VOZ EN OFF
@@ -196,21 +186,7 @@ function VoiceOverField({
 
   return (
     <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onBlur={() => onUpdate(text)}
-        placeholder="¿Qué necesitas decir?"
-        aria-label="Texto de voz en off"
-        rows={2}
-        className="w-full resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-      />
-      {countWords(text) > 0 && (
-        <p className="mt-2 text-xs text-text-secondary" aria-live="polite">
-          {countWords(text)} {countWords(text) === 1 ? "palabra" : "palabras"} · duración estimada {formatEstimatedDuration(estimateVoiceOverSeconds(text))}
-        </p>
-      )}
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+      <div className="mb-2 flex items-center justify-between gap-3">
         <button
           onClick={onToggleRecorded}
           aria-pressed={vo.recorded}
@@ -231,6 +207,15 @@ function VoiceOverField({
           <Trash2 size={18} />
         </Button>
       </div>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => onUpdate(text)}
+        placeholder="¿Qué necesitas decir?"
+        aria-label="Texto de voz en off"
+        rows={2}
+        className="w-full resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+      />
       {ConfirmModal}
     </div>
   );

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Check, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import type { Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
+import type { Project, Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import type { ProjectReference } from "@/lib/types";
 import { StoryBlockSection } from "./StoryBlockSection";
 import { ProjectReferences } from "@/components/ProjectReferences";
@@ -16,7 +16,8 @@ import { computeProjectSummary } from "@/lib/status";
 import { STATUS_COLOR } from "@/components/StatusBadge";
 import Link from "next/link";
 import { ArrowUpRight, Clapperboard } from "lucide-react";
-import { estimateVoiceOverSeconds, formatEstimatedDuration } from "@/lib/voice-over-duration";
+import { countWords, estimateVoiceOverSeconds, formatEstimatedDuration } from "@/lib/voice-over-duration";
+import { ProjectBackup } from "./ProjectBackup";
 
 function nextOrder(items: { order: number }[]) {
   return items.length === 0 ? 0 : Math.max(...items.map((i) => i.order)) + 1;
@@ -41,11 +42,13 @@ const GENERIC_ERROR =
   "No se pudo guardar el cambio. Revisa tu conexión e inténtalo de nuevo.";
 
 export function ProjectEditor({
+  project,
   projectId,
   initialBlocks,
   presets,
   initialReferences,
 }: {
+  project: Project;
   projectId: string;
   initialBlocks: StoryBlock[];
   presets: ScenePresets;
@@ -359,11 +362,9 @@ export function ProjectEditor({
   const blockIds = sortedBlocks.map((b) => b.id);
   const sceneCount = blocks.reduce((count, block) => count + block.scene.length, 0);
   const voiceOverCount = blocks.reduce((count, block) => count + block.voice_over.length, 0);
-  const estimatedNarrationSeconds = blocks.reduce(
-    (total, block) => total + block.voice_over.reduce(
-      (blockTotal, voiceOver) => blockTotal + estimateVoiceOverSeconds(voiceOver.text), 0
-    ), 0
-  );
+  const narrationText = blocks.flatMap((block) => block.voice_over.map((voiceOver) => voiceOver.text)).join(" ");
+  const narrationWordCount = countWords(narrationText);
+  const estimatedNarrationSeconds = estimateVoiceOverSeconds(narrationText);
   const progress = computeProjectSummary(blocks);
   const sceneProgress = progress.totalScenes > 0
     ? Math.round((progress.recordedScenes / progress.totalScenes) * 100)
@@ -377,7 +378,6 @@ export function ProjectEditor({
           <h2 className="text-xl font-semibold tracking-tight text-text-primary">Guion y escenas</h2>
           <p className="mt-1 text-sm text-text-secondary">
             {sortedBlocks.length} {sortedBlocks.length === 1 ? "bloque" : "bloques"} · {sceneCount} {sceneCount === 1 ? "escena" : "escenas"} · {voiceOverCount} voces en off
-            {estimatedNarrationSeconds > 0 && <> · Voz estimada {formatEstimatedDuration(estimatedNarrationSeconds)}</>}
           </p>
         </div>
         {saveState !== "idle" && (
@@ -524,6 +524,13 @@ export function ProjectEditor({
         >
           <Plus size={16} /> Agregar bloque
         </Button>
+      </div>
+
+      <div className="flex flex-col gap-3 border-t border-border/70 pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-text-secondary" aria-live="polite">
+          Voz en off total · {narrationWordCount} {narrationWordCount === 1 ? "palabra" : "palabras"} · {narrationWordCount > 0 ? formatEstimatedDuration(estimatedNarrationSeconds) : "añade texto para estimar la duración"}
+        </p>
+        <ProjectBackup project={project} blocks={blocks} references={initialReferences} />
       </div>
 
       {ConfirmModal}

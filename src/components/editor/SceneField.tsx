@@ -82,7 +82,7 @@ export function SceneField({
             onClick={() => void confirmDelete()}
             aria-label={`Borrar escena ${String(index).padStart(2, "0")}`}
             title="Borrar escena"
-            className="h-11 w-11 shrink-0 rounded-lg !p-0 text-text-secondary hover:!text-status-missing"
+            className="h-10 w-10 shrink-0 rounded-lg !p-0 text-text-secondary hover:!text-status-missing"
           >
             <Trash2 size={16} />
           </Button>

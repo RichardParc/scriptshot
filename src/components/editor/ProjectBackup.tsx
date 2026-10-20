@@ -67,7 +67,7 @@ export function ProjectBackup({
     anchor.download = `${project.name.trim().replace(/[^\p{L}\p{N}-]+/gu, "-").replace(/^-|-$/g, "") || "proyecto"}-scriptshot.json`;
     anchor.click();
     URL.revokeObjectURL(url);
-    setMessage("Respaldo descargado.");
+    setMessage("Archivo JSON exportado.");
     setError(null);
   }
 
@@ -189,11 +189,11 @@ export function ProjectBackup({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button type="button" variant="ghost" size="sm" onClick={exportBackup} className="min-h-10 rounded-lg px-3">
-        <Download size={15} /> Respaldar proyecto
+      <Button type="button" variant="ghost" size="sm" onClick={exportBackup} title="Exportar proyecto como JSON" className="min-h-9 rounded-md px-2 text-xs">
+        <Download size={14} /> Exportar
       </Button>
-      <Button type="button" variant="secondary" size="sm" onClick={() => inputRef.current?.click()} disabled={working} className="min-h-10 rounded-lg px-3">
-        {working ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
+      <Button type="button" variant="ghost" size="sm" onClick={() => inputRef.current?.click()} disabled={working} title="Importar un proyecto desde JSON" className="min-h-9 rounded-md px-2 text-xs">
+        {working ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
         {working ? "Importando…" : "Importar JSON"}
       </Button>
       <input ref={inputRef} type="file" accept="application/json,.json" className="sr-only" aria-label="Seleccionar respaldo de Scriptshot" onChange={(event) => { void importBackup(event.target.files?.[0]); event.currentTarget.value = ""; }} />
