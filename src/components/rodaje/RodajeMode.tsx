@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -25,6 +25,16 @@ import { QuickOpportunityButton } from "./QuickOpportunityButton";
 const ALL_PROJECTS = "__all_projects__";
 const ALL_STATUSES = "__all_statuses__";
 const ALL_CAMERA_TYPES = "__all_camera_types__";
+const ALL_LOCATIONS = "__all_locations__";
+const ALL_REQUIREMENTS = "__all_requirements__";
+
+type FilterOverrides = Partial<{
+  projectId: string;
+  status: string;
+  camera: string;
+  locationId: string;
+  requirement: string;
+}>;
 
 const STATUS_FILTER_OPTIONS = [
   { value: ALL_STATUSES, label: "Todos los estados" },
@@ -57,6 +67,8 @@ export function RodajeMode({
   const [selectedProjectId, setSelectedProjectId] = useState(ALL_PROJECTS);
   const [selectedStatus, setSelectedStatus] = useState(ALL_STATUSES);
   const [selectedCamera, setSelectedCamera] = useState(ALL_CAMERA_TYPES);
+  const [selectedLocationId, setSelectedLocationId] = useState(ALL_LOCATIONS);
+  const [selectedRequirement, setSelectedRequirement] = useState(ALL_REQUIREMENTS);
   const [index, setIndex] = useState<number>(() => {
     const firstPending = initialScenes.findIndex(
       (s) => s.status !== "grabada"
@@ -64,13 +76,25 @@ export function RodajeMode({
     return firstPending === -1 ? 0 : firstPending;
   });
 
+  const matchesFilters = useCallback((scene: FlatScene, overrides: FilterOverrides = {}) => {
+    const projectFilter = overrides.projectId ?? selectedProjectId;
+    const statusFilter = overrides.status ?? selectedStatus;
+    const cameraFilter = overrides.camera ?? selectedCamera;
+    const locationFilter = overrides.locationId ?? selectedLocationId;
+    const requirementFilter = overrides.requirement ?? selectedRequirement;
+
+    return (
+      (!isLocationRodaje || projectFilter === ALL_PROJECTS || scene.projectId === projectFilter) &&
+      (statusFilter === ALL_STATUSES || scene.status === statusFilter) &&
+      (cameraFilter === ALL_CAMERA_TYPES || scene.camera === cameraFilter) &&
+      (locationFilter === ALL_LOCATIONS || scene.location_id === locationFilter) &&
+      (requirementFilter === ALL_REQUIREMENTS || scene.requirements?.includes(requirementFilter))
+    );
+  }, [isLocationRodaje, selectedProjectId, selectedStatus, selectedCamera, selectedLocationId, selectedRequirement]);
+
   const visibleScenes = useMemo(
-    () => scenes.filter((scene) =>
-      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
-      (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
-      (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
-    ),
-    [isLocationRodaje, scenes, selectedProjectId, selectedStatus, selectedCamera]
+    () => scenes.filter((scene) => matchesFilters(scene)),
+    [scenes, matchesFilters]
   );
   const projectOptions = useMemo(
     () => [
@@ -95,6 +119,29 @@ export function RodajeMode({
     ],
     [scenes]
   );
+  const locationOptions = useMemo(
+    () => [
+      { value: ALL_LOCATIONS, label: "Todas las locaciones" },
+      ...Array.from(
+        new Map(
+          scenes
+            .filter((scene) => scene.location_id)
+            .map((scene) => [scene.location_id!, scene.location?.name ?? "Locación"])
+        ),
+        ([value, label]) => ({ value, label })
+      ).sort((a, b) => a.label.localeCompare(b.label)),
+    ],
+    [scenes]
+  );
+  const requirementOptions = useMemo(
+    () => [
+      { value: ALL_REQUIREMENTS, label: "Todas las necesidades" },
+      ...Array.from(new Set(scenes.flatMap((scene) => scene.requirements ?? [])))
+        .sort((a, b) => a.localeCompare(b))
+        .map((requirement) => ({ value: requirement, label: requirement })),
+    ],
+    [scenes]
+  );
   const total = visibleScenes.length;
   const scopedScenes = useMemo(
     () =>
@@ -116,35 +163,34 @@ export function RodajeMode({
     : 0;
   const [error, setError] = useState<string | null>(null);
 
+  function focusFirstMatch(overrides: FilterOverrides = {}) {
+    const firstScene = scenes.find((scene) => matchesFilters(scene, overrides));
+    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+  }
+
   function changeProjectFilter(nextProjectId: string) {
     setSelectedProjectId(nextProjectId);
-    const firstScene =
-      scenes.find((scene) =>
-        (nextProjectId === ALL_PROJECTS || scene.projectId === nextProjectId) &&
-        (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
-        (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
-      );
-    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+    focusFirstMatch({ projectId: nextProjectId });
   }
 
   function changeStatusFilter(nextStatus: string) {
     setSelectedStatus(nextStatus);
-    const firstScene = scenes.find((scene) =>
-      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
-      (nextStatus === ALL_STATUSES || scene.status === nextStatus) &&
-      (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
-    );
-    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+    focusFirstMatch({ status: nextStatus });
   }
 
   function changeCameraFilter(nextCamera: string) {
     setSelectedCamera(nextCamera);
-    const firstScene = scenes.find((scene) =>
-      (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
-      (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
-      (nextCamera === ALL_CAMERA_TYPES || scene.camera === nextCamera)
-    );
-    setIndex(firstScene ? scenes.findIndex((scene) => scene.id === firstScene.id) : 0);
+    focusFirstMatch({ camera: nextCamera });
+  }
+
+  function changeLocationFilter(nextLocationId: string) {
+    setSelectedLocationId(nextLocationId);
+    focusFirstMatch({ locationId: nextLocationId });
+  }
+
+  function changeRequirementFilter(nextRequirement: string) {
+    setSelectedRequirement(nextRequirement);
+    focusFirstMatch({ requirement: nextRequirement });
   }
 
   async function setStatus(status: SceneStatus, advance: boolean) {
@@ -165,12 +211,7 @@ export function RodajeMode({
     setScenes(updated);
 
     if (advance) {
-      const updatedVisible =
-        updated.filter((scene) =>
-          (!isLocationRodaje || selectedProjectId === ALL_PROJECTS || scene.projectId === selectedProjectId) &&
-          (selectedStatus === ALL_STATUSES || scene.status === selectedStatus) &&
-          (selectedCamera === ALL_CAMERA_TYPES || scene.camera === selectedCamera)
-        );
+      const updatedVisible = updated.filter((scene) => matchesFilters(scene));
       const currentOrder = updated.findIndex((scene) => scene.id === current.id);
       const pendingScenes = updatedVisible.filter(
         (scene) => scene.id !== current.id && scene.status !== "grabada"
@@ -263,35 +304,51 @@ export function RodajeMode({
             </button>
           )}
         </div>
-        {isLocationRodaje && (
-          <div className="mx-auto mt-3 grid max-w-2xl grid-cols-1 gap-2 sm:grid-cols-2">
-            {projectOptions.length > 2 && (
-              <Select
-                label="PROYECTO"
-                size="sm"
-                value={selectedProjectId}
-                options={projectOptions}
-                onChange={changeProjectFilter}
-              />
-            )}
+        <div className="mx-auto mt-3 grid max-w-2xl grid-cols-1 gap-2 sm:grid-cols-2">
+          {isLocationRodaje && projectOptions.length > 2 && (
             <Select
-              label="ESTADO"
+              label="PROYECTO"
               size="sm"
-              value={selectedStatus}
-              options={STATUS_FILTER_OPTIONS}
-              onChange={changeStatusFilter}
+              value={selectedProjectId}
+              options={projectOptions}
+              onChange={changeProjectFilter}
             />
-            {cameraOptions.length > 1 && (
-              <Select
-                label="TIPO DE PLANO"
-                size="sm"
-                value={selectedCamera}
-                options={cameraOptions}
-                onChange={changeCameraFilter}
-              />
-            )}
-          </div>
-        )}
+          )}
+          <Select
+            label="ESTADO"
+            size="sm"
+            value={selectedStatus}
+            options={STATUS_FILTER_OPTIONS}
+            onChange={changeStatusFilter}
+          />
+          {cameraOptions.length > 1 && (
+            <Select
+              label="TIPO DE PLANO"
+              size="sm"
+              value={selectedCamera}
+              options={cameraOptions}
+              onChange={changeCameraFilter}
+            />
+          )}
+          {!isLocationRodaje && locationOptions.length > 1 && (
+            <Select
+              label="LOCACIÓN"
+              size="sm"
+              value={selectedLocationId}
+              options={locationOptions}
+              onChange={changeLocationFilter}
+            />
+          )}
+          {requirementOptions.length > 1 && (
+            <Select
+              label="NECESIDAD"
+              size="sm"
+              value={selectedRequirement}
+              options={requirementOptions}
+              onChange={changeRequirementFilter}
+            />
+          )}
+        </div>
       </div>
 
       {error && (
@@ -325,6 +382,8 @@ export function RodajeMode({
                   setSelectedProjectId(ALL_PROJECTS);
                   setSelectedStatus(ALL_STATUSES);
                   setSelectedCamera(ALL_CAMERA_TYPES);
+                  setSelectedLocationId(ALL_LOCATIONS);
+                  setSelectedRequirement(ALL_REQUIREMENTS);
                   setIndex(0);
                 }}
                 className="mt-3 min-h-10 text-sm font-medium text-accent-hover hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"

@@ -102,7 +102,11 @@ const styles = StyleSheet.create({
     marginRight: 7,
     borderWidth: 0.8,
     borderColor: "#555555",
+    alignItems: "center",
+    justifyContent: "center",
   },
+  checkboxMark: { fontSize: 6, lineHeight: 1, fontFamily: "Helvetica-Bold" },
+  retake: { color: "#8b2525" },
   itemContent: { flexGrow: 1, flexShrink: 1 },
   itemNumber: {
     fontSize: 7,
@@ -119,6 +123,31 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   description: { fontSize: 9, lineHeight: 1.35, marginBottom: 3 },
+  sceneMeta: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 2,
+    marginBottom: 2,
+  },
+  sceneMetaChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 0.55,
+    borderColor: "#c7c7c7",
+    borderRadius: 2,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    marginRight: 4,
+    marginBottom: 3,
+  },
+  sceneMetaLabel: {
+    fontSize: 5.8,
+    fontFamily: "Helvetica-Bold",
+    letterSpacing: 0.25,
+    color: "#5b5b5b",
+    marginRight: 3,
+  },
+  sceneMetaValue: { fontSize: 7, color: "#222222" },
   detail: { fontSize: 7.5, lineHeight: 1.3, color: "#444444", marginTop: 1 },
   detailLabel: { fontFamily: "Helvetica-Bold", color: "#262626" },
   empty: { fontSize: 8, color: "#666666" },
@@ -130,6 +159,15 @@ function Detail({ label, value }: { label: string; value: string }) {
       <Text style={styles.detailLabel}>{label}: </Text>
       {value}
     </Text>
+  );
+}
+
+function SceneMetaChip({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.sceneMetaChip}>
+      <Text style={styles.sceneMetaLabel}>{label}</Text>
+      <Text style={styles.sceneMetaValue}>{value}</Text>
+    </View>
   );
 }
 
@@ -180,14 +218,22 @@ export async function createProjectPdf(
                 <Text style={styles.columnTitle} minPresenceAhead={18}>ESCENAS</Text>
                 {block.scene.length ? block.scene.map(({ scene, number }, index) => (
                   <View key={scene.id} style={[styles.item, ...(index === 0 ? [styles.firstItem] : [])]} wrap={false}>
-                    <View style={styles.checkbox} />
+                    <View style={styles.checkbox}>
+                      {scene.status === "grabada" && <Text style={styles.checkboxMark}>X</Text>}
+                    </View>
                     <View style={styles.itemContent}>
-                      <Text style={styles.itemNumber}>TOMA {number}</Text>
+                      <Text style={styles.itemNumber}>
+                        TOMA {number}{scene.status === "repetir" && <Text style={styles.retake}> · REPETIR</Text>}
+                      </Text>
                       <Text style={styles.description}>{scene.description || "Descripción pendiente"}</Text>
-                      {scene.location?.name && <Detail label="Locación" value={scene.location.name} />}
-                      {scene.camera && <Detail label="Plano" value={scene.camera} />}
-                      {scene.angle && <Detail label="Ángulo" value={scene.angle} />}
-                      {scene.movement && <Detail label="Movimiento" value={scene.movement} />}
+                      {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
+                        <View style={styles.sceneMeta}>
+                          {scene.location?.name && <SceneMetaChip label="LOCACIÓN" value={scene.location.name} />}
+                          {scene.camera && <SceneMetaChip label="PLANO" value={scene.camera} />}
+                          {scene.angle && <SceneMetaChip label="ÁNGULO" value={scene.angle} />}
+                          {scene.movement && <SceneMetaChip label="MOVIMIENTO" value={scene.movement} />}
+                        </View>
+                      )}
                       {!!scene.requirements?.length && <Detail label="Necesidades" value={scene.requirements.join(", ")} />}
                       {scene.notes && <Detail label="Notas" value={scene.notes} />}
                       {scene.post_production && <Detail label="Postproducción" value={scene.post_production_notes || "Requiere postproducción"} />}
@@ -205,7 +251,9 @@ export async function createProjectPdf(
                     .map(({ number }) => number);
                   return (
                     <View key={voiceOver.id} style={[styles.item, ...(voiceIndex === 0 ? [styles.firstItem] : [])]} wrap={false}>
-                      <View style={styles.checkbox} />
+                      <View style={styles.checkbox}>
+                        {voiceOver.recorded && <Text style={styles.checkboxMark}>X</Text>}
+                      </View>
                       <View style={styles.itemContent}>
                         <Text style={styles.itemNumber}>VOZ {String(voiceIndex + 1).padStart(2, "0")}</Text>
                         {relatedShots.length > 0 && <Text style={styles.relatedShots}>TOMAS {relatedShots.join(", ")}</Text>}

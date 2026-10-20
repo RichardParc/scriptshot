@@ -90,19 +90,26 @@ export default async function PrintableProjectPage({
                       <ol className="space-y-3">
                         {block.scene.map((scene) => (
                           <li className="print-scene flex gap-2.5" key={scene.id}>
-                            <span className="print-checkbox mt-0.5" aria-hidden="true" />
+                            <span className="print-checkbox mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center border border-neutral-600 text-[10px] font-bold text-neutral-950" aria-hidden="true">
+                              {scene.status === "grabada" ? "X" : ""}
+                            </span>
                             <div className="min-w-0 flex-1">
                               <p className="mb-1 font-mono text-[8pt] font-semibold text-neutral-500">
                                 TOMA {sceneNumbers.get(scene.id)}
+                                {scene.status === "repetir" && <span className="font-bold text-red-800"> · REPETIR</span>}
                               </p>
                               <p className="whitespace-pre-wrap text-[10pt] font-medium leading-snug">
                                 {scene.description || "Descripción pendiente"}
                               </p>
+                              {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
+                                <div className="mt-2 flex flex-wrap gap-1 text-[8pt] leading-tight text-neutral-800">
+                                  {scene.location?.name && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">LOCACIÓN</b>{scene.location.name}</span>}
+                                  {scene.camera && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">PLANO</b>{scene.camera}</span>}
+                                  {scene.angle && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">ÁNGULO</b>{scene.angle}</span>}
+                                  {scene.movement && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">MOVIMIENTO</b>{scene.movement}</span>}
+                                </div>
+                              )}
                               <div className="mt-1.5 space-y-0.5 text-[8.5pt] leading-snug text-neutral-700">
-                                {scene.location?.name && <p><b>Locación:</b> {scene.location.name}</p>}
-                                {scene.camera && <p><b>Plano:</b> {scene.camera}</p>}
-                                {scene.angle && <p><b>Ángulo:</b> {scene.angle}</p>}
-                                {scene.movement && <p><b>Movimiento:</b> {scene.movement}</p>}
                                 {!!scene.requirements?.length && <p><b>Necesitas:</b> {scene.requirements.join(", ")}</p>}
                                 {scene.notes && <p className="whitespace-pre-wrap"><b>Notas:</b> {scene.notes}</p>}
                                 {scene.post_production && (
@@ -127,7 +134,9 @@ export default async function PrintableProjectPage({
                       <ol className="space-y-3">
                         {block.voice_over.map((voiceOver, voiceIndex) => (
                           <li className="print-voiceover flex gap-2.5" key={voiceOver.id}>
-                            <span className="print-checkbox mt-0.5" aria-hidden="true" />
+                            <span className="print-checkbox mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center border border-neutral-600 text-[10px] font-bold text-neutral-950" aria-hidden="true">
+                              {voiceOver.recorded ? "X" : ""}
+                            </span>
                             <div className="min-w-0 flex-1">
                               <p className="mb-1 font-mono text-[8pt] font-semibold text-neutral-500">
                                 VOZ {String(voiceIndex + 1).padStart(2, "0")}

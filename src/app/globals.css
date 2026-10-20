@@ -104,10 +104,11 @@ select:focus {
   }
 
   .print-checkbox {
-    display: block;
     width: 0.16in;
     height: 0.16in;
     flex: 0 0 0.16in;
     border: 1px solid #444;
+    align-items: center;
+    justify-content: center;
   }
 }
