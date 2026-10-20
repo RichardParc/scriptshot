@@ -30,7 +30,6 @@ function NewOpportunityForm() {
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [locationId, setLocationId] = useState<string | null>(null);
-  const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
   const [projectId, setProjectId] = useState(preselectedProject ?? NO_PROJECT);
   const [projects, setProjects] = useState<{ value: string; label: string }[]>(
@@ -42,7 +41,6 @@ function NewOpportunityForm() {
 
   const descId = useId();
   const notesId = useId();
-  const refId = useId();
 
   useEffect(() => {
     document.title = "Nueva oportunidad — Scriptshot";
@@ -71,7 +69,6 @@ function NewOpportunityForm() {
       description: description.trim(),
       type: type || null,
       location_id: locationId,
-      reference: reference.trim() || null,
       notes: notes.trim() || null,
       project_id: projectId === NO_PROJECT ? null : projectId,
     });
@@ -97,7 +94,7 @@ function NewOpportunityForm() {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Nueva toma de oportunidad</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary sm:text-base">
-            Registra una idea o referencia que quieras tener presente durante el rodaje.
+            Anota esa toma espontánea para tenerla registrada junto con su locación.
           </p>
         </div>
       </section>
@@ -128,19 +125,8 @@ function NewOpportunityForm() {
           <LocationPicker
             initialLocationName={null}
             onChange={setLocationId}
-          />
-        </div>
-
-        <div>
-          <label htmlFor={refId} className="mb-2 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
-            REFERENCIA (URL)
-          </label>
-          <input
-            id={refId}
-            value={reference}
-            onChange={(e) => setReference(e.target.value)}
-            placeholder="https://…"
-            className={fieldClass("md")}
+            label="¿DÓNDE SE GRABÓ?"
+            placeholder="Escribe o elige una locación"
           />
         </div>
 

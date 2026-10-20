@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   },
   referenceGrid: { flexDirection: "row", flexWrap: "wrap" },
   referenceCard: {
-    width: "50%",
-    paddingHorizontal: 6,
-    paddingBottom: 12,
+    width: "33.3333%",
+    paddingHorizontal: 4,
+    paddingBottom: 9,
   },
   referenceImage: {
     width: "100%",
-    height: 230,
+    height: 132,
     objectFit: "contain",
     borderWidth: 0.6,
     borderColor: "#d4d4d4",

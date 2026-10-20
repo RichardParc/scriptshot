@@ -131,7 +131,7 @@ export function NavDrawer() {
         aria-label="Abrir menú"
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-accent-hover transition-colors hover:border-accent/50 hover:bg-accent-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-accent transition-colors hover:text-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
         <Menu size={20} strokeWidth={2.5} />
       </button>

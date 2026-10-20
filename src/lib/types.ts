@@ -141,7 +141,6 @@ export interface OpportunityShot {
   type: string | null;
   location_id: string | null;
   location?: { id: string; name: string } | null;
-  reference: string | null;
   notes: string | null;
   project_id: string | null;
   project?: { id: string; name: string } | null;

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   ExternalLink,
+  ChevronDown,
   ImagePlus,
   Link2,
   Loader2,
@@ -27,6 +28,7 @@ export function ProjectReferences({
   initialReferences: ProjectReference[];
 }) {
   const [references, setReferences] = useState(initialReferences);
+  const [expanded, setExpanded] = useState(true);
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [link, setLink] = useState("");
   const [linkTitle, setLinkTitle] = useState("");
@@ -216,19 +218,31 @@ export function ProjectReferences({
   }
 
   return (
-    <section className="mb-7 border-b border-border/70 pb-6" aria-labelledby="project-references-title">
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div>
-          <h2 id="project-references-title" className="text-sm font-semibold text-text-primary">
-            Referentes
-          </h2>
-          <p className="mt-1 text-xs text-text-secondary">
-            Enlaces e imágenes que orientan este proyecto.
-          </p>
-        </div>
-      </div>
+    <section className="mb-7 border-b border-border/70 pb-6">
+      <button
+        type="button"
+        onClick={() => setExpanded((value) => !value)}
+        aria-expanded={expanded}
+        aria-controls="project-references-content"
+        className="flex w-full items-center justify-between gap-3 rounded-md py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+      >
+        <span>
+          <span className="block text-sm font-semibold text-text-primary">Referentes</span>
+          <span className="mt-1 block text-xs text-text-secondary">
+            {references.length
+              ? `${references.length} ${references.length === 1 ? "referente" : "referentes"} · Enlaces e imágenes del proyecto`
+              : "Enlaces e imágenes que orientan este proyecto."}
+          </span>
+        </span>
+        <ChevronDown
+          size={17}
+          aria-hidden="true"
+          className={`shrink-0 text-text-secondary transition-transform ${expanded ? "rotate-180" : ""}`}
+        />
+      </button>
 
-      <div className="mb-2 grid grid-cols-2 items-end gap-2 sm:flex">
+      <div id="project-references-content" hidden={!expanded}>
+      <div className="mb-2 mt-4 grid grid-cols-2 items-end gap-2 sm:flex">
         <label className="col-span-2 min-w-0 text-xs text-text-secondary sm:col-span-1 sm:flex-[1.5]">
           Añadir referente web
           <input
@@ -379,6 +393,7 @@ export function ProjectReferences({
           Todavía no has guardado referentes para este proyecto.
         </p>
       )}
+      </div>
       {ConfirmModal}
       {previewReference && signedUrls[previewReference.id] && (
         <div

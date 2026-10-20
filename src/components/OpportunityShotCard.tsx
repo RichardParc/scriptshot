@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Link as LinkIcon, Trash2 } from "lucide-react";
+import { MapPin, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { OpportunityShot } from "@/lib/types";
 import { useConfirm } from "@/components/ui/useConfirm";
@@ -60,7 +60,7 @@ export function OpportunityShotCard({
           {shot.location && (
             <span className="flex items-center gap-1 rounded-md border border-border bg-base/50 px-2 py-1 font-mono text-[10px] text-text-secondary">
               <MapPin size={11} />
-              {shot.location.name}
+              ¿Dónde se grabó? {shot.location.name}
             </span>
           )}
           {showProject && shot.project && (
@@ -85,18 +85,6 @@ export function OpportunityShotCard({
       <p className="mb-3 pl-1 text-base leading-6 text-text-primary">
         {shot.description || "Sin descripción."}
       </p>
-
-      {shot.reference && (
-        <a
-          href={shot.reference}
-          target="_blank"
-          rel="noreferrer"
-          className="mb-3 flex items-center gap-2 rounded-md pl-1 text-sm font-medium text-accent-hover transition-opacity hover:opacity-80"
-        >
-          <LinkIcon size={13} />
-          Ver referencia
-        </a>
-      )}
 
       {shot.notes && (
         <p className="text-sm text-text-secondary">{shot.notes}</p>

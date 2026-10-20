@@ -9,10 +9,14 @@ export function LocationPicker({
   initialLocationName,
   onChange,
   size = "md",
+  label = "LOCACIÓN",
+  placeholder = "¿Dónde se graba?",
 }: {
   initialLocationName: string | null;
   onChange: (locationId: string | null) => void;
   size?: "md" | "sm";
+  label?: string;
+  placeholder?: string;
 }) {
   const [query, setQuery] = useState(initialLocationName ?? "");
   const [options, setOptions] = useState<Location[]>([]);
@@ -60,7 +64,7 @@ export function LocationPicker({
   return (
     <div>
       <label htmlFor={inputId} className="mb-1 block font-mono text-[10px] tracking-[0.14em] text-text-secondary">
-        LOCACIÓN
+        {label}
       </label>
       <input
         id={inputId}
@@ -68,7 +72,7 @@ export function LocationPicker({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onBlur={commit}
-        placeholder="¿Dónde se graba?"
+        placeholder={placeholder}
         className={fieldClass(size)}
       />
       {size === "md" && (

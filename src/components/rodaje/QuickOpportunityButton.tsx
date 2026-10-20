@@ -148,7 +148,12 @@ export function QuickOpportunityButton({
             value={type}
             onChange={setType}
           />
-          <LocationPicker initialLocationName={null} onChange={setLocationId} />
+          <LocationPicker
+            initialLocationName={null}
+            onChange={setLocationId}
+            label="¿DÓNDE SE GRABÓ?"
+            placeholder="Escribe o elige una locación"
+          />
 
           <Select
             label="ASOCIAR A PROYECTO"

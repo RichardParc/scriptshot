@@ -54,9 +54,9 @@ export function DeleteProjectButton({
         disabled={deleting}
         aria-label={deleting ? "Borrando proyecto" : "Borrar proyecto"}
         title={deleting ? "Borrando proyecto" : "Borrar proyecto"}
-        className="h-12 w-12 shrink-0 rounded-xl !p-0"
+        className="h-11 w-11 shrink-0 rounded-lg !border-transparent !p-0 hover:!border-status-missing/40"
       >
-        <Trash2 size={20} />
+        <Trash2 size={16} />
       </Button>
       {error && <p className="text-sm text-status-missing">{error}</p>}
       {ConfirmModal}
