@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { ProjectReference } from "@/lib/types";
+import { useConfirm } from "@/components/ui/useConfirm";
 
 const BUCKET = "project-references";
 const MAX_IMAGE_SIZE = 8 * 1024 * 1024;
@@ -32,6 +33,7 @@ export function ProjectReferences({
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { confirm, ConfirmModal } = useConfirm();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -52,8 +54,11 @@ export function ProjectReferences({
       .then((entries) => {
         if (active) setSignedUrls(Object.fromEntries(entries));
       })
-      .catch(() => {
-        if (active) setError("No se pudieron cargar algunas imágenes de referencia.");
+      .catch((signedUrlError: unknown) => {
+        if (active) {
+          const detail = signedUrlError instanceof Error ? signedUrlError.message : String(signedUrlError);
+          setError(`No se pudieron cargar algunas imágenes: ${detail}`);
+        }
       });
 
     return () => {
@@ -100,10 +105,12 @@ export function ProjectReferences({
     if (!file) return;
     setError(null);
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setError("Elige una imagen JPG, PNG o WebP.");
       return;
     }
     if (file.size > MAX_IMAGE_SIZE) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setError("La imagen debe pesar 8 MB o menos.");
       return;
     }
@@ -117,7 +124,8 @@ export function ProjectReferences({
 
     if (uploadError) {
       setUploading(false);
-      setError("No se pudo subir la imagen. Inténtalo de nuevo.");
+      setError(`No se pudo subir la imagen: ${uploadError.message}`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -135,7 +143,8 @@ export function ProjectReferences({
     if (insertError || !data) {
       await supabase.storage.from(BUCKET).remove([storagePath]);
       setUploading(false);
-      setError("La imagen se subió, pero no se pudo asociar al proyecto.");
+      setError(`La imagen se subió, pero no se pudo asociar al proyecto: ${insertError?.message ?? "respuesta vacía"}`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -145,6 +154,15 @@ export function ProjectReferences({
   }
 
   async function deleteReference(reference: ProjectReference) {
+    const confirmed = await confirm({
+      title: `¿Quitar "${reference.title}" de los referentes?`,
+      description: reference.kind === "image"
+        ? "También se eliminará la imagen guardada. Esta acción no se puede deshacer."
+        : "El enlace se quitará de este proyecto.",
+      confirmLabel: "Quitar referente",
+    });
+    if (!confirmed) return;
+
     setError(null);
     setDeletingId(reference.id);
     const { error: deleteError } = await supabase
@@ -311,12 +329,12 @@ export function ProjectReferences({
                 disabled={deletingId === reference.id}
                 aria-label={`Quitar referente: ${reference.title}`}
                 title="Quitar referente"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-text-disabled transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
               >
                 {deletingId === reference.id ? (
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader2 size={18} className="animate-spin" />
                 ) : (
-                  <Trash2 size={14} />
+                  <Trash2 size={18} />
                 )}
               </button>
             </li>
@@ -328,6 +346,7 @@ export function ProjectReferences({
           Todavía no has guardado referentes para este proyecto.
         </p>
       )}
+      {ConfirmModal}
     </section>
   );
 }

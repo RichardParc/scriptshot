@@ -76,9 +76,9 @@ export function OpportunityShotCard({
           onClick={handleDelete}
           disabled={deleting}
           aria-label="Eliminar toma de oportunidad"
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
+          className="flex h-11 w-11 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-status-missing/10 hover:text-status-missing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-50"
         >
-          <Trash2 size={15} />
+          <Trash2 size={18} />
         </button>
       </div>
 

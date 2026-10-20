@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { SortableList } from "./SortableList";
 import { SortableItem, type DragHandleProps } from "./SortableItem";
 import { DragHandle } from "./DragHandle";
+import { useConfirm } from "@/components/ui/useConfirm";
 
 export function StoryBlockSection({
   block,
@@ -65,9 +66,9 @@ export function StoryBlockSection({
           onClick={onDelete}
           aria-label={`Borrar bloque: ${title || block.title}`}
           title={`Borrar bloque: ${title || block.title}`}
-          className="h-9 w-9 shrink-0 rounded-lg p-0"
+          className="h-11 w-11 shrink-0 rounded-lg p-0"
         >
-          <Trash2 size={13} />
+          <Trash2 size={18} />
         </Button>
       </div>
 
@@ -166,6 +167,16 @@ function VoiceOverField({
   onDelete: () => void;
 }) {
   const [text, setText] = useState(vo.text);
+  const { confirm, ConfirmModal } = useConfirm();
+
+  async function confirmDelete() {
+    const confirmed = await confirm({
+      title: "¿Eliminar esta voz en off?",
+      description: "Se quitará de este bloque. Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar voz en off",
+    });
+    if (confirmed) onDelete();
+  }
 
   return (
     <div className="min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-base/60 p-3 sm:p-4">
@@ -191,14 +202,15 @@ function VoiceOverField({
         <Button
           variant="ghost"
           size="sm"
-          onClick={onDelete}
+          onClick={() => void confirmDelete()}
           aria-label="Borrar voz en off"
           title="Borrar voz en off"
-          className="h-10 w-10 shrink-0 rounded-lg p-0"
+          className="h-11 w-11 shrink-0 rounded-lg p-0"
         >
-          <Trash2 size={13} />
+          <Trash2 size={18} />
         </Button>
       </div>
+      {ConfirmModal}
     </div>
   );
 }

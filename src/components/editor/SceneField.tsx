@@ -11,6 +11,7 @@ import { SceneStatusPill } from "@/components/SceneStatusPill";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { SceneReferencePreview } from "./SceneReferencePreview";
+import { useConfirm } from "@/components/ui/useConfirm";
 
 export function SceneField({
   scene,
@@ -29,8 +30,18 @@ export function SceneField({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [description, setDescription] = useState(scene.description);
+  const { confirm, ConfirmModal } = useConfirm();
   const referenceId = useId();
   const notesId = useId();
+
+  async function confirmDelete() {
+    const confirmed = await confirm({
+      title: `¿Eliminar la escena ${String(index).padStart(2, "0")}?`,
+      description: "La escena se quitará de este bloque. Esta acción no se puede deshacer.",
+      confirmLabel: "Eliminar escena",
+    });
+    if (confirmed) onDelete();
+  }
 
   const metadataCount = [
     scene.camera,
@@ -196,14 +207,15 @@ export function SceneField({
         <Button
           variant="ghost"
           size="sm"
-          onClick={onDelete}
+          onClick={() => void confirmDelete()}
           aria-label="Borrar escena"
           title="Borrar escena"
-          className="h-9 w-9 rounded-lg p-0"
+          className="h-11 w-11 rounded-lg p-0"
         >
-          <Trash2 size={13} />
+          <Trash2 size={18} />
         </Button>
       </div>
+      {ConfirmModal}
     </div>
   );
 }
