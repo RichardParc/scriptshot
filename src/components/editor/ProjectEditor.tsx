@@ -12,6 +12,8 @@ import { useConfirm } from "@/components/ui/useConfirm";
 import { Button } from "@/components/ui/Button";
 import { SortableList } from "./SortableList";
 import { SortableItem } from "./SortableItem";
+import { computeProjectSummary } from "@/lib/status";
+import { STATUS_COLOR } from "@/components/StatusBadge";
 
 function nextOrder(items: { order: number }[]) {
   return items.length === 0 ? 0 : Math.max(...items.map((i) => i.order)) + 1;
@@ -354,6 +356,10 @@ export function ProjectEditor({
   const blockIds = sortedBlocks.map((b) => b.id);
   const sceneCount = blocks.reduce((count, block) => count + block.scene.length, 0);
   const voiceOverCount = blocks.reduce((count, block) => count + block.voice_over.length, 0);
+  const progress = computeProjectSummary(blocks);
+  const sceneProgress = progress.totalScenes > 0
+    ? Math.round((progress.recordedScenes / progress.totalScenes) * 100)
+    : 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -365,8 +371,7 @@ export function ProjectEditor({
             {sortedBlocks.length} {sortedBlocks.length === 1 ? "bloque" : "bloques"} · {sceneCount} {sceneCount === 1 ? "escena" : "escenas"} · {voiceOverCount} voces en off
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {saveState !== "idle" && (
+        {saveState !== "idle" && (
             <p
               role="status"
               aria-live="polite"
@@ -389,10 +394,35 @@ export function ProjectEditor({
                   : "No se pudo guardar"}
             </p>
           )}
-          <Button variant="secondary" size="sm" onClick={addBlock} className="shrink-0">
-            <Plus size={15} /> Agregar bloque
-          </Button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-surface/50 px-3 py-3 sm:px-4">
+        <span className="shrink-0 font-mono text-[10px] tracking-[0.14em] text-text-secondary">
+          RODAJE
+        </span>
+        <div
+          role="progressbar"
+          aria-label="Progreso de escenas grabadas"
+          aria-valuemin={0}
+          aria-valuemax={progress.totalScenes || 1}
+          aria-valuenow={progress.recordedScenes}
+          className="h-1.5 min-w-20 flex-1 overflow-hidden rounded-full bg-surface-2"
+        >
+          <div
+            className={`h-full transition-[width] duration-500 ${STATUS_COLOR[progress.status]}`}
+            style={{ width: `${sceneProgress}%` }}
+          />
         </div>
+        <span className="shrink-0 text-xs text-text-secondary">
+          {progress.totalScenes > 0
+            ? `${progress.recordedScenes}/${progress.totalScenes} grabadas · ${sceneProgress}%`
+            : "Sin tomas todavía"}
+        </span>
+        {progress.totalVoiceOvers > 0 && (
+          <span className="w-full text-xs text-text-secondary sm:w-auto sm:border-l sm:border-border sm:pl-3">
+            Voz en off {progress.recordedVoiceOvers}/{progress.totalVoiceOvers} grabadas
+          </span>
+        )}
       </div>
 
       <ProjectReferences projectId={projectId} initialReferences={initialReferences} />
@@ -457,6 +487,12 @@ export function ProjectEditor({
           </p>
         </div>
       )}
+
+      <div className="flex justify-end border-t border-border/60 pt-4">
+        <Button variant="secondary" size="sm" onClick={addBlock} className="min-h-11">
+          <Plus size={16} /> Agregar bloque
+        </Button>
+      </div>
 
       {ConfirmModal}
     </div>

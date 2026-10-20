@@ -62,6 +62,17 @@ create policy project_references_storage_read on storage.objects
     )
   );
 
+-- Storage returns the inserted object metadata after upload. Allow the
+-- authenticated uploader to read that object as well, so the upload response
+-- passes SELECT RLS even when project-folder checks don't match its metadata.
+drop policy if exists project_references_storage_owner_read on storage.objects;
+create policy project_references_storage_owner_read on storage.objects
+  for select to authenticated
+  using (
+    bucket_id = 'project-references'
+    and owner_id = (select auth.uid()::text)
+  );
+
 drop policy if exists project_references_storage_insert on storage.objects;
 create policy project_references_storage_insert on storage.objects
   for insert to authenticated
@@ -79,11 +90,7 @@ create policy project_references_storage_delete on storage.objects
   for delete to authenticated
   using (
     bucket_id = 'project-references'
-    and exists (
-      select 1 from public.project p
-      where p.id::text = (storage.foldername(name))[1]
-        and p.owner_id = auth.uid()
-    )
+    and owner_id = (select auth.uid()::text)
   );
 
 commit;

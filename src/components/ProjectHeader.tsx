@@ -12,7 +12,7 @@ import {
   type ProjectDuration,
   type ProjectFormat,
 } from "@/lib/types";
-import { StatusBadge, STATUS_COLOR } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import type { ProjectSummary } from "@/lib/status";
@@ -129,43 +129,6 @@ export function ProjectHeader({
             </p>
           )}
 
-          <div className="mt-6 border-t border-border/70 pt-5">
-            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="font-mono text-[10px] tracking-[0.16em] text-text-secondary">PROGRESO DEL RODAJE</p>
-                <p className="mt-1 text-sm font-medium text-text-primary">
-                  {summary.totalScenes > 0
-                    ? `${summary.recordedScenes} de ${summary.totalScenes} tomas grabadas`
-                    : "Aún no hay escenas en el guion"}
-                </p>
-              </div>
-              <span className="font-mono text-xl font-semibold text-text-primary">
-                {summary.totalScenes > 0
-                  ? `${Math.round((summary.recordedScenes / summary.totalScenes) * 100)}%`
-                  : "—"}
-              </span>
-            </div>
-            <div
-              role="progressbar"
-              aria-label="Progreso de escenas grabadas"
-              aria-valuemin={0}
-              aria-valuemax={summary.totalScenes || 1}
-              aria-valuenow={summary.recordedScenes}
-              className="h-2 overflow-hidden rounded-full bg-surface-2"
-            >
-              <div
-                className={`h-full transition-[width] duration-500 ${STATUS_COLOR[summary.status]}`}
-                style={{
-                  width: `${summary.totalScenes > 0 ? (summary.recordedScenes / summary.totalScenes) * 100 : 0}%`,
-                }}
-              />
-            </div>
-          </div>
-            {summary.totalVoiceOvers > 0 && (
-              <p className="mt-3 text-sm text-text-secondary">
-                Voz en off: {summary.recordedVoiceOvers} de {summary.totalVoiceOvers} grabadas
-              </p>
-            )}
         </div>
       </div>
     );
