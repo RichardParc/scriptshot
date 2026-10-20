@@ -103,10 +103,10 @@ export default async function PrintableProjectPage({
                               </p>
                               {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
                                 <div className="mt-2 flex flex-wrap gap-1 text-[8pt] leading-tight text-neutral-800">
-                                  {scene.location?.name && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">LOCACIÓN</b>{scene.location.name}</span>}
-                                  {scene.camera && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">PLANO</b>{scene.camera}</span>}
-                                  {scene.angle && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">ÁNGULO</b>{scene.angle}</span>}
-                                  {scene.movement && <span className="inline-flex items-baseline gap-1 rounded-sm border border-neutral-300 px-1.5 py-1"><b className="text-[7pt] tracking-wide text-neutral-600">MOVIMIENTO</b>{scene.movement}</span>}
+                                  {scene.location?.name && <span className="inline-flex rounded-sm border border-neutral-300 px-1.5 py-1"><b className="font-semibold">Locación:&nbsp;</b>{scene.location.name}</span>}
+                                  {scene.camera && <span className="inline-flex rounded-sm border border-neutral-300 px-1.5 py-1"><b className="font-semibold">Plano:&nbsp;</b>{scene.camera}</span>}
+                                  {scene.angle && <span className="inline-flex rounded-sm border border-neutral-300 px-1.5 py-1"><b className="font-semibold">Ángulo:&nbsp;</b>{scene.angle}</span>}
+                                  {scene.movement && <span className="inline-flex rounded-sm border border-neutral-300 px-1.5 py-1"><b className="font-semibold">Movimiento:&nbsp;</b>{scene.movement}</span>}
                                 </div>
                               )}
                               <div className="mt-1.5 space-y-0.5 text-[8.5pt] leading-snug text-neutral-700">

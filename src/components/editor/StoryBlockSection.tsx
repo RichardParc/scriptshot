@@ -50,14 +50,14 @@ export function StoryBlockSection({
   return (
     <section className="relative mb-4 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:p-5">
       <div aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-transparent" />
-      <div className="mb-5 flex flex-wrap items-start gap-x-1 gap-y-3 sm:gap-3">
-        <DragHandle dragHandleProps={dragHandleProps} className="mt-0.5" />
+      <div className="relative mb-5 flex flex-wrap items-start gap-x-1 gap-y-3 sm:gap-3">
+        <DragHandle dragHandleProps={dragHandleProps} compact className="absolute -left-3 top-0 z-10" />
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && onRename(title.trim())}
           aria-label="Título del bloque"
-          className="min-w-0 flex-1 rounded-sm bg-transparent text-lg font-semibold tracking-tight text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:text-xl"
+          className="min-w-0 flex-1 rounded-sm bg-transparent pl-5 text-lg font-semibold tracking-tight text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:text-xl"
         />
         <Button variant="danger" size="sm" onClick={onDelete} className="shrink-0">
           <Trash2 size={13} />

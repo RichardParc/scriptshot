@@ -321,7 +321,7 @@ export function RodajeMode({
             options={STATUS_FILTER_OPTIONS}
             onChange={changeStatusFilter}
           />
-          {cameraOptions.length > 1 && (
+          {isLocationRodaje && cameraOptions.length > 1 && (
             <Select
               label="TIPO DE PLANO"
               size="sm"
