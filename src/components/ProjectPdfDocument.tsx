@@ -194,15 +194,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function FormattedText({
-  value,
-  style,
-}: {
-  value: string;
-  style?: React.ComponentProps<typeof Text>["style"];
-}) {
+function FormattedText({ value }: { value: string }) {
   return (
-    <Text style={style}>
+    <>
       {parseScriptText(value).map((segment, index) => (
         <Text
           key={index}
@@ -211,7 +205,7 @@ function FormattedText({
           {segment.text}
         </Text>
       ))}
-    </Text>
+    </>
   );
 }
 
@@ -295,7 +289,9 @@ export async function createProjectPdf(
             <View style={styles.needsGrid}>
               {[...projectNeeds.values()].map((need) => (
                 <View key={need.label.toLocaleLowerCase()} style={styles.needChip}>
-                  <FormattedText value={need.label} style={styles.needLabel} />
+                  <Text style={styles.needLabel}>
+                    <FormattedText value={need.label} />
+                  </Text>
                   <Text style={styles.needShots}>Tomas {need.shots.join(", ")}</Text>
                 </View>
               ))}
@@ -324,7 +320,9 @@ export async function createProjectPdf(
                       <Text style={styles.itemNumber}>
                         TOMA {number}{scene.status === "repetir" && <Text style={styles.retake}> · REPETIR</Text>}
                       </Text>
-                      <FormattedText style={styles.description} value={scene.description || "Descripción pendiente"} />
+                      <Text style={styles.description}>
+                        <FormattedText value={scene.description || "Descripción pendiente"} />
+                      </Text>
                       {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
                         <View style={styles.sceneMeta}>
                           {scene.location?.name && <SceneMetaChip label="Locación" value={scene.location.name} />}
@@ -356,7 +354,9 @@ export async function createProjectPdf(
                       <View style={styles.itemContent}>
                         <Text style={styles.itemNumber}>VOZ {String(voiceIndex + 1).padStart(2, "0")}</Text>
                         {relatedShots.length > 0 && <Text style={styles.relatedShots}>TOMAS {relatedShots.join(", ")}</Text>}
-                        <FormattedText style={styles.description} value={voiceOver.text || "Texto pendiente"} />
+                        <Text style={styles.description}>
+                          <FormattedText value={voiceOver.text || "Texto pendiente"} />
+                        </Text>
                       </View>
                     </View>
                   );
