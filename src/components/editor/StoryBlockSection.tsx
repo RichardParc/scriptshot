@@ -50,8 +50,8 @@ export function StoryBlockSection({
   return (
     <section className="relative mb-4 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:p-5">
       <div aria-hidden="true" className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-transparent" />
-      <div className="mb-5 flex flex-wrap items-start gap-3">
-        <DragHandle dragHandleProps={dragHandleProps} className="mt-1" />
+      <div className="mb-5 flex flex-wrap items-start gap-x-1 gap-y-3 sm:gap-3">
+        <DragHandle dragHandleProps={dragHandleProps} className="mt-0.5" />
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}

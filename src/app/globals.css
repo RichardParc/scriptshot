@@ -28,3 +28,67 @@ textarea:focus,
 select:focus {
   outline: none;
 }
+
+@page {
+  size: letter portrait;
+  margin: 0.5in;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-toolbar {
+    display: none !important;
+  }
+
+  .print-page {
+    min-height: 0 !important;
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .print-document {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .print-cover,
+  .print-block,
+  .print-scene,
+  .print-voiceover {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .print-blocks {
+    display: block;
+  }
+
+  .print-block + .print-block {
+    margin-top: 0.24in;
+  }
+
+  .print-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 0.2in !important;
+  }
+
+  .print-voiceovers {
+    border-color: #a3a3a3 !important;
+    padding-left: 0.18in !important;
+  }
+
+  .print-checkbox {
+    display: block;
+    width: 0.16in;
+    height: 0.16in;
+    flex: 0 0 0.16in;
+    border: 1px solid #444;
+  }
+}

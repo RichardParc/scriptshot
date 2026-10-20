@@ -4,6 +4,7 @@ import { Clapperboard, Sparkles, Plus, ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
+import { PrintProjectButton } from "@/components/PrintProjectButton";
 import { ProjectEditor } from "@/components/editor/ProjectEditor";
 import { ProjectHeader } from "@/components/ProjectHeader";
 import { OpportunityShotCard } from "@/components/OpportunityShotCard";
@@ -88,7 +89,10 @@ export default async function ProjectPage({
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
       <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <BackLink href="/" label="Todos los proyectos" />
-        <DeleteProjectButton projectId={project.id} projectName={project.name} />
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
+          <PrintProjectButton />
+          <DeleteProjectButton projectId={project.id} projectName={project.name} />
+        </div>
       </div>
 
       <ProjectHeader
