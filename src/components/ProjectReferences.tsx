@@ -115,9 +115,16 @@ export function ProjectReferences({
       return;
     }
 
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError || !authData.user) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setError("Tu sesión no está activa en el navegador. Cierra sesión, vuelve a entrar e inténtalo de nuevo.");
+      return;
+    }
+
     setUploading(true);
     const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const storagePath = `${projectId}/${crypto.randomUUID()}.${extension}`;
+    const storagePath = `${authData.user.id}/${projectId}/${crypto.randomUUID()}.${extension}`;
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
       .upload(storagePath, file, { contentType: file.type, upsert: false });

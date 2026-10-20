@@ -78,11 +78,7 @@ create policy project_references_storage_insert on storage.objects
   for insert to authenticated
   with check (
     bucket_id = 'project-references'
-    and exists (
-      select 1 from public.project p
-      where p.id::text = (storage.foldername(name))[1]
-        and p.owner_id = auth.uid()
-    )
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
   );
 
 drop policy if exists project_references_storage_delete on storage.objects;
