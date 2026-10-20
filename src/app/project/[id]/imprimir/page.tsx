@@ -19,6 +19,17 @@ function PrintText({ value }: { value: string }) {
   });
 }
 
+function cssContentString(value: string) {
+  const escaped = [...value]
+    .map((character) =>
+      /^[A-Za-z0-9 ]$/.test(character)
+        ? character
+        : `\\${character.codePointAt(0)!.toString(16)} `
+    )
+    .join("");
+  return `"${escaped}"`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -108,6 +119,7 @@ export default async function PrintableProjectPage({
 
   return (
     <main className="print-page min-h-screen bg-white text-neutral-950">
+      <style>{`@page { @bottom-right { content: ${cssContentString(project.name)} " · " counter(page) "/" counter(pages) " pág."; } }`}</style>
       <div className="print-toolbar mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-5">
         <a
           href={`/project/${id}`}

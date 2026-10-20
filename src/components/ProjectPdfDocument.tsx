@@ -48,12 +48,8 @@ const styles = StyleSheet.create({
   footer: {
     position: "absolute",
     bottom: 26,
-    left: 54,
     right: 54,
-    borderTopWidth: 0.6,
-    borderTopColor: "#d4d4d4",
-    paddingTop: 6,
-    textAlign: "center",
+    textAlign: "right",
     fontSize: 7.5,
     color: "#606060",
   },

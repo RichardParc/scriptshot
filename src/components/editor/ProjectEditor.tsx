@@ -16,6 +16,7 @@ import { computeProjectSummary } from "@/lib/status";
 import { STATUS_COLOR } from "@/components/StatusBadge";
 import Link from "next/link";
 import { ArrowUpRight, Clapperboard } from "lucide-react";
+import { estimateVoiceOverSeconds, formatEstimatedDuration } from "@/lib/voice-over-duration";
 
 function nextOrder(items: { order: number }[]) {
   return items.length === 0 ? 0 : Math.max(...items.map((i) => i.order)) + 1;
@@ -358,6 +359,11 @@ export function ProjectEditor({
   const blockIds = sortedBlocks.map((b) => b.id);
   const sceneCount = blocks.reduce((count, block) => count + block.scene.length, 0);
   const voiceOverCount = blocks.reduce((count, block) => count + block.voice_over.length, 0);
+  const estimatedNarrationSeconds = blocks.reduce(
+    (total, block) => total + block.voice_over.reduce(
+      (blockTotal, voiceOver) => blockTotal + estimateVoiceOverSeconds(voiceOver.text), 0
+    ), 0
+  );
   const progress = computeProjectSummary(blocks);
   const sceneProgress = progress.totalScenes > 0
     ? Math.round((progress.recordedScenes / progress.totalScenes) * 100)
@@ -371,6 +377,7 @@ export function ProjectEditor({
           <h2 className="text-xl font-semibold tracking-tight text-text-primary">Guion y escenas</h2>
           <p className="mt-1 text-sm text-text-secondary">
             {sortedBlocks.length} {sortedBlocks.length === 1 ? "bloque" : "bloques"} · {sceneCount} {sceneCount === 1 ? "escena" : "escenas"} · {voiceOverCount} voces en off
+            {estimatedNarrationSeconds > 0 && <> · Voz estimada {formatEstimatedDuration(estimatedNarrationSeconds)}</>}
           </p>
         </div>
         {saveState !== "idle" && (

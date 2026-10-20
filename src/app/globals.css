@@ -33,8 +33,7 @@ select:focus {
   size: letter portrait;
   margin: 0.5in 0.5in 0.65in;
 
-  @bottom-center {
-    content: "GUIÓN DEL PROYECTO · PÁGINA " counter(page) " DE " counter(pages);
+  @bottom-right {
     color: #525252;
     font-family: Arial, sans-serif;
     font-size: 8pt;

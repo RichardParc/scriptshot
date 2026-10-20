@@ -5,12 +5,13 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { DeleteProjectButton } from "@/components/DeleteProjectButton";
 import { PrintProjectButton } from "@/components/PrintProjectButton";
 import { ProjectEditor } from "@/components/editor/ProjectEditor";
+import { ProjectBackup } from "@/components/editor/ProjectBackup";
 import { ProjectHeader } from "@/components/ProjectHeader";
 import { OpportunityShotCard } from "@/components/OpportunityShotCard";
 import { BackLink } from "@/components/ui/BackLink";
 import { LinkButton } from "@/components/ui/Button";
 import { computeProjectSummary } from "@/lib/status";
-import type { OpportunityShot, PresetOption, ProjectReference, ScenePresets, StoryBlock } from "@/lib/types";
+import type { OpportunityShot, PresetOption, Project, ProjectReference, ScenePresets, StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -94,8 +95,13 @@ export default async function ProjectPage({
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-6 sm:py-12">
       <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <BackLink href="/" label="Todos los proyectos" />
-        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:justify-end">
           <PrintProjectButton href={`/project/${project.id}/imprimir`} />
+          <ProjectBackup
+            project={project as Project}
+            blocks={(blocks ?? []) as StoryBlock[]}
+            references={(projectReferences ?? []) as ProjectReference[]}
+          />
           <DeleteProjectButton projectId={project.id} projectName={project.name} />
         </div>
       </div>
