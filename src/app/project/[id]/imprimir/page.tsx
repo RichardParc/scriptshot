@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { PrintProjectButton } from "@/components/PrintProjectButton";
+import { ProjectPdfDownloadButton } from "@/components/ProjectPdfDownloadButton";
 import type { StoryBlock } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -60,12 +61,13 @@ export default async function PrintableProjectPage({
         >
           Volver al proyecto
         </a>
-        <PrintProjectButton />
+        <ProjectPdfDownloadButton projectName={project.name} blocks={sortedBlocks} />
       </div>
 
-      <article className="print-document mx-auto max-w-5xl px-5 pb-12 sm:px-10">
-        <header className="print-cover mb-5 border-b-2 border-neutral-900 pb-3">
-          <h1 className="print-project-title text-2xl font-bold leading-tight tracking-tight">{project.name}</h1>
+      <article className="print-document mx-auto max-w-5xl px-8 pb-12 sm:px-14">
+        <header className="print-cover mb-5 flex items-center justify-between gap-5 border-b border-neutral-400 pb-3">
+          <h1 className="print-project-title min-w-0 text-2xl font-bold leading-tight tracking-tight text-neutral-950">{project.name}</h1>
+          <Image src="/logo-print.png" alt="Scriptshot" width={154} height={35} className="h-5 w-auto shrink-0 object-contain" priority />
         </header>
 
         {sortedBlocks.length ? (
