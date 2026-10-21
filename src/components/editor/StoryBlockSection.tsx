@@ -18,6 +18,7 @@ export function StoryBlockSection({
   onRename,
   onDelete,
   onAddVoiceOver,
+  onDraftVoiceOver,
   onUpdateVoiceOver,
   onToggleVoiceOverRecorded,
   onDeleteVoiceOver,
@@ -34,6 +35,7 @@ export function StoryBlockSection({
   onRename: (title: string) => void;
   onDelete: () => void;
   onAddVoiceOver: () => void;
+  onDraftVoiceOver: (id: string, text: string) => void;
   onUpdateVoiceOver: (id: string, text: string) => void;
   onToggleVoiceOverRecorded: (vo: VoiceOver) => void;
   onDeleteVoiceOver: (id: string) => void;
@@ -97,6 +99,7 @@ export function StoryBlockSection({
                     <VoiceOverField
                       vo={vo}
                       isDragging={isDragging}
+                      onDraft={(text) => onDraftVoiceOver(vo.id, text)}
                       onUpdate={(text) => onUpdateVoiceOver(vo.id, text)}
                       onToggleRecorded={() => onToggleVoiceOverRecorded(vo)}
                       onDelete={() => onDeleteVoiceOver(vo.id)}
@@ -162,12 +165,14 @@ export function StoryBlockSection({
 function VoiceOverField({
   vo,
   isDragging = false,
+  onDraft,
   onUpdate,
   onToggleRecorded,
   onDelete,
 }: {
   vo: VoiceOver;
   isDragging?: boolean;
+  onDraft: (text: string) => void;
   onUpdate: (text: string) => void;
   onToggleRecorded: () => void;
   onDelete: () => void;
@@ -186,11 +191,11 @@ function VoiceOverField({
 
   return (
     <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
-      <div className="mb-2 flex items-center justify-between gap-3">
+      <div className="mb-2 flex min-h-10 items-center justify-between gap-3">
         <button
           onClick={onToggleRecorded}
           aria-pressed={vo.recorded}
-          className={`min-h-10 rounded-sm py-1 text-left font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+          className={`min-h-8 rounded-sm py-1 text-left font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
             vo.recorded ? "text-accent-hover" : "text-text-secondary"
           }`}
         >
@@ -202,14 +207,17 @@ function VoiceOverField({
           onClick={() => void confirmDelete()}
           aria-label="Borrar voz en off"
           title="Borrar voz en off"
-          className="h-11 w-11 shrink-0 rounded-lg p-0"
+          className="h-10 w-10 shrink-0 rounded-lg !p-0"
         >
-          <Trash2 size={18} />
+          <Trash2 size={16} />
         </Button>
       </div>
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          onDraft(e.target.value);
+        }}
         onBlur={() => onUpdate(text)}
         placeholder="¿Qué necesitas decir?"
         aria-label="Texto de voz en off"

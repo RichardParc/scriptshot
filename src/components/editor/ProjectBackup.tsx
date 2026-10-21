@@ -188,11 +188,11 @@ export function ProjectBackup({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <Button type="button" variant="ghost" size="sm" onClick={exportBackup} title="Exportar proyecto como JSON" className="min-h-9 rounded-md px-2 text-xs">
+    <div className="flex w-full items-center gap-2 sm:w-auto">
+      <Button type="button" variant="secondary" size="sm" onClick={exportBackup} title="Exportar proyecto como JSON" className="min-h-11 flex-1 rounded-lg px-3 text-xs sm:flex-none">
         <Download size={14} /> Exportar
       </Button>
-      <Button type="button" variant="ghost" size="sm" onClick={() => inputRef.current?.click()} disabled={working} title="Importar un proyecto desde JSON" className="min-h-9 rounded-md px-2 text-xs">
+      <Button type="button" variant="primary" size="sm" onClick={() => inputRef.current?.click()} disabled={working} title="Importar un proyecto desde JSON" className="min-h-11 flex-1 rounded-lg px-3 text-xs sm:flex-none">
         {working ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
         {working ? "Importando…" : "Importar JSON"}
       </Button>

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Check, Loader2, Plus, X } from "lucide-react";
+import { AlertCircle, Check, Clock3, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Project, Scene, ScenePresets, StoryBlock, VoiceOver } from "@/lib/types";
 import type { ProjectReference } from "@/lib/types";
@@ -147,6 +147,13 @@ export function ProjectEditor({
   }
 
   // --- Voice-over ---
+
+  function draftVoiceOver(blockId: string, id: string, text: string) {
+    setBlocks((prev) => prev.map((block) => block.id === blockId
+      ? { ...block, voice_over: block.voice_over.map((voiceOver) => voiceOver.id === id ? { ...voiceOver, text } : voiceOver) }
+      : block
+    ));
+  }
 
   async function addVoiceOver(blockId: string) {
     const block = blocks.find((b) => b.id === blockId);
@@ -484,6 +491,7 @@ export function ProjectEditor({
                 onRename={(title) => renameBlock(block.id, title)}
                 onDelete={() => deleteBlock(block.id)}
                 onAddVoiceOver={() => addVoiceOver(block.id)}
+                onDraftVoiceOver={(id, text) => draftVoiceOver(block.id, id, text)}
                 onUpdateVoiceOver={(id, text) =>
                   updateVoiceOver(block.id, id, text)
                 }
@@ -526,10 +534,20 @@ export function ProjectEditor({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-border/70 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-text-secondary" aria-live="polite">
-          Voz en off total · {narrationWordCount} {narrationWordCount === 1 ? "palabra" : "palabras"} · {narrationWordCount > 0 ? formatEstimatedDuration(estimatedNarrationSeconds) : "añade texto para estimar la duración"}
-        </p>
+      <div className="flex flex-col gap-4 rounded-xl border border-border/80 bg-surface/60 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-muted/70 text-accent-hover">
+            <Clock3 size={18} aria-hidden="true" />
+          </div>
+          <div className="min-w-0" aria-live="polite">
+            <p className="font-mono text-[10px] tracking-[0.14em] text-text-secondary">DURACIÓN DE VOZ EN OFF</p>
+            <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-lg font-semibold leading-tight text-text-primary">{narrationWordCount > 0 ? formatEstimatedDuration(estimatedNarrationSeconds) : "Aún sin estimar"}</span>
+              <span className="text-xs text-text-secondary">{narrationWordCount} {narrationWordCount === 1 ? "palabra" : "palabras"}</span>
+            </div>
+            <p className="mt-0.5 text-[11px] text-text-disabled">Estimado a 150 palabras por minuto</p>
+          </div>
+        </div>
         <ProjectBackup project={project} blocks={blocks} references={initialReferences} />
       </div>
 
