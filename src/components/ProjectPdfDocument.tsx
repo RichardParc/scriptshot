@@ -22,20 +22,36 @@ const styles = StyleSheet.create({
     color: "#171717",
     backgroundColor: "#ffffff",
   },
-  header: {
+  headerEyebrow: {
     position: "absolute",
     top: 28,
     left: 54,
-    right: 54,
-    height: 38,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomWidth: 0.7,
-    borderBottomColor: "#b8b8b8",
-    paddingBottom: 7,
   },
-  headerText: { flexGrow: 1, flexShrink: 1, paddingRight: 16 },
+  headerProjectTitle: {
+    position: "absolute",
+    top: 42,
+    left: 54,
+    width: 430,
+    fontSize: 12,
+    fontFamily: "Helvetica-Bold",
+    lineHeight: 1.15,
+  },
+  headerLogo: {
+    position: "absolute",
+    top: 35,
+    right: 54,
+    width: 66,
+    height: 15,
+    objectFit: "contain",
+  },
+  headerRule: {
+    position: "absolute",
+    top: 65,
+    left: 54,
+    right: 54,
+    height: 0.7,
+    backgroundColor: "#b8b8b8",
+  },
   eyebrow: {
     fontSize: 7,
     fontFamily: "Helvetica-Bold",
@@ -43,15 +59,15 @@ const styles = StyleSheet.create({
     color: "#555555",
     marginBottom: 2,
   },
-  projectTitle: { fontSize: 12, fontFamily: "Helvetica-Bold", lineHeight: 1.15 },
-  logo: { width: 66, height: 15, objectFit: "contain" },
-  footer: {
+  pageCounter: {
     position: "absolute",
-    bottom: 26,
+    top: 68,
+    left: 54,
     right: 54,
+    fontSize: 8,
+    fontFamily: "Helvetica-Bold",
+    color: "#363636",
     textAlign: "right",
-    fontSize: 7.5,
-    color: "#606060",
   },
   block: { marginBottom: 17 },
   blockHeading: {
@@ -84,13 +100,14 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   item: {
-    flexDirection: "row",
-    alignItems: "flex-start",
     marginBottom: 8,
     paddingTop: 5,
     borderTopWidth: 0.45,
     borderTopColor: "#dedede",
   },
+  itemHeader: { flexDirection: "row", alignItems: "flex-start", marginBottom: 2 },
+  itemHeaderContent: { flexGrow: 1, flexShrink: 1 },
+  itemBody: { marginLeft: 16 },
   firstItem: { borderTopWidth: 0, paddingTop: 0 },
   checkbox: {
     width: 9,
@@ -104,7 +121,6 @@ const styles = StyleSheet.create({
   },
   checkboxMark: { fontSize: 6, lineHeight: 1, fontFamily: "Helvetica-Bold" },
   retake: { color: "#8b2525" },
-  itemContent: { flexGrow: 1, flexShrink: 1 },
   itemNumber: {
     fontSize: 7,
     fontFamily: "Helvetica-Bold",
@@ -196,6 +212,7 @@ function FormattedText({ value }: { value: string }) {
       {parseScriptText(value).map((segment, index) => (
         <Text
           key={index}
+          hyphenationCallback={breakLongTokens}
           style={segment.bold ? (segment.italic ? styles.boldItalic : styles.bold) : undefined}
         >
           {segment.text}
@@ -205,13 +222,21 @@ function FormattedText({ value }: { value: string }) {
   );
 }
 
+// Break unusually long unspaced strings (such as pasted URLs) so they stay
+// inside their column instead of running into the page margin.
+function breakLongTokens(word: string) {
+  if (word.length <= 28) return [word];
+  return word.match(/.{1,20}/gu) ?? [word];
+}
+
 function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <Text style={styles.detail}>
+    <Text style={styles.detail} hyphenationCallback={breakLongTokens}>
       <Text style={styles.detailLabel}>{label}: </Text>
       {parseScriptText(value).map((segment, index) => (
         <Text
           key={index}
+          hyphenationCallback={breakLongTokens}
           style={segment.bold ? (segment.italic ? styles.boldItalic : styles.bold) : undefined}
         >
           {segment.text}
@@ -224,7 +249,7 @@ function Detail({ label, value }: { label: string; value: string }) {
 function SceneMetaChip({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.sceneMetaChip}>
-      <Text style={styles.sceneMetaText}>
+      <Text style={styles.sceneMetaText} hyphenationCallback={breakLongTokens}>
         <Text style={styles.sceneMetaLabel}>{label}: </Text>
         {value}
       </Text>
@@ -262,6 +287,9 @@ export async function createProjectPdf(
       }
     }
   }
+  const safeProjectName = projectName.length > 56
+    ? `${projectName.slice(0, 53).trimEnd()}…`
+    : projectName;
 
   const document = (
     <Document
@@ -271,13 +299,11 @@ export async function createProjectPdf(
       subject="Guion de rodaje"
     >
       <Page size="LETTER" style={styles.page} wrap>
-        <View fixed style={styles.header}>
-          <View style={styles.headerText}>
-            <Text style={styles.eyebrow}>GUIÓN DE RODAJE</Text>
-            <Text style={styles.projectTitle}>{projectName}</Text>
-          </View>
-          <Image src={logoDataUrl} style={styles.logo} />
-        </View>
+        <Text fixed style={[styles.eyebrow, styles.headerEyebrow]} render={() => "GUIÓN DE RODAJE"} />
+        <Text fixed style={styles.headerProjectTitle} render={() => safeProjectName} />
+        <Image fixed src={logoDataUrl} style={styles.headerLogo} />
+        <View fixed style={styles.headerRule} />
+        <Text fixed style={styles.pageCounter} render={({ pageNumber, totalPages }) => `${safeProjectName} · PÁGINA ${pageNumber}/${totalPages}`} />
 
         {projectNeeds.size > 0 && (
           <View style={styles.needsSection}>
@@ -298,59 +324,71 @@ export async function createProjectPdf(
         {numberedBlocks.map((block, blockIndex) => (
           <View key={block.id} style={styles.block}>
             <View style={styles.blockHeading} wrap={false}>
-              <Text style={styles.blockNumber} minPresenceAhead={24}>
+              <Text style={styles.blockNumber} minPresenceAhead={36}>
                 BLOQUE {String(blockIndex + 1).padStart(2, "0")}
               </Text>
-              <Text style={styles.blockTitle}>{block.title}</Text>
+              <Text style={styles.blockTitle} minPresenceAhead={36} hyphenationCallback={breakLongTokens}>{block.title}</Text>
             </View>
 
             <View style={styles.columns}>
               <View style={styles.sceneColumn}>
-                <Text style={styles.columnTitle} minPresenceAhead={18}>ESCENAS</Text>
+              <Text style={styles.columnTitle} minPresenceAhead={40}>ESCENAS</Text>
                 {block.scene.length ? block.scene.map(({ scene, number }, index) => (
-                  <View key={scene.id} style={[styles.item, ...(index === 0 ? [styles.firstItem] : [])]} wrap={false}>
-                    <View style={styles.checkbox}>
-                      {scene.status === "grabada" && <Text style={styles.checkboxMark}>X</Text>}
-                    </View>
-                    <View style={styles.itemContent}>
-                      <Text style={styles.itemNumber}>
+                  <View key={scene.id} style={[styles.item, ...(index === 0 ? [styles.firstItem] : [])]}>
+                    <View style={styles.itemHeader} wrap={false}>
+                      <View style={styles.checkbox}>
+                        {scene.status === "grabada" && <Text style={styles.checkboxMark}>X</Text>}
+                      </View>
+                      <Text style={styles.itemNumber} minPresenceAhead={44}>
                         TOMA {number}{scene.status === "repetir" && <Text style={styles.retake}> · REPETIR</Text>}
                       </Text>
-                      <Text style={styles.description}>
+                    </View>
+                    <View style={styles.itemBody}>
+                      <Text style={styles.description} hyphenationCallback={breakLongTokens}>
                         <FormattedText value={scene.description || "Descripción pendiente"} />
                       </Text>
-                      {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
-                        <View style={styles.sceneMeta}>
-                          {scene.location?.name && <SceneMetaChip label="Locación" value={scene.location.name} />}
-                          {scene.camera && <SceneMetaChip label="Plano" value={scene.camera} />}
-                          {scene.angle && <SceneMetaChip label="Ángulo" value={scene.angle} />}
-                          {scene.movement && <SceneMetaChip label="Movimiento" value={scene.movement} />}
+                      {(scene.location?.name || scene.camera || scene.angle || scene.movement || scene.requirements?.length || scene.notes || scene.post_production || scene.reference) && (
+                        <View wrap={false}>
+                          {(scene.location?.name || scene.camera || scene.angle || scene.movement) && (
+                            <View style={styles.sceneMeta}>
+                              {scene.location?.name && <SceneMetaChip label="Locación" value={scene.location.name} />}
+                              {scene.camera && <SceneMetaChip label="Plano" value={scene.camera} />}
+                              {scene.angle && <SceneMetaChip label="Ángulo" value={scene.angle} />}
+                              {scene.movement && <SceneMetaChip label="Movimiento" value={scene.movement} />}
+                            </View>
+                          )}
+                          {!!scene.requirements?.length && <Detail label="Necesidades" value={scene.requirements.join(", ")} />}
+                          {scene.notes && <Detail label="Notas" value={scene.notes} />}
+                          {scene.post_production && <Detail label="Postproducción" value={scene.post_production_notes || "Requiere postproducción"} />}
+                          {scene.reference && <Detail label="Referencia" value={scene.reference} />}
                         </View>
                       )}
-                      {!!scene.requirements?.length && <Detail label="Necesidades" value={scene.requirements.join(", ")} />}
-                      {scene.notes && <Detail label="Notas" value={scene.notes} />}
-                      {scene.post_production && <Detail label="Postproducción" value={scene.post_production_notes || "Requiere postproducción"} />}
-                      {scene.reference && <Detail label="Referencia" value={scene.reference} />}
                     </View>
                   </View>
                 )) : <Text style={styles.empty}>Sin escenas en este bloque.</Text>}
               </View>
 
               <View style={styles.voiceColumn}>
-                <Text style={styles.columnTitle} minPresenceAhead={18}>VOZ EN OFF</Text>
+              <Text style={styles.columnTitle} minPresenceAhead={40}>VOZ EN OFF</Text>
                 {block.voice_over.length ? block.voice_over.map((voiceOver, voiceIndex) => {
                   const relatedShots = block.scene
                     .filter(({ scene }) => scene.voice_over_id === voiceOver.id)
                     .map(({ number }) => number);
                   return (
-                    <View key={voiceOver.id} style={[styles.item, ...(voiceIndex === 0 ? [styles.firstItem] : [])]} wrap={false}>
-                      <View style={styles.checkbox}>
-                        {voiceOver.recorded && <Text style={styles.checkboxMark}>X</Text>}
+                    <View key={voiceOver.id} style={[styles.item, ...(voiceIndex === 0 ? [styles.firstItem] : [])]}>
+                      <View style={styles.itemHeader} wrap={false}>
+                        <View style={styles.checkbox}>
+                          {voiceOver.recorded && <Text style={styles.checkboxMark}>X</Text>}
+                        </View>
+                        <View style={styles.itemHeaderContent}>
+                          <Text style={styles.itemNumber}>
+                            VOZ {String(voiceIndex + 1).padStart(2, "0")}
+                          </Text>
+                          {relatedShots.length > 0 && <Text style={styles.relatedShots} hyphenationCallback={breakLongTokens}>TOMAS {relatedShots.join(", ")}</Text>}
+                        </View>
                       </View>
-                      <View style={styles.itemContent}>
-                        <Text style={styles.itemNumber}>VOZ {String(voiceIndex + 1).padStart(2, "0")}</Text>
-                        {relatedShots.length > 0 && <Text style={styles.relatedShots}>TOMAS {relatedShots.join(", ")}</Text>}
-                        <Text style={styles.description}>
+                      <View style={styles.itemBody}>
+                        <Text style={styles.description} hyphenationCallback={breakLongTokens}>
                           <FormattedText value={voiceOver.text || "Texto pendiente"} />
                         </Text>
                       </View>
@@ -375,11 +413,6 @@ export async function createProjectPdf(
           </View>
         )}
 
-        <Text
-          fixed
-          style={styles.footer}
-          render={({ pageNumber, totalPages }) => `PÁGINA ${pageNumber} DE ${totalPages} · ${projectName}`}
-        />
       </Page>
     </Document>
   );
