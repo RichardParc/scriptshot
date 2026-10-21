@@ -190,12 +190,12 @@ function VoiceOverField({
   }
 
   return (
-    <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
+    <div className={`min-w-0 flex-1 rounded-lg border border-white/[0.06] bg-canvas/60 px-3 pb-3 pt-1 transition-[border-color,box-shadow] sm:px-4 sm:pb-4 sm:pt-2 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
       <div className="mb-2 flex min-h-10 items-center justify-between gap-3">
         <button
           onClick={onToggleRecorded}
           aria-pressed={vo.recorded}
-          className={`min-h-8 rounded-sm py-1 text-left font-mono text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+          className={`rounded-sm text-left font-mono text-xs leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
             vo.recorded ? "text-accent-hover" : "text-text-secondary"
           }`}
         >

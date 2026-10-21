@@ -55,7 +55,7 @@ export function SceneField({
   ].filter(Boolean).length + (scene.requirements?.length ?? 0);
 
   return (
-    <div className={`flex min-h-[13rem] min-w-0 flex-1 flex-col rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
+    <div className={`flex min-h-[13rem] min-w-0 flex-1 flex-col rounded-lg border border-white/[0.06] bg-canvas/60 px-3 pb-3 pt-1 transition-[border-color,box-shadow] sm:px-4 sm:pb-4 sm:pt-2 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
       <div className="mb-2 flex min-h-10 flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex items-center gap-2">
           <span className="rounded-md bg-accent-muted/60 px-2 py-1 font-mono text-[10px] tracking-[0.12em] text-accent-hover">

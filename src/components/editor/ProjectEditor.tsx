@@ -534,7 +534,7 @@ export function ProjectEditor({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-xl border border-border/80 bg-surface/60 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+      <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-surface/60 p-4 sm:p-5">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-muted/70 text-accent-hover">
             <Clock3 size={18} aria-hidden="true" />
@@ -548,8 +548,8 @@ export function ProjectEditor({
             <p className="mt-0.5 text-[11px] text-text-disabled">Estimado a 150 palabras por minuto</p>
           </div>
         </div>
-        <ProjectBackup project={project} blocks={blocks} references={initialReferences} />
       </div>
+      <ProjectBackup project={project} blocks={blocks} references={initialReferences} />
 
       {ConfirmModal}
     </div>
