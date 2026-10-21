@@ -2,7 +2,7 @@
 
 import { fieldClass } from "@/lib/field";
 import { useId, useState } from "react";
-import { Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import type { Scene, ScenePresets, VoiceOver } from "@/lib/types";
 import { PresetSelect } from "./PresetSelect";
 import { ChipMultiSelect } from "./ChipMultiSelect";
@@ -55,8 +55,8 @@ export function SceneField({
   ].filter(Boolean).length + (scene.requirements?.length ?? 0);
 
   return (
-    <div className={`flex min-h-[13rem] min-w-0 flex-1 flex-col rounded-lg border border-white/[0.06] bg-canvas/60 px-3 pb-3 pt-1 transition-[border-color,box-shadow] sm:px-4 sm:pb-4 sm:pt-2 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
-      <div className="mb-2 flex min-h-10 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+    <div className={`flex min-h-[13rem] min-w-0 flex-1 flex-col rounded-lg border border-white/[0.06] bg-canvas/60 p-3 transition-[border-color,box-shadow] sm:p-4 ${isDragging ? "border-accent ring-2 ring-accent/60 shadow-lg shadow-accent/20" : ""}`}>
+      <div className="mb-2 flex min-h-10 flex-nowrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="rounded-md bg-accent-muted/60 px-2 py-1 font-mono text-[10px] tracking-[0.12em] text-accent-hover">
             ESCENA {String(index).padStart(2, "0")}
@@ -68,13 +68,19 @@ export function SceneField({
             type="button"
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded}
-            className="min-h-10 rounded-md px-2 py-1 text-left font-mono text-[10px] tracking-wide text-text-secondary transition-colors hover:bg-white/[0.04] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            aria-label={expanded ? "Ocultar detalles de escena" : "Mostrar detalles de escena"}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-white/[0.04] hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-auto sm:w-auto sm:px-2 sm:py-1 sm:font-mono sm:text-[10px] sm:tracking-wide"
           >
-            {expanded
-              ? "OCULTAR DETALLES"
-              : metadataCount > 0
-                ? `DETALLES (${metadataCount}) ▾`
-                : "+ DETALLES ▾"}
+            <span className="sm:hidden" aria-hidden="true">
+              {expanded ? <ChevronUp size={17} /> : <ChevronDown size={17} />}
+            </span>
+            <span className="hidden sm:inline">
+              {expanded
+                ? "OCULTAR DETALLES"
+                : metadataCount > 0
+                  ? `DETALLES (${metadataCount}) ▾`
+                  : "+ DETALLES ▾"}
+            </span>
           </button>
           <Button
             variant="ghost"
@@ -96,7 +102,7 @@ export function SceneField({
         placeholder="¿Qué necesitas mostrar/grabar?"
         aria-label="Descripción de la escena"
         rows={4}
-        className="mt-1 min-h-32 w-full flex-1 resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="min-h-32 w-full flex-1 resize-none rounded-sm bg-transparent text-base text-text-primary placeholder:text-text-disabled focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       />
 
       {expanded && (
